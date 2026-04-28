@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI Recruiter Prompt Library</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💡</text></svg>" />
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --bg: #f5f6fa;
+      --card-bg: #ffffff;
+      --text: #1a1a2e;
+      --text-light: #555;
+      --border: #e0e0e0;
+      --success: #28a745;
+      --tag-prompt: #e8f4fd;
+      --tag-prompt-text: #0078d4;
+      --tag-template: #fdf2e8;
+      --tag-template-text: #d4760e;
+      --code-bg: #f8f9fc;
+      --section-bg: #f0f4ff;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 2.5rem 2rem 2rem;
+      text-align: center;
+    }
+    .header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .header p { font-size: 1rem; opacity: 0.9; max-width: 650px; margin: 0 auto; }
+    .header .stats {
+      display: flex; gap: 1.5rem; justify-content: center; margin-top: 1rem;
+      font-size: 0.85rem; opacity: 0.85;
+    }
+    .header .stats span { background: rgba(255,255,255,0.15); padding: 0.3rem 0.8rem; border-radius: 12px; }
+
+    /* Search */
+    .search-bar {
+      max-width: 900px; margin: -1.2rem auto 0; padding: 0 2rem; position: relative; z-index: 10;
+    }
+    .search-bar input {
+      width: 100%; padding: 0.85rem 1.2rem 0.85rem 2.8rem;
+      border: 1px solid var(--border); border-radius: 12px;
+      font-size: 0.95rem; background: white;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .search-bar input:focus { outline: none; border-color: var(--primary); }
+    .search-bar::before {
+      content: '🔍'; position: absolute; left: 2.8rem; top: 50%; transform: translateY(-50%); font-size: 1rem;
+    }
+
+    /* Filter bar */
+    .filter-bar {
+      display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center;
+      padding: 1.5rem 2rem 0.5rem; max-width: 900px; margin: 0 auto;
+    }
+    .filter-btn {
+      padding: 0.4rem 1rem; border: 1px solid var(--border); border-radius: 20px;
+      background: white; color: var(--text-light); cursor: pointer;
+      font-size: 0.85rem; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--primary); color: white; border-color: var(--primary);
+    }
+    .filter-btn .count {
+      display: inline-block; background: rgba(0,0,0,0.08); border-radius: 8px;
+      padding: 0 0.4rem; font-size: 0.75rem; margin-left: 0.3rem;
+    }
+    .filter-btn.active .count { background: rgba(255,255,255,0.25); }
+
+    /* Content */
+    .content { max-width: 900px; margin: 0 auto; padding: 1.5rem 2rem 3rem; }
+
+    /* Category section */
+    .category-section {
+      margin-bottom: 2rem;
+    }
+    .category-heading {
+      font-size: 1.3rem; font-weight: 700; margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem; border-bottom: 2px solid var(--primary);
+      display: flex; align-items: center; gap: 0.5rem;
+    }
+    .subsection-label {
+      font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+      color: var(--text-light); margin: 1rem 0 0.5rem; padding-left: 0.25rem;
+    }
+    .subsection-label.template-label { color: var(--tag-template-text); }
+
+    /* Prompt card */
+    .prompt-card {
+      background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border);
+      overflow: hidden; transition: box-shadow 0.2s; margin-bottom: 0.6rem;
+    }
+    .prompt-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+    .prompt-card.template-card { border-left: 3px solid var(--tag-template-text); }
+
+    .prompt-header {
+      display: flex; align-items: center; padding: 0.85rem 1.25rem;
+      cursor: pointer; user-select: none; gap: 0.75rem;
+    }
+    .prompt-header:hover { background: #fafbfd; }
+
+    .prompt-number {
+      flex-shrink: 0; background: var(--primary); color: white; border-radius: 50%;
+      width: 28px; height: 28px; text-align: center; line-height: 28px;
+      font-size: 0.75rem; font-weight: 700;
+    }
+    .template-card .prompt-number { background: var(--tag-template-text); }
+
+    .prompt-info { flex: 1; }
+    .prompt-title { font-size: 0.95rem; font-weight: 600; }
+
+    .type-badge {
+      flex-shrink: 0; padding: 0.15rem 0.6rem; border-radius: 12px;
+      font-size: 0.7rem; font-weight: 600; white-space: nowrap;
+    }
+    .type-badge.prompt-badge { background: var(--tag-prompt); color: var(--tag-prompt-text); }
+    .type-badge.template-badge { background: var(--tag-template); color: var(--tag-template-text); }
+
+    .expand-icon {
+      flex-shrink: 0; font-size: 1rem; color: var(--text-light);
+      transition: transform 0.25s; width: 20px; text-align: center;
+    }
+    .prompt-card.open .expand-icon { transform: rotate(180deg); }
+
+    /* Expanded content */
+    .prompt-body {
+      display: none; border-top: 1px solid var(--border); padding: 1.25rem;
+    }
+    .prompt-card.open .prompt-body { display: block; }
+
+    .prompt-text {
+      background: var(--code-bg); border: 1px solid var(--border); border-radius: 8px;
+      padding: 1rem 1.25rem; font-size: 0.85rem; white-space: pre-wrap;
+      line-height: 1.75; color: var(--text);
+    }
+    .prompt-text .placeholder {
+      background: #fff3cd; color: #856404; padding: 0.1rem 0.4rem;
+      border-radius: 4px; font-weight: 600; font-size: 0.82rem;
+    }
+
+    .btn-row { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+
+    .copy-btn, .category-select-btn {
+      padding: 0.45rem 1rem; border: none; border-radius: 8px;
+      font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: all 0.2s;
+    }
+    .copy-btn {
+      background: #e8f4fd; color: var(--primary);
+    }
+    .copy-btn:hover { background: #d0eafb; }
+    .copy-btn.copied { background: var(--success); color: white; }
+
+    .category-select-btn { background: #f0f0f0; color: var(--text-light); }
+    .category-select-btn:hover { background: #e0e0e0; }
+
+    /* Category change modal */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+      z-index: 1000; align-items: center; justify-content: center;
+    }
+    .modal-overlay.show { display: flex; }
+    .modal {
+      background: white; border-radius: 16px; padding: 1.5rem; width: 360px;
+      max-width: 90vw; box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .modal h3 { font-size: 1.05rem; margin-bottom: 0.75rem; }
+    .modal-categories {
+      display: flex; flex-direction: column; gap: 0.4rem; max-height: 300px; overflow-y: auto;
+    }
+    .modal-cat-btn {
+      padding: 0.6rem 1rem; border: 1px solid var(--border); border-radius: 8px;
+      background: white; cursor: pointer; text-align: left; font-size: 0.9rem;
+      transition: all 0.15s;
+    }
+    .modal-cat-btn:hover { background: var(--tag-prompt); border-color: var(--primary); }
+    .modal-cat-btn.current { background: var(--primary); color: white; border-color: var(--primary); }
+    .modal-cancel {
+      margin-top: 0.75rem; padding: 0.5rem 1rem; border: none; border-radius: 8px;
+      background: #f0f0f0; cursor: pointer; font-size: 0.85rem; width: 100%;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed; bottom: 2rem; right: 2rem; background: var(--success); color: white;
+      padding: 0.75rem 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.2); opacity: 0; transform: translateY(10px);
+      transition: all 0.3s; z-index: 2000;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center; padding: 3rem 1rem; color: var(--text-light);
+    }
+    .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+
+    /* Footer */
+    .footer {
+      text-align: center; padding: 1.5rem; color: var(--text-light);
+      font-size: 0.8rem; border-top: 1px solid var(--border);
+    }
+
+    @media (max-width: 600px) {
+      .header h1 { font-size: 1.4rem; }
+      .header .stats { flex-wrap: wrap; gap: 0.5rem; }
+      .content { padding: 1rem; }
+      .type-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>💡 AI Recruiter Prompt Library</h1>
+  <p>Ready-to-use prompts & email templates organized by recruiting phase — click to view, copy & paste</p>
+  <div class="stats">
+    <span id="statPrompts">18 Prompts</span>
+    <span id="statTemplates">7 Email Templates</span>
+    <span id="statCategories">7 Categories</span>
+  </div>
+</div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="Search prompts and templates..." />
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="content" id="content"></div>
+
+<!-- Category change modal -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <h3 id="modalTitle">Move to category:</h3>
+    <div class="modal-categories" id="modalCategories"></div>
+    <button class="modal-cancel" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
+<div class="toast" id="toast">Copied to clipboard!</div>
+
+<footer class="footer">
+  <p>AI Recruiter Prompt Library · Organized by recruiting phase</p>
+</footer>
+
+<script>
+const categories = [
+  { slug: 'sourcing', name: 'Sourcing', icon: '🔍' },
+  { slug: 'screening', name: 'Screening', icon: '🔎' },
+  { slug: 'interview', name: 'Interview', icon: '🎤' },
+  { slug: 'communication', name: 'Communication', icon: '💬' },
+  { slug: 'strategy', name: 'Strategy', icon: '📊' },
+  { slug: 'offer', name: 'Offer', icon: '🎁' },
+  { slug: 'general', name: 'General', icon: '🛠️' },
+];
+
+let prompts = [
+  // Sourcing - Prompts
+  { id: 1, title: 'Outreach Message', category: 'sourcing', type: 'prompt',
+    content: `Draft a concise outreach message.\n\nContext:\n- Company: Microsoft\n- Role: [Job title]\n- Candidate skill: [Key skill]\n\nRequirements:\n- Friendly but professional\n- 4–6 sentences\n- Invite for 20–30 min intro call` },
+  { id: 2, title: 'Referral Outreach', category: 'sourcing', type: 'prompt',
+    content: `Write a warm outreach message to a referral candidate.\n\nInclude:\n- Mention they were referred\n- Short role intro\n- Invite for brief intro call\n\nTone: professional and appreciative.` },
+  { id: 3, title: 'Passive Candidate Re-engagement', category: 'sourcing', type: 'prompt',
+    content: `Write a short follow-up message to a candidate who did not proceed previously.\n\nGoal:\n- Reconnect\n- Mention new opportunity\n- Invite for quick conversation\n\nTone: friendly and low pressure.` },
+  { id: 4, title: 'Follow-up Outreach', category: 'sourcing', type: 'prompt',
+    content: `Write a recruiter follow-up email to a candidate who has not replied.\n\nRequirements:\n- Brief and friendly\n- Mention previous outreach\n- Invite quick chat\n- Under 5 sentences\n\nInputs:\nCandidate Name: [Candidate]\nRole: [Role]\n\nOutput:\nFollow-up email.` },
+  // Sourcing - Template
+  { id: 5, title: 'Follow-up to Candidate', category: 'sourcing', type: 'template',
+    content: `Subject: Quick Follow-up\n\nHi [Candidate Name],\n\nI just wanted to follow up on my previous message regarding the [Role] opportunity with [Company]. Based on your background, I thought the role might be of interest and would be glad to share more details.\n\nIf you happen to have 20–30 minutes for a quick introduction, I'd be happy to connect.\n\nBest regards,\n[Your Name]` },
+
+  // Screening - Prompts
+  { id: 6, title: 'Candidate Profile Summary', category: 'screening', type: 'prompt',
+    content: `You are an experienced technical recruiter.\n\nPlease summarize the following candidate profile:\n- Core technical expertise\n- Career level estimation\n- Domain or industry experience\n- IC vs leadership signals\n- Notable achievements\n- Any risks or concerns\n\nCandidate:\n[Paste profile]` },
+  { id: 7, title: 'Candidate vs Job Description Match', category: 'screening', type: 'prompt',
+    content: `Act as a recruiter comparing a candidate with the job description.\n\nProvide:\n- Key strengths match\n- Potential gaps\n- Risks\n- Overall fit (Strong / Moderate / Weak)\n- Suggested interview focus\n\nCandidate:\n[Profile]\n\nJob Description:\n[JD]` },
+  { id: 8, title: 'Phone Screen Prep', category: 'screening', type: 'prompt',
+    content: `Generate:\n\n- 5 recruiter screening questions\n- 3 deeper technical questions\n- 2 clarification / risk questions\n\nCandidate:\n[Profile]\n\nJob:\n[JD]` },
+
+  // Interview - Prompts
+  { id: 9, title: 'Interview Notes Summary', category: 'interview', type: 'prompt',
+    content: `Summarize interview notes.\n\nOutput:\n- Candidate strengths\n- Key signals\n- Concerns\n- Overall recommendation (lean hire / neutral / lean no hire)\n\nNotes:\n[Paste notes]` },
+  { id: 10, title: 'Candidate Debrief', category: 'interview', type: 'prompt',
+    content: `Summarize panel discussion.\n\nInclude:\n- Overall panel sentiment\n- Strong hire signals\n- Major concerns\n- Suggested next step\n\nDiscussion:\n[Notes]` },
+  { id: 11, title: 'Candidate Finished Interviews (Decision Pending)', category: 'interview', type: 'prompt',
+    content: `You are a professional recruiter writing candidate communication.\n\nScenario:\nThe candidate has completed all interviews but the team is still interviewing other candidates.\n\nWrite an email that:\n- Thanks the candidate for their time interviewing\n- Acknowledges appreciation for their conversations with the team\n- Explains the team is completing interviews with other candidates\n- Sets expectation for when the next update may come\n- Maintains a warm and professional tone\n- Avoids implying hiring decisions\n\nInputs:\nCandidate Name: [Candidate]\nRole: [Role]\nCompany: [Company]\nUpdate Timeline: [Example: 1–2 weeks]\n\nOutput:\nProfessional candidate email.` },
+  { id: 12, title: 'Interview Scheduling', category: 'interview', type: 'prompt',
+    content: `Write a recruiter scheduling email.\n\nInclude:\n- Thanking candidate for interest\n- Role title\n- 2–3 suggested time options\n- Reminder of time zone\n- Invitation to confirm availability\n\nInputs:\nCandidate Name: [Candidate]\nRole: [Role]\nInterviewer: [Manager]\nTime Options: [Times]\n\nOutput:\nInterview scheduling email.` },
+  // Interview - Templates
+  { id: 13, title: 'Candidate Completed Interviews (Keep Warm)', category: 'interview', type: 'template',
+    content: `Subject: Update on Your Interview Process\n\nDear [Candidate Name],\n\nThank you again for taking the time to interview with our team and for the thoughtful conversations throughout the process. It was great learning more about your background and experience.\n\nAt this stage, the team is still completing interviews with a few other candidates and will be reviewing feedback together before finalizing next steps. We expect to have more clarity soon and will be sure to update you as soon as we have news to share.\n\nWe truly appreciate your patience and your continued interest in the opportunity.\n\nBest regards,\n[Your Name]` },
+  { id: 14, title: 'Interview Scheduling', category: 'interview', type: 'template',
+    content: `Subject: Interview Availability – [Role]\n\nDear [Candidate Name],\n\nThank you again for your interest in the [Role] opportunity.\n\nWe would like to schedule time for you to meet with [Hiring Manager / Interviewer]. Please let me know if any of the following times work for you:\n\n- [Option 1]\n- [Option 2]\n- [Option 3]\n\n(All times listed in [Time Zone].)\n\nIf these options don't work with your schedule, feel free to share a time that would be more convenient.\n\nBest regards,\n[Your Name]` },
+
+  // Communication - Prompts
+  { id: 15, title: 'Hiring Manager Update', category: 'communication', type: 'prompt',
+    content: `Draft a concise hiring update.\n\nInclude:\n- Pipeline status\n- Notable candidates\n- Recent interviews\n- Risks\n- Next recruiting actions\n\nFormat: bullet points.` },
+  { id: 16, title: 'Candidate Requests Feedback', category: 'communication', type: 'prompt',
+    content: `You are a recruiter replying to a candidate who asked for interview feedback.\n\nWrite a response that:\n- Thanks the candidate for their follow-up\n- Acknowledges their time and interest\n- Explains the hiring process is still ongoing\n- Mentions feedback is usually shared once the team aligns internally\n- Keeps comments high-level and avoids detailed evaluation points\n\nInputs:\nCandidate Name: [Candidate]\nRole: [Role]\n\nOutput:\nProfessional response email.` },
+  { id: 17, title: 'Candidate Feedback After Rejection', category: 'communication', type: 'prompt',
+    content: `Write a professional, candidate-facing interview feedback email.\n\nContext:\n- Candidate completed interviews and asked for feedback.\n- The team appreciated the candidate's background.\n- We decided to move forward with other candidates.\n\nFeedback guidelines:\n- Acknowledge strengths in system-level hardware, PCB design, and server platforms.\n- Mention that the role requires deeper hands-on experience in system-level debugging and cross-domain problem solving.\n- Keep feedback high-level and non-arguable.\n- Avoid detailed skill gaps or statements that could invite rebuttal.\n- Maintain a respectful, appreciative, Microsoft-appropriate tone.\n\nOutput:\nA ready-to-send email to the candidate.\n\n[paste interviewer's feedback]` },
+  // Communication - Templates
+  { id: 18, title: 'Reply to Candidate Requesting Feedback', category: 'communication', type: 'template',
+    content: `Subject: Re: Interview Feedback\n\nDear [Candidate Name],\n\nThank you for following up and for your interest in the role. I'm glad to hear you found the conversations with the team valuable.\n\nAt the moment, the hiring team is still in the process of completing interviews with other candidates, and we have not yet reached the final evaluation stage. Because of that, we're not in a position to provide detailed feedback just yet.\n\nOnce the team has finished the process and aligns on next steps, I'll be sure to provide an update.\n\nBest regards,\n[Your Name]` },
+  { id: 19, title: 'Rejection After Interview', category: 'communication', type: 'template',
+    content: `Subject: Update on Your Application\n\nHi {{Candidate Name}},\n\nThank you again for taking the time to interview with our team and for the thoughtful conversation. We truly appreciated the opportunity to learn more about your background and experience.\n\nThe team appreciated {{insert experience / background highlight, if applicable}} during the interview discussions.\n\nFor this particular role, after careful consideration, we have decided to move forward with candidates whose experience more closely aligns with the current needs of the role {{optional: insert high-level role requirement, if you choose to include}}.\n\nWe sincerely appreciate the time and preparation you invested throughout the interview process. Thank you again for your interest in Microsoft and for connecting with our team. We wish you continued success in your career journey.\n\nBest regards,\n{{Recruiter Name}}` },
+
+  // Strategy - Prompts
+  { id: 20, title: 'Talent Market Mapping', category: 'strategy', type: 'prompt',
+    content: `Act as a talent intelligence analyst.\n\nRole:\n[Job title or JD]\n\nIdentify:\n- 8–10 companies with similar talent\n- Common candidate titles\n- Key technical skills\n- Talent clusters (Taiwan / APAC)` },
+
+  // Offer - Prompts
+  { id: 21, title: 'Salary Expectation Misalignment', category: 'offer', type: 'prompt',
+    content: `Write a recruiter email explaining that the candidate's salary expectations are outside the approved budget for the role.\n\nRequirements:\n- Professional and respectful\n- Thank them for their time\n- Explain misalignment with current budget\n- Leave the door open for future opportunities\n\nInputs:\nCandidate Name: [Candidate]\nRole: [Role]\nCompany: [Company]\n\nOutput:\nProfessional email draft.` },
+  // Offer - Templates
+  { id: 22, title: 'Legal Name Confirmation (Taiwan)', category: 'offer', type: 'template',
+    content: `Hi {{Candidate Name}},\n\nWe're excited to move forward with your offer.\n\nFor Taiwan-based hires, the offer documents must be signed using your official legal name exactly as it appears on your National Identification Card (or passport, if applicable), and the corresponding ID number.\n\nThis is a local legal requirement and ensures the employment agreement is valid and processed without delay.\n\nPlease take a moment to confirm:\n• Your full legal name (as shown on your ID)\n• Your National ID number (or passport number)\n\nOnce this is confirmed and reflected in the system, you'll be able to proceed with signing the offer via the official channel.\n\nLet me know if you have any questions — happy to help.\n\nBest regards,\n{{Recruiter Name}}` },
+  { id: 23, title: 'Salary Expectation Misalignment', category: 'offer', type: 'template',
+    content: `Subject: Thank You for Your Time\n\nDear [Candidate Name],\n\nThank you again for taking the time to speak with us and for your interest in the [Role] opportunity.\n\nAfter reviewing the expectations for the position, it appears that the compensation range for this role may not fully align with your current expectations. While we may not be able to proceed further for this particular opportunity, we truly appreciated the chance to learn more about your background.\n\nWe would be happy to stay in touch and keep you in mind for roles that may align more closely in the future.\n\nBest regards,\n[Your Name]` },
+
+  // General - Prompts
+  { id: 24, title: 'Meeting Summary Generator', category: 'general', type: 'prompt',
+    content: `Summarize the following meeting notes into a structured format: 1) Key Decisions Made 2) Action Items (with owners and deadlines) 3) Open Questions 4) Next Steps. Keep it concise and actionable.` },
+  { id: 25, title: 'Email Drafter', category: 'general', type: 'prompt',
+    content: `Draft a professional email for the following situation: [describe context]. Tone: [formal/friendly/persuasive]. Include: clear subject line, concise body, specific call-to-action. Keep under 200 words.` },
+];
+
+// --- Persistence ---
+const STORAGE_KEY = 'prompt-library-data';
+function loadData() {
+  const saved = localStorage.getItem(STORAGE_KEY);
+  if (saved) {
+    try { prompts = JSON.parse(saved); } catch(e) {}
+  }
+}
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(prompts));
+}
+loadData();
+
+// --- State ---
+let activeFilter = 'all';
+let searchQuery = '';
+let modalPromptId = null;
+
+// --- Helpers ---
+function getCat(slug) { return categories.find(c => c.slug === slug); }
+function formatContent(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/\[([^\]]+)\]/g, '<span class="placeholder">[$1]</span>')
+    .replace(/\{\{([^}]+)\}\}/g, '<span class="placeholder">{{$1}}</span>');
+}
+
+// --- Render ---
+function render() {
+  const filtered = prompts.filter(p => {
+    const matchCat = activeFilter === 'all' || p.category === activeFilter;
+    const matchSearch = !searchQuery ||
+      p.title.toLowerCase().includes(searchQuery) ||
+      p.content.toLowerCase().includes(searchQuery);
+    return matchCat && matchSearch;
+  });
+
+  // Group by category
+  const grouped = {};
+  for (const cat of categories) { grouped[cat.slug] = { prompts: [], templates: [] }; }
+  for (const p of filtered) {
+    if (!grouped[p.category]) grouped[p.category] = { prompts: [], templates: [] };
+    grouped[p.category][p.type === 'template' ? 'templates' : 'prompts'].push(p);
+  }
+
+  const content = document.getElementById('content');
+
+  // Check if anything matches
+  const totalItems = filtered.length;
+  if (totalItems === 0) {
+    content.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><p>No prompts found. Try a different search or filter.</p></div>`;
+    return;
+  }
+
+  let html = '';
+  let num = 1;
+  for (const cat of categories) {
+    const group = grouped[cat.slug];
+    if (group.prompts.length === 0 && group.templates.length === 0) continue;
+
+    html += `<div class="category-section">`;
+    html += `<div class="category-heading">${cat.icon} ${cat.name}</div>`;
+
+    if (group.prompts.length > 0) {
+      html += `<div class="subsection-label">📝 Prompts</div>`;
+      for (const p of group.prompts) {
+        html += renderCard(p, num++);
+      }
+    }
+    if (group.templates.length > 0) {
+      html += `<div class="subsection-label template-label">📋 Email Templates</div>`;
+      for (const p of group.templates) {
+        html += renderCard(p, num++);
+      }
+    }
+    html += `</div>`;
+  }
+
+  content.innerHTML = html;
+
+  // Update stats
+  const totalPrompts = prompts.filter(p => p.type === 'prompt').length;
+  const totalTemplates = prompts.filter(p => p.type === 'template').length;
+  document.getElementById('statPrompts').textContent = `${totalPrompts} Prompts`;
+  document.getElementById('statTemplates').textContent = `${totalTemplates} Email Templates`;
+}
+
+function renderCard(p, num) {
+  const isTemplate = p.type === 'template';
+  const cat = getCat(p.category);
+  return `
+    <div class="prompt-card ${isTemplate ? 'template-card' : ''}" data-id="${p.id}">
+      <div class="prompt-header" onclick="toggleCard(this)">
+        <span class="prompt-number">${num}</span>
+        <div class="prompt-info">
+          <div class="prompt-title">${p.title}</div>
+        </div>
+        <span class="type-badge ${isTemplate ? 'template-badge' : 'prompt-badge'}">
+          ${isTemplate ? '📋 Template' : '📝 Prompt'}
+        </span>
+        <span class="expand-icon">▼</span>
+      </div>
+      <div class="prompt-body">
+        <div class="prompt-text">${formatContent(p.content)}</div>
+        <div class="btn-row">
+          <button class="copy-btn" onclick="copyPrompt(${p.id}, this)">📋 Copy</button>
+          <button class="category-select-btn" onclick="openModal(${p.id})">📁 Move to…</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFilters() {
+  const bar = document.getElementById('filterBar');
+  const allCount = prompts.length;
+  let html = `<button class="filter-btn active" data-filter="all" onclick="setFilter('all', this)">All <span class="count">${allCount}</span></button>`;
+  for (const cat of categories) {
+    const count = prompts.filter(p => p.category === cat.slug).length;
+    if (count === 0 && activeFilter !== cat.slug) continue;
+    html += `<button class="filter-btn" data-filter="${cat.slug}" onclick="setFilter('${cat.slug}', this)">${cat.icon} ${cat.name} <span class="count">${count}</span></button>`;
+  }
+  bar.innerHTML = html;
+}
+
+// --- Actions ---
+function toggleCard(header) {
+  header.parentElement.classList.toggle('open');
+}
+
+function setFilter(filter, btn) {
+  activeFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function copyPrompt(id, btn) {
+  const p = prompts.find(x => x.id === id);
+  navigator.clipboard.writeText(p.content).then(() => {
+    showToast('Copied to clipboard!');
+    btn.textContent = '✅ Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '📋 Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+function openModal(id) {
+  modalPromptId = id;
+  const p = prompts.find(x => x.id === id);
+  const container = document.getElementById('modalCategories');
+  container.innerHTML = categories.map(cat =>
+    `<button class="modal-cat-btn ${cat.slug === p.category ? 'current' : ''}" onclick="moveToCategory('${cat.slug}')">${cat.icon} ${cat.name}${cat.slug === p.category ? ' (current)' : ''}</button>`
+  ).join('');
+  document.getElementById('modalTitle').textContent = `Move "${p.title}" to:`;
+  document.getElementById('modalOverlay').classList.add('show');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('show');
+  modalPromptId = null;
+}
+
+function moveToCategory(slug) {
+  const p = prompts.find(x => x.id === modalPromptId);
+  if (p && p.category !== slug) {
+    p.category = slug;
+    saveData();
+    const cat = getCat(slug);
+    showToast(`Moved "${p.title}" to ${cat.icon} ${cat.name}`);
+    renderFilters();
+    render();
+  }
+  closeModal();
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// --- Search ---
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  searchQuery = e.target.value.toLowerCase().trim();
+  render();
+});
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', (e) => {
+  if (e.target === e.currentTarget) closeModal();
+});
+
+// --- Init ---
+renderFilters();
+render();
+</script>
+
+</body>
+</html>
