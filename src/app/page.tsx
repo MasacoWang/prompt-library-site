@@ -23,10 +23,6 @@ export default function Home() {
             Simple tools to speed up sourcing, outreach, and hiring workflows.
           </p>
 
-          {/* Usage guide strip */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
-            <ActionGuide />
-          </div>
         </div>
       </section>
 
@@ -35,7 +31,8 @@ export default function Home() {
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-8">
             <h2 className="text-xl sm:text-2xl font-bold text-text-primary mb-2">Browse the Toolkit</h2>
-            <p className="text-sm text-text-secondary">Discover templates and prompts by type, scenario, or recruiting phase</p>
+            <p className="text-sm text-text-secondary mb-4">Discover templates and prompts by type, scenario, or recruiting phase</p>
+            <ActionGuide />
           </div>
           <HomeTabs />
         </div>
