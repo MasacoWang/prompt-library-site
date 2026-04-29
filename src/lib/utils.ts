@@ -46,7 +46,14 @@ export function loadTemplates(starters: Template[]): Template[] {
   if (stored) {
     try {
       const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        // Merge: always keep starter templates up-to-date, preserve user additions
+        const starterIds = new Set(starters.map((s) => s.id));
+        const userAdded = parsed.filter((t: Template) => !starterIds.has(t.id));
+        const merged = [...starters, ...userAdded];
+        saveTemplates(merged);
+        return merged;
+      }
     } catch { /* fall through */ }
   }
   saveTemplates(starters);
