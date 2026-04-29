@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
@@ -19,9 +19,9 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'new', label: '+ New', icon: '✨' },
 ];
 
-function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDelete }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void }) {
+function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDelete, onOpen }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void; onOpen?: () => void }) {
   return (
-    <div className="card p-4 group card-enter">
+    <div className="card p-4 group card-enter cursor-pointer" onClick={onOpen}>
       <div className="mb-2">
         <h4 className="font-semibold text-sm text-text-primary truncate">{item.title}</h4>
         <div className="flex items-center gap-2 mt-1.5">
@@ -45,7 +45,7 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDe
         {(viewCount ?? 0) > 0 && <span>👁 {viewCount}</span>}
         {isFavorite && <span className="text-red-400">❤️</span>}
       </div>
-      <div className="flex items-center gap-1 flex-wrap pt-2 border-t border-border">
+      <div className="flex items-center gap-1 flex-wrap pt-2 border-t border-border" onClick={(e) => e.stopPropagation()}>
         {onToggleFavorite && (
           <button
             onClick={onToggleFavorite}
@@ -82,7 +82,7 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDe
   );
 }
 
-function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onDelete }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onDelete: (id: string) => void }) {
+function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onDelete, onOpen }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onDelete: (id: string) => void; onOpen: (id: string) => void }) {
   const templates = items.filter((i) => i.kind === 'template');
   const prompts = items.filter((i) => i.kind === 'prompt');
 
@@ -91,7 +91,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">✉️ Email Templates</h5>
         {templates.length > 0 ? (
-          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
+          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} onOpen={() => onOpen(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No templates for this {emptyLabel}</p>
         )}
@@ -99,7 +99,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">💡 Prompts</h5>
         {prompts.length > 0 ? (
-          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
+          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} onOpen={() => onOpen(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No prompts for this {emptyLabel}</p>
         )}
@@ -121,6 +121,7 @@ export default function HomeTabs() {
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [homeCategoryFilter, setHomeCategoryFilter] = useState('All');
+  const [selectedDetail, setSelectedDetail] = useState<Template | null>(null);
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
@@ -168,6 +169,15 @@ export default function HomeTabs() {
         return updated;
       });
       Swal.fire('Deleted!', 'Your template has been removed.', 'success');
+    }
+  };
+
+  const handleOpen = (id: string) => {
+    const found = items.find((t) => t.id === id);
+    if (found) {
+      setSelectedDetail(found);
+      const updated = incrementViewCount(id);
+      setViewCounts(updated);
     }
   };
 
@@ -227,7 +237,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {emailTemplates.length > 6 && (
@@ -251,7 +261,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {prompts.length > 6 && (
@@ -295,7 +305,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onOpen={handleOpen} />
                 )}
               </div>
             );
@@ -333,7 +343,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onOpen={handleOpen} />
                 )}
               </div>
             );
@@ -347,7 +357,7 @@ export default function HomeTabs() {
           {favoriteItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {favoriteItems.map((t) => (
-                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={true} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
+                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={true} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
               ))}
             </div>
           ) : (
@@ -473,6 +483,67 @@ export default function HomeTabs() {
                 className="btn-ghost px-4 py-2.5 text-sm"
               >
                 Clear
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Detail overlay ── */}
+      {selectedDetail && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setSelectedDetail(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[85vh] overflow-hidden flex flex-col animate-fade-in" onClick={(e) => e.stopPropagation()}>
+            {/* Header */}
+            <div className="p-6 border-b border-border">
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex-1 min-w-0">
+                  <h2 className="text-lg font-bold text-text-primary mb-2">{selectedDetail.title}</h2>
+                  <div className="flex items-center gap-2">
+                    <span className="token-pill">{selectedDetail.category}</span>
+                    <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                      selectedDetail.kind === 'prompt'
+                        ? 'bg-purple-50 text-purple-600 border border-purple-200'
+                        : 'bg-amber-50 text-amber-600 border border-amber-200'
+                    }`}>
+                      {selectedDetail.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
+                    </span>
+                    {(viewCounts[selectedDetail.id] ?? 0) > 0 && (
+                      <span className="text-xs text-text-muted">👁 {viewCounts[selectedDetail.id]}</span>
+                    )}
+                  </div>
+                </div>
+                <button onClick={() => setSelectedDetail(null)} className="btn-ghost p-2 text-lg shrink-0">✕</button>
+              </div>
+            </div>
+            {/* Body */}
+            <div className="p-6 overflow-y-auto flex-1">
+              <pre className="whitespace-pre-wrap text-sm text-text-primary leading-relaxed font-sans">{selectedDetail.body}</pre>
+            </div>
+            {/* Actions */}
+            <div className="p-4 border-t border-border flex items-center gap-2 flex-wrap">
+              <button
+                onClick={() => { toggleFavorite(favorites, selectedDetail.id); setFavorites((prev) => toggleFavorite(prev, selectedDetail.id)); }}
+                className={`btn-ghost px-3 py-1.5 text-sm ${favorites.has(selectedDetail.id) ? 'text-red-500' : ''}`}
+              >
+                {favorites.has(selectedDetail.id) ? '❤️ Unfavorite' : '🤍 Favorite'}
+              </button>
+              <button
+                onClick={async () => { await copyToCopilot(selectedDetail.body); showToast('Copied & opened Copilot ✓'); }}
+                className="btn-ghost px-3 py-1.5 text-sm"
+              >
+                🤖 Copilot
+              </button>
+              <button
+                onClick={async () => { await copyToClipboard(selectedDetail.body); showToast('Copied ✓'); }}
+                className="btn-ghost px-3 py-1.5 text-sm"
+              >
+                📋 Copy
+              </button>
+              <button
+                onClick={() => openInOutlook(selectedDetail.title, selectedDetail.body)}
+                className="btn-ghost px-3 py-1.5 text-sm"
+              >
+                ✉️ Outlook
               </button>
             </div>
           </div>
