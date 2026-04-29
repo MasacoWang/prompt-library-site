@@ -155,8 +155,13 @@ export function saveFavorites(favorites: Set<string>): void {
 
 export function toggleFavorite(favorites: Set<string>, id: string): Set<string> {
   const next = new Set(favorites);
-  if (next.has(id)) next.delete(id);
-  else next.add(id);
+  if (next.has(id)) {
+    next.delete(id);
+  } else {
+    next.add(id);
+    // Fire-and-forget: increment shared favorite counter
+    incrementSharedFavCount(id).catch(() => {});
+  }
   saveFavorites(next);
   return next;
 }
@@ -178,6 +183,56 @@ export function incrementViewCount(id: string): Record<string, number> {
   counts[id] = (counts[id] || 0) + 1;
   localStorage.setItem(VIEWS_KEY, JSON.stringify(counts));
   return counts;
+}
+
+// ── Shared Favorite Counts (CounterAPI) ──
+const SHARED_FAV_KEY = 'recruiter-vault-shared-fav-counts';
+const COUNTER_NS = 'prompt-library-site';
+
+export function loadSharedFavCounts(): Record<string, number> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const stored = localStorage.getItem(SHARED_FAV_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch { /* ignore */ }
+  return {};
+}
+
+function saveSharedFavCounts(counts: Record<string, number>): void {
+  localStorage.setItem(SHARED_FAV_KEY, JSON.stringify(counts));
+}
+
+export async function incrementSharedFavCount(id: string): Promise<Record<string, number>> {
+  const counts = loadSharedFavCounts();
+  try {
+    const safeId = id.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NS}/fav-${safeId}/up`);
+    const data = await res.json();
+    if (data && typeof data.count === 'number') {
+      counts[id] = data.count;
+    } else {
+      counts[id] = (counts[id] || 0) + 1;
+    }
+  } catch {
+    counts[id] = (counts[id] || 0) + 1;
+  }
+  saveSharedFavCounts(counts);
+  return counts;
+}
+
+export async function refreshSharedFavCount(id: string): Promise<number> {
+  try {
+    const safeId = id.replace(/[^a-zA-Z0-9_-]/g, '_');
+    const res = await fetch(`https://api.counterapi.dev/v1/${COUNTER_NS}/fav-${safeId}`);
+    const data = await res.json();
+    if (data && typeof data.count === 'number') {
+      const counts = loadSharedFavCounts();
+      counts[id] = data.count;
+      saveSharedFavCounts(counts);
+      return data.count;
+    }
+  } catch { /* ignore */ }
+  return loadSharedFavCounts()[id] || 0;
 }
 
 export function importTemplates(file: File): Promise<Template[]> {

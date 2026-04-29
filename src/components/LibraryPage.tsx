@@ -10,6 +10,7 @@ import {
   openInOutlook, generateId,
   loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
   getAllCategories, deleteCustomCategory, isCustomCategory,
+  loadSharedFavCounts,
 } from '@/lib/utils';
 import Editor from '@/components/Editor';
 import ActionGuide from '@/components/ActionGuide';
@@ -36,6 +37,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const [mounted, setMounted] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+  const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [allCategories, setAllCategories] = useState<string[]>([]);
 
@@ -43,6 +45,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
     setTemplates(loadTemplates(STARTER_TEMPLATES));
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
+    setSharedFavCounts(loadSharedFavCounts());
     setAllCategories(getAllCategories());
     setMounted(true);
   }, []);
@@ -78,6 +81,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const handleFavoriteToggle = useCallback((id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
     setFavorites((prev) => toggleFavorite(prev, id));
+    setTimeout(() => setSharedFavCounts(loadSharedFavCounts()), 500);
   }, []);
 
   const handleSelectItem = useCallback((id: string) => {
@@ -330,7 +334,10 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
                 {viewCounts[t.id] > 0 && (
                   <span className="flex items-center gap-1">👁 {viewCounts[t.id]} {viewCounts[t.id] === 1 ? 'view' : 'views'}</span>
                 )}
-                {favorites.has(t.id) && (
+                {(sharedFavCounts[t.id] || 0) > 0 && (
+                  <span className="flex items-center gap-1 text-red-400">❤️ {sharedFavCounts[t.id]}</span>
+                )}
+                {favorites.has(t.id) && !(sharedFavCounts[t.id] > 0) && (
                   <span className="flex items-center gap-1 text-red-400">❤️ Favorited</span>
                 )}
               </div>

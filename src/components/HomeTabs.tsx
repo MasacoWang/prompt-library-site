@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory, loadSharedFavCounts } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
@@ -19,7 +19,7 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'new', label: '+ New', icon: '✨' },
 ];
 
-function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDelete, onOpen }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void; onOpen?: () => void }) {
+function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavorite, onDelete, onOpen }: { item: Template; onToast: (msg: string) => void; viewCount?: number; favCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void; onOpen?: () => void }) {
   return (
     <div className="card p-4 group card-enter cursor-pointer" onClick={onOpen}>
       <div className="mb-2">
@@ -43,7 +43,8 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDe
       {/* Stats */}
       <div className="flex items-center gap-3 text-[10px] text-text-muted mb-3">
         {(viewCount ?? 0) > 0 && <span>👁 {viewCount}</span>}
-        {isFavorite && <span className="text-red-400">❤️</span>}
+        {(favCount ?? 0) > 0 && <span className="text-red-400">❤️ {favCount}</span>}
+        {isFavorite && !(favCount && favCount > 0) && <span className="text-red-400">❤️</span>}
       </div>
       <div className="flex items-center gap-1 flex-wrap pt-2 border-t border-border" onClick={(e) => e.stopPropagation()}>
         {onToggleFavorite && (
@@ -87,6 +88,7 @@ export default function HomeTabs() {
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+  const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
   const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template', scenario: [] as string[] });
   const [categories, setCategories] = useState<string[]>([]);
@@ -100,6 +102,7 @@ export default function HomeTabs() {
   useEffect(() => {
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
+    setSharedFavCounts(loadSharedFavCounts());
     setItems(loadTemplates(STARTER_TEMPLATES));
     setCategories(getAllCategories());
   }, []);
@@ -111,6 +114,8 @@ export default function HomeTabs() {
 
   const handleToggleFavorite = (id: string) => {
     setFavorites((prev) => toggleFavorite(prev, id));
+    // Refresh shared fav counts after a short delay (API call is fire-and-forget)
+    setTimeout(() => setSharedFavCounts(loadSharedFavCounts()), 500);
   };
 
   const handleDelete= async (id: string) => {
@@ -227,7 +232,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {emailTemplates.length > 6 && (
@@ -254,7 +259,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {prompts.length > 6 && (
@@ -278,7 +283,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {scenarioItems.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {scenarioItems.length === 0 && (
@@ -308,7 +313,7 @@ export default function HomeTabs() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {phaseItems.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
             ))}
           </div>
           {phaseItems.length === 0 && (
@@ -333,7 +338,7 @@ export default function HomeTabs() {
           {favoriteItems.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
               {favoriteItems.map((t) => (
-                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={true} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={true} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
               ))}
             </div>
           ) : (
