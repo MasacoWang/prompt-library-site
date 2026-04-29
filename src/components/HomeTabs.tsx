@@ -97,23 +97,11 @@ export default function HomeTabs() {
   const [homePhaseFilter, setHomePhaseFilter] = useState('All');
   const [selectedDetail, setSelectedDetail] = useState<Template | null>(null);
 
-  // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
     setItems(loadTemplates(STARTER_TEMPLATES));
     setCategories(getAllCategories());
-    const hash = window.location.hash.replace('#', '');
-    if (hash === 'scenarios') setActiveTab('scenarios');
-    else if (hash === 'phases') setActiveTab('phases');
-
-    const onHash = () => {
-      const h = window.location.hash.replace('#', '');
-      if (h === 'scenarios') setActiveTab('scenarios');
-      else if (h === 'phases') setActiveTab('phases');
-    };
-    window.addEventListener('hashchange', onHash);
-    return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
   const showToast = (msg: string) => {
@@ -204,7 +192,6 @@ export default function HomeTabs() {
     setCategories(getAllCategories());
     setHomeCategoryFilter(newDraft.category);
     showToast('Created ✓');
-    setActiveTab(newT.kind === 'template' ? 'templates' : 'prompts');
   };
 
   return (
