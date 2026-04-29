@@ -16,7 +16,7 @@ export function substituteVariables(body: string, values: Record<string, string>
   return result;
 }
 
-const COPILOT_URL = 'https://m365.cloud.microsoft/chat/?titleId=T_7e151bfa-7eaa-0802-049f-5d3b98c95e04';
+const COPILOT_URL = 'https://m365.cloud.microsoft/chat';
 
 export async function copyToCopilot(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);

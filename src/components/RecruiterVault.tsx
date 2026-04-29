@@ -11,7 +11,7 @@ import {
 import Dashboard from './Dashboard';
 import Editor from './Editor';
 
-const COPILOT_URL = 'https://m365.cloud.microsoft/chat/?titleId=T_7e151bfa-7eaa-0802-049f-5d3b98c95e04';
+const COPILOT_URL = 'https://m365.cloud.microsoft/chat';
 
 export default function RecruiterVault() {
   const [templates, setTemplates] = useState<Template[]>([]);
