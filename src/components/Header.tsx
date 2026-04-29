@@ -1,19 +1,33 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-const NAV_ITEMS = [
-  { label: 'Home', href: '/' },
-  { label: 'Email Templates', href: '/templates' },
-  { label: 'Prompt Library', href: '/prompts' },
+const BROWSE_ITEMS = [
+  { label: '✉️ Email Templates', href: '/templates' },
+  { label: '💡 Prompt Library', href: '/prompts' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [browseOpen, setBrowseOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setBrowseOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  const isBrowseActive = ['/templates', '/prompts', '/ai-assistant'].includes(pathname);
 
   return (
     <header className="header-bar sticky top-0 z-50">
@@ -30,22 +44,50 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
-                  isActive
-                    ? 'bg-primary/10 text-primary'
-                    : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          <Link
+            href="/"
+            className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all ${
+              pathname === '/'
+                ? 'bg-primary/10 text-primary'
+                : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+            }`}
+          >
+            Home
+          </Link>
+
+          {/* Browse the Toolkit dropdown */}
+          <div ref={dropdownRef} className="relative">
+            <button
+              onClick={() => setBrowseOpen(!browseOpen)}
+              className={`px-3.5 py-1.5 rounded-lg text-[13px] font-medium transition-all inline-flex items-center gap-1 ${
+                isBrowseActive || browseOpen
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+              }`}
+            >
+              Browse the Toolkit
+              <span className={`text-[10px] transition-transform ${browseOpen ? 'rotate-180' : ''}`}>▼</span>
+            </button>
+
+            {browseOpen && (
+              <div className="absolute top-full left-0 mt-1.5 w-52 bg-white rounded-xl border border-border shadow-lg py-1.5 animate-fade-in z-50">
+                {BROWSE_ITEMS.map((item) => (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={() => setBrowseOpen(false)}
+                    className={`block px-4 py-2.5 text-[13px] font-medium transition ${
+                      pathname === item.href
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Desktop CTA */}
@@ -69,21 +111,30 @@ export default function Header() {
       {/* Mobile dropdown */}
       {menuOpen && (
         <div className="md:hidden border-t border-border bg-white/95 backdrop-blur-lg px-4 pb-4 pt-2 space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={() => setMenuOpen(false)}
-                className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition ${
-                  isActive ? 'bg-primary/10 text-primary' : 'text-text-secondary'
-                }`}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
+          <Link
+            href="/"
+            onClick={() => setMenuOpen(false)}
+            className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition ${
+              pathname === '/' ? 'bg-primary/10 text-primary' : 'text-text-secondary'
+            }`}
+          >
+            Home
+          </Link>
+          <div className="px-3 pt-3 pb-1">
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">Browse the Toolkit</p>
+          </div>
+          {BROWSE_ITEMS.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={() => setMenuOpen(false)}
+              className={`block px-3 py-2.5 rounded-lg text-sm font-medium transition pl-5 ${
+                pathname === item.href ? 'bg-primary/10 text-primary' : 'text-text-secondary'
+              }`}
+            >
+              {item.label}
+            </Link>
+          ))}
           <Link
             href="/ai-assistant"
             onClick={() => setMenuOpen(false)}
