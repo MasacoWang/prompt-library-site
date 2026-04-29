@@ -6,6 +6,8 @@ export interface Template {
   body: string;
   casualBody?: string;
   pinned: boolean;
+  scenario?: string[];
+  phase?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -20,4 +22,19 @@ export const CATEGORIES = [
   'Screening',
   'Interview',
   'Offer',
+] as const;
+
+export const SCENARIOS = [
+  { key: 'outreach', label: 'Candidate Outreach', icon: '📨', desc: 'Cold outreach, follow-ups, and referral messages' },
+  { key: 'interview-prep', label: 'Interview Preparation', icon: '🎯', desc: 'Scheduling, prep notes, and question banks' },
+  { key: 'candidate-eval', label: 'Candidate Evaluation', icon: '📊', desc: 'Profile summaries, JD matching, and fit scoring' },
+  { key: 'hm-communication', label: 'Hiring Manager Communication', icon: '📋', desc: 'Status reports, updates, and pipeline summaries' },
+] as const;
+
+export const PHASES = [
+  { key: 'strategy', label: 'Strategy', icon: '🧭' },
+  { key: 'sourcing', label: 'Sourcing', icon: '🔍' },
+  { key: 'screening', label: 'Screening', icon: '📋' },
+  { key: 'interview', label: 'Interview', icon: '🎤' },
+  { key: 'offer', label: 'Offer', icon: '🤝' },
 ] as const;

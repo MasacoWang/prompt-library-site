@@ -8,9 +8,15 @@ function t(
   kind: 'prompt' | 'template',
   body: string,
   casualBody?: string,
-  pinned = false
+  pinned = false,
+  scenario: string[] = [],
 ): Template {
-  return { id: generateId() + '_' + Math.random().toString(36).slice(2, 4), title, category, kind, body, casualBody, pinned, createdAt: now, updatedAt: now };
+  const phase = [category.toLowerCase()];
+  return {
+    id: generateId() + '_' + Math.random().toString(36).slice(2, 4),
+    title, category, kind, body, casualBody, pinned, scenario, phase,
+    createdAt: now, updatedAt: now,
+  };
 }
 
 export const STARTER_TEMPLATES: Template[] = [
@@ -30,7 +36,7 @@ Requirements:
 `Hey! Write a quick, friendly message to reach out to someone about:
 - Role: [Job Title]
 - Their skill: [Key Skill]
-Keep it short (4–6 sentences), warm, and invite them for a casual 20-min chat.`, true),
+Keep it short (4–6 sentences), warm, and invite them for a casual 20-min chat.`, true, ['outreach']),
 
   t('Referral Outreach', 'Sourcing', 'prompt',
 `Write a warm outreach message to a referral candidate.
@@ -40,7 +46,8 @@ Include:
 - Short role intro
 - Invite for brief intro call
 
-Tone: professional and appreciative.`),
+Tone: professional and appreciative.`,
+undefined, false, ['outreach']),
 
   t('Passive Candidate Re-engagement', 'Sourcing', 'prompt',
 `Write a short follow-up message to a candidate who did not proceed previously.
@@ -50,7 +57,8 @@ Goal:
 - Mention new opportunity
 - Invite for quick conversation
 
-Tone: friendly and low pressure.`),
+Tone: friendly and low pressure.`,
+undefined, false, ['outreach']),
 
   t('Follow-up Outreach', 'Sourcing', 'prompt',
 `Write a recruiter follow-up email to a candidate who has not replied.
@@ -66,7 +74,8 @@ Candidate Name: [Candidate Name]
 Role: [Role]
 
 Output:
-Follow-up email.`),
+Follow-up email.`,
+undefined, false, ['outreach']),
 
   t('Follow-up to Candidate', 'Sourcing', 'template',
 `Subject: Quick Follow-up
@@ -88,7 +97,7 @@ Just circling back on the [Role] role at [Company] — thought it could be a gre
 Got 20 min for a quick chat? No pressure at all!
 
 Cheers,
-[Your Name]`),
+[Your Name]`, false, ['outreach']),
 
   // ── SCREENING ─────────────────────────────────
   t('Candidate Profile Summary', 'Screening', 'prompt',
@@ -103,7 +112,8 @@ Please summarize the following candidate profile:
 - Any risks or concerns
 
 Candidate:
-[Paste Profile]`),
+[Paste Profile]`,
+undefined, false, ['candidate-eval']),
 
   t('Candidate vs JD Match', 'Screening', 'prompt',
 `Act as a recruiter comparing a candidate with the job description.
@@ -119,7 +129,8 @@ Candidate:
 [Candidate Profile]
 
 Job Description:
-[Job Description]`),
+[Job Description]`,
+undefined, false, ['candidate-eval']),
 
   t('Phone Screen Prep', 'Screening', 'prompt',
 `Generate:
@@ -132,7 +143,8 @@ Candidate:
 [Candidate Profile]
 
 Job:
-[Job Description]`),
+[Job Description]`,
+undefined, false, ['interview-prep', 'candidate-eval']),
 
   // ── INTERVIEW ─────────────────────────────────
   t('Interview Notes Summary', 'Interview', 'prompt',
@@ -145,7 +157,8 @@ Output:
 - Overall recommendation (lean hire / neutral / lean no hire)
 
 Notes:
-[Paste Notes]`),
+[Paste Notes]`,
+undefined, false, ['interview-prep', 'candidate-eval']),
 
   t('Candidate Debrief', 'Interview', 'prompt',
 `Summarize panel discussion.
@@ -157,7 +170,8 @@ Include:
 - Suggested next step
 
 Discussion:
-[Paste Notes]`),
+[Paste Notes]`,
+undefined, false, ['interview-prep', 'candidate-eval']),
 
   t('Candidate Finished Interviews', 'Interview', 'prompt',
 `You are a professional recruiter writing candidate communication.
@@ -180,7 +194,8 @@ Company: [Company]
 Update Timeline: [Update Timeline]
 
 Output:
-Professional candidate email.`),
+Professional candidate email.`,
+undefined, false, ['interview-prep']),
 
   t('Interview Scheduling', 'Interview', 'prompt',
 `Write a recruiter scheduling email.
@@ -205,7 +220,7 @@ Interview scheduling email.`,
 - Candidate: [Candidate Name]
 - Interviewer: [Interviewer Name]
 - Times: [Time Options]
-Make it feel like a quick note, not a formal letter.`, true),
+Make it feel like a quick note, not a formal letter.`, true, ['interview-prep']),
 
   t('Candidate Completed Interviews (Keep Warm)', 'Interview', 'template',
 `Subject: Update on Your Interview Process
@@ -219,7 +234,8 @@ At this stage, the team is still completing interviews with a few other candidat
 We truly appreciate your patience and your continued interest in the opportunity.
 
 Best regards,
-[Your Name]`),
+[Your Name]`,
+undefined, false, ['interview-prep']),
 
   t('Interview Scheduling', 'Interview', 'template',
 `Subject: Interview Availability – [Role]
@@ -239,9 +255,10 @@ We would like to schedule time for you to meet with [Interviewer Name]. Please l
 If these options don't work with your schedule, feel free to share a time that would be more convenient.
 
 Best regards,
-[Your Name]`),
+[Your Name]`,
+undefined, false, ['interview-prep']),
 
-  // ── STRATEGY (formerly Communication / General) ──
+  // ── STRATEGY ──────────────────────────────────
   t('Hiring Manager Update', 'Strategy', 'prompt',
 `Draft a concise hiring update.
 
@@ -252,7 +269,8 @@ Include:
 - Risks
 - Next recruiting actions
 
-Format: bullet points.`),
+Format: bullet points.`,
+undefined, false, ['hm-communication']),
 
   t('Candidate Requests Feedback', 'Interview', 'prompt',
 `You are a recruiter replying to a candidate who asked for interview feedback.
@@ -269,7 +287,8 @@ Candidate Name: [Candidate Name]
 Role: [Role]
 
 Output:
-Professional response email.`),
+Professional response email.`,
+undefined, false, ['interview-prep']),
 
   t('Candidate Feedback After Rejection', 'Interview', 'prompt',
 `Write a professional, candidate-facing interview feedback email.
@@ -289,7 +308,8 @@ Feedback guidelines:
 Output:
 A ready-to-send email to the candidate.
 
-[Paste Interviewer Feedback]`),
+[Paste Interviewer Feedback]`,
+undefined, false, ['interview-prep']),
 
   t('Reply to Candidate Requesting Feedback', 'Interview', 'template',
 `Subject: Re: Interview Feedback
@@ -303,7 +323,8 @@ At the moment, the hiring team is still in the process of completing interviews 
 Once the team has finished the process and aligns on next steps, I'll be sure to provide an update.
 
 Best regards,
-[Your Name]`),
+[Your Name]`,
+undefined, false, ['interview-prep']),
 
   t('Rejection After Interview', 'Interview', 'template',
 `Subject: Update on Your Application
@@ -331,9 +352,9 @@ After a lot of thought, we've decided to go in a different direction for this pa
 We'd love to stay in touch for future opportunities. Wishing you all the best!
 
 Cheers,
-[Recruiter Name]`),
+[Recruiter Name]`, false, ['interview-prep']),
 
-  // ── STRATEGY ──────────────────────────────────
+  // ── STRATEGY (cont.) ──────────────────────────
   t('Talent Market Mapping', 'Strategy', 'prompt',
 `Act as a talent intelligence analyst.
 
@@ -350,7 +371,7 @@ Identify:
 - What titles these people usually have
 - Must-have skills
 - Where they're concentrated in APAC/Taiwan
-Keep it conversational and actionable.`, true),
+Keep it conversational and actionable.`, true, ['hm-communication']),
 
   t('Req Strategy Meeting Preparation', 'Strategy', 'prompt',
 `You are an experienced recruiting strategist.
@@ -376,7 +397,8 @@ Provide 10–15 LinkedIn search keywords or job titles that would surface releva
 - What adjacent backgrounds or industries could also be strong fits?
 - One key sourcing tip to reach hidden or competitive talent.
 
-Keep insights recruiter‑practical and specific to sourcing strategy.`),
+Keep insights recruiter‑practical and specific to sourcing strategy.`,
+undefined, false, ['hm-communication']),
 
   // ── OFFER ─────────────────────────────────────
   t('Salary Expectation Misalignment', 'Offer', 'prompt',
@@ -439,12 +461,14 @@ Best regards,
 
 Keep it concise and actionable.
 
-[Paste Meeting Notes]`),
+[Paste Meeting Notes]`,
+undefined, false, ['hm-communication']),
 
   t('Email Drafter', 'Strategy', 'prompt',
 `Draft a professional email for the following situation: [Describe Context].
 
 Tone: [Tone Style]
 Include: clear subject line, concise body, specific call-to-action.
-Keep under 200 words.`),
+Keep under 200 words.`,
+undefined, false, ['outreach', 'hm-communication']),
 ];
