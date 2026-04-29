@@ -61,8 +61,18 @@ export function saveCustomCategory(name: string): string[] {
   return updated;
 }
 
+export function deleteCustomCategory(name: string): string[] {
+  const custom = loadCustomCategories().filter((c) => c.toLowerCase() !== name.toLowerCase());
+  localStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(custom));
+  return custom;
+}
+
 export function getAllCategories(): string[] {
   return [...CATEGORIES, ...loadCustomCategories()];
+}
+
+export function isCustomCategory(name: string): boolean {
+  return loadCustomCategories().some((c) => c.toLowerCase() === name.toLowerCase());
 }
 
 export function loadTemplates(starters: Template[]): Template[] {

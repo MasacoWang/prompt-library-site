@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
@@ -172,6 +172,24 @@ export default function HomeTabs() {
     }
   };
 
+  const handleDeleteCategory = async (catName: string) => {
+    const result = await Swal.fire({
+      title: 'Delete category?',
+      text: `Remove "${catName}"? Templates in this category won't be deleted.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    });
+    if (result.isConfirmed) {
+      deleteCustomCategory(catName);
+      setCategories(getAllCategories());
+      if (homeCategoryFilter === catName) setHomeCategoryFilter('All');
+      Swal.fire('Deleted!', `Category "${catName}" has been removed.`, 'success');
+    }
+  };
+
   const handleOpen = (id: string) => {
     const found = items.find((t) => t.id === id);
     if (found) {
@@ -234,7 +252,10 @@ export default function HomeTabs() {
           <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
             <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
             {categories.map((c) => (
-              <button key={c} onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+              <span key={c} className="inline-flex items-center gap-0.5">
+                <button onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+                {isCustomCategory(c) && <button onClick={() => handleDeleteCategory(c)} className="text-red-400 hover:text-red-600 text-xs ml-[-4px]" title={`Delete ${c}`}>✕</button>}
+              </span>
             ))}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
@@ -258,7 +279,10 @@ export default function HomeTabs() {
           <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
             <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
             {categories.map((c) => (
-              <button key={c} onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+              <span key={c} className="inline-flex items-center gap-0.5">
+                <button onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+                {isCustomCategory(c) && <button onClick={() => handleDeleteCategory(c)} className="text-red-400 hover:text-red-600 text-xs ml-[-4px]" title={`Delete ${c}`}>✕</button>}
+              </span>
             ))}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">

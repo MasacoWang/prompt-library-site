@@ -8,7 +8,7 @@ import {
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
   openInOutlook, generateId,
   loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
-  getAllCategories,
+  getAllCategories, deleteCustomCategory, isCustomCategory,
 } from '@/lib/utils';
 import Editor from '@/components/Editor';
 import ActionGuide from '@/components/ActionGuide';
@@ -221,13 +221,24 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
             All
           </button>
           {allCategories.map((c) => (
-            <button
-              key={c}
-              onClick={() => setCategoryFilter(c)}
-              className={`cat-pill whitespace-nowrap ${categoryFilter === c ? 'cat-pill-active' : ''}`}
-            >
-              {c}
-            </button>
+            <span key={c} className="inline-flex items-center gap-0.5">
+              <button
+                onClick={() => setCategoryFilter(c)}
+                className={`cat-pill whitespace-nowrap ${categoryFilter === c ? 'cat-pill-active' : ''}`}
+              >
+                {c}
+              </button>
+              {isCustomCategory(c) && (
+                <button
+                  onClick={async () => {
+                    const result = await Swal.fire({ title: 'Delete category?', text: `Remove "${c}"? Templates won't be deleted.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes, delete it!' });
+                    if (result.isConfirmed) { deleteCustomCategory(c); setAllCategories(getAllCategories()); if (categoryFilter === c) setCategoryFilter('All'); Swal.fire('Deleted!', `Category "${c}" removed.`, 'success'); }
+                  }}
+                  className="text-red-400 hover:text-red-600 text-xs ml-[-4px]"
+                  title={`Delete ${c}`}
+                >✕</button>
+              )}
+            </span>
           ))}
         </div>
 
