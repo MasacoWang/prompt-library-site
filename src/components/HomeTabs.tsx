@@ -120,6 +120,7 @@ export default function HomeTabs() {
   const [categories, setCategories] = useState<string[]>([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
+  const [homeCategoryFilter, setHomeCategoryFilter] = useState('All');
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
@@ -170,8 +171,8 @@ export default function HomeTabs() {
     }
   };
 
-  const emailTemplates = items.filter((t) => t.kind === 'template');
-  const prompts = items.filter((t) => t.kind === 'prompt');
+  const emailTemplates = items.filter((t) => t.kind === 'template' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
+  const prompts = items.filter((t) => t.kind === 'prompt' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
   const favoriteItems = items.filter((t) => favorites.has(t.id));
   const getByScenario = (key: string) => items.filter((t) => t.scenario?.includes(key));
   const getByPhase = (key: string) => items.filter((t) => t.phase?.includes(key));
@@ -190,6 +191,8 @@ export default function HomeTabs() {
       return updated;
     });
     setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt' });
+    setCategories(getAllCategories());
+    setHomeCategoryFilter(newDraft.category);
     showToast('Created ✓');
     setActiveTab(newT.kind === 'template' ? 'templates' : 'prompts');
   };
@@ -216,6 +219,12 @@ export default function HomeTabs() {
       {/* ── Email Templates tab ── */}
       {activeTab === 'templates' && (
         <div className="animate-fade-in">
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+            {categories.map((c) => (
+              <button key={c} onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+            ))}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
               <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
@@ -234,6 +243,12 @@ export default function HomeTabs() {
       {/* ── Prompt Library tab ── */}
       {activeTab === 'prompts' && (
         <div className="animate-fade-in">
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+            {categories.map((c) => (
+              <button key={c} onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
+            ))}
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
               <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
@@ -417,9 +432,11 @@ export default function HomeTabs() {
                         setCategories(getAllCategories());
                         setNewDraft((d) => ({ ...d, category: newCategoryName.trim() }));
                         setNewCategoryName('');
+                        setShowNewCategory(false);
+                        showToast('Category added ✓');
+                      } else {
+                        setShowNewCategory(false);
                       }
-                      setShowNewCategory(false);
-                      showToast('Category added ✓');
                     }}
                     className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition"
                   >
