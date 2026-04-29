@@ -13,13 +13,12 @@ interface DashboardProps {
   onCreate: () => void;
   onEdit: (id: string) => void;
   onDelete: (id: string) => void;
-  onTogglePin: (id: string) => void;
   onExport: () => void;
 }
 
 export default function Dashboard({
   templates, search, onSearchChange, categoryFilter, onCategoryChange,
-  onSelect, onCreate, onEdit, onDelete, onTogglePin, onExport,
+  onSelect, onCreate, onEdit, onDelete, onExport,
 }: DashboardProps) {
   return (
     <div className="h-full overflow-auto px-2">
@@ -92,9 +91,6 @@ export default function Dashboard({
                 onClick={() => onSelect(t.id)}
                 className="glass rounded-2xl p-5 cursor-pointer hover:bg-white/12 hover:shadow-lg hover:shadow-teal-glow/10 transition-all duration-300 group relative"
               >
-                {t.pinned && (
-                  <span className="absolute top-3 right-3 text-xs opacity-70">📌</span>
-                )}
 
                 <div className="mb-3">
                   <h3 className="font-semibold text-white truncate text-[15px] mb-2">{t.title}</h3>
@@ -118,12 +114,6 @@ export default function Dashboard({
 
                 {/* Hover actions */}
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity pt-3 border-t border-white/8">
-                  <button
-                    onClick={(e) => { e.stopPropagation(); onTogglePin(t.id); }}
-                    className="p-1.5 hover:bg-white/10 rounded-lg text-xs text-white/50 hover:text-white transition"
-                  >
-                    {t.pinned ? '📌 Unpin' : '📍 Pin'}
-                  </button>
                   <button
                     onClick={(e) => { e.stopPropagation(); onEdit(t.id); }}
                     className="p-1.5 hover:bg-white/10 rounded-lg text-xs text-white/50 hover:text-white transition"

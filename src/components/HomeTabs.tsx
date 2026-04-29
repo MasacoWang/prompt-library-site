@@ -17,10 +17,9 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
 ];
 
-function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onTogglePin, onDelete }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onTogglePin?: () => void; onDelete?: () => void }) {
+function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDelete }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void }) {
   return (
     <div className="card p-4 group card-enter">
-      {item.pinned && <span className="absolute top-3 right-3 text-xs">📌</span>}
       <div className="mb-2">
         <h4 className="font-semibold text-sm text-text-primary truncate">{item.title}</h4>
         <div className="flex items-center gap-2 mt-1.5">
@@ -71,11 +70,6 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onTo
         >
           ✉️ Outlook
         </button>
-        {onTogglePin && (
-          <button onClick={onTogglePin} className="btn-ghost px-2 py-1 text-xs">
-            {item.pinned ? '📌 Unpin' : '📍 Pin'}
-          </button>
-        )}
         {onDelete && (
           <button onClick={onDelete} className="btn-ghost px-2 py-1 text-xs text-red-500 hover:text-red-600 hover:bg-red-50">
             🗑️ Delete
@@ -86,7 +80,7 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onTo
   );
 }
 
-function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onTogglePin, onDelete }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onTogglePin: (id: string) => void; onDelete: (id: string) => void }) {
+function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onDelete }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onDelete: (id: string) => void }) {
   const templates = items.filter((i) => i.kind === 'template');
   const prompts = items.filter((i) => i.kind === 'prompt');
 
@@ -95,7 +89,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">✉️ Email Templates</h5>
         {templates.length > 0 ? (
-          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onTogglePin={() => onTogglePin(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
+          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No templates for this {emptyLabel}</p>
         )}
@@ -103,7 +97,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">💡 Prompts</h5>
         {prompts.length > 0 ? (
-          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onTogglePin={() => onTogglePin(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
+          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No prompts for this {emptyLabel}</p>
         )}
@@ -148,16 +142,7 @@ export default function HomeTabs() {
     setFavorites((prev) => toggleFavorite(prev, id));
   };
 
-  const handleTogglePin = (id: string) => {
-    setItems((prev) => {
-      const updated = prev.map((t) => t.id === id ? { ...t, pinned: !t.pinned } : t);
-      saveTemplates(updated);
-      return updated;
-    });
-    showToast('Pin toggled ✓');
-  };
-
-  const handleDelete = async (id: string) => {
+  const handleDelete= async (id: string) => {
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -207,7 +192,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onTogglePin={() => handleTogglePin(t.id)} onDelete={() => handleDelete(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
             ))}
           </div>
           {emailTemplates.length > 6 && (
@@ -225,7 +210,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onTogglePin={() => handleTogglePin(t.id)} onDelete={() => handleDelete(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
             ))}
           </div>
           {prompts.length > 6 && (
@@ -269,7 +254,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onTogglePin={handleTogglePin} onDelete={handleDelete} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} />
                 )}
               </div>
             );
@@ -307,7 +292,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onTogglePin={handleTogglePin} onDelete={handleDelete} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} />
                 )}
               </div>
             );

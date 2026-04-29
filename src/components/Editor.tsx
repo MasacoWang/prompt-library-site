@@ -25,7 +25,6 @@ interface EditorProps {
   onCopyPlain: () => void;
   onOpenOutlook: () => void;
   onDelete: () => void;
-  onTogglePin: () => void;
   onToggleFavorite?: () => void;
 }
 
@@ -33,7 +32,7 @@ export default function Editor({
   template, editorMode, editDraft, tone, variables, variableValues, previewText,
   isFavorite, viewCount,
   onBack, onEditMode, onSaveEdit, onCancelEdit, onDraftChange, onToneChange,
-  onVariableChange, onCopyToCopilot, onCopyPlain, onOpenOutlook, onDelete, onTogglePin,
+  onVariableChange, onCopyToCopilot, onCopyPlain, onOpenOutlook, onDelete,
   onToggleFavorite,
 }: EditorProps) {
   const isEditing = editorMode === 'edit';
@@ -98,9 +97,6 @@ export default function Editor({
                 Casual
               </button>
             </div>
-            <button onClick={onTogglePin} className="btn-ghost p-1.5 text-sm">
-              {template.pinned ? '📌' : '📍'}
-            </button>
             {onToggleFavorite && (
               <button onClick={onToggleFavorite} className={`btn-ghost p-1.5 text-sm ${isFavorite ? 'text-red-500' : ''}`} title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
                 {isFavorite ? '❤️' : '🤍'}

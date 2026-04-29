@@ -168,9 +168,6 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
                 Swal.fire('Deleted!', 'Your template has been removed.', 'success');
               }
             }}
-            onTogglePin={() => {
-              if (selectedTemplate) setTemplates((prev) => prev.map((t) => t.id === selectedTemplate.id ? { ...t, pinned: !t.pinned } : t));
-            }}
           />
         </div>
         {toast && (
@@ -264,7 +261,6 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
               className="card p-5 cursor-pointer group card-enter"
               style={{ animationDelay: `${i * 0.03}s` }}
             >
-              {t.pinned && <span className="absolute top-3 right-3 text-xs">📌</span>}
               <div className="mb-3">
                 <h3 className="font-semibold text-text-primary text-[15px] mb-2 group-hover:text-primary transition truncate">
                   {t.title}
@@ -299,12 +295,6 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
                   title={favorites.has(t.id) ? 'Remove from favorites' : 'Add to favorites'}
                 >
                   {favorites.has(t.id) ? '❤️ Unfavorite' : '🤍 Favorite'}
-                </button>
-                <button
-                  onClick={(e) => { e.stopPropagation(); setTemplates((prev) => prev.map((x) => x.id === t.id ? { ...x, pinned: !x.pinned } : x)); }}
-                  className="btn-ghost p-1.5 text-xs"
-                >
-                  {t.pinned ? '📌 Unpin' : '📍 Pin'}
                 </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setSelectedId(t.id); setEditDraft({ ...t }); setEditorMode('edit'); }}

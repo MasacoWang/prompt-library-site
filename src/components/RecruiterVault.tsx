@@ -124,16 +124,12 @@ export default function RecruiterVault() {
     if (selectedId === id) { setSelectedId(null); setView('dashboard'); }
     showToast('Deleted');
   };
-  const handleTogglePin = (id: string) => {
-    setTemplates((prev) => prev.map((t) => (t.id === id ? { ...t, pinned: !t.pinned } : t)));
-  };
 
   const filteredTemplates= templates.filter((t) => {
     const q = search.toLowerCase();
     const matchS = !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q) || t.category.toLowerCase().includes(q);
     return matchS && (categoryFilter === 'All' || t.category === categoryFilter);
   });
-  const pinnedTemplates = templates.filter((t) => t.pinned);
 
   if (!mounted) return null;
 
@@ -147,18 +143,6 @@ export default function RecruiterVault() {
               🔐
             </div>
             <h1 className="text-lg font-bold tracking-tight text-white">Recruiter Vault</h1>
-          </div>
-          <div id="quick-access-pins" className="flex items-center gap-2 overflow-x-auto">
-            {pinnedTemplates.slice(0, 5).map((t) => (
-              <button
-                key={t.id}
-                onClick={() => handleSelect(t.id)}
-                className="shrink-0 px-3 py-1 glass rounded-full text-xs text-teal font-medium hover:bg-white/15 transition truncate max-w-[150px]"
-                title={t.title}
-              >
-                📌 {t.title}
-              </button>
-            ))}
           </div>
           <button
             onClick={openCopilot}
@@ -183,7 +167,6 @@ export default function RecruiterVault() {
               onCreate={handleCreateNew}
               onEdit={handleEditTemplate}
               onDelete={handleDelete}
-              onTogglePin={handleTogglePin}
               onExport={() => exportTemplates(templates)}
             />
           ) : (
@@ -207,7 +190,6 @@ export default function RecruiterVault() {
                 onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
                 onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
                 onDelete={() => { if (selectedTemplate) handleDelete(selectedTemplate.id); }}
-                onTogglePin={() => { if (selectedTemplate) handleTogglePin(selectedTemplate.id); }}
               />
             </div>
           )}
