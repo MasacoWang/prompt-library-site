@@ -1,6 +1,38 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+
+function SiteVisitorCount() {
+  const [count, setCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    const KEY = 'ai-recruiter-toolkit-site';
+    const NAMESPACE = 'prompt-library-site';
+    // Only count once per session
+    const counted = sessionStorage.getItem('visitor-counted');
+    const url = counted
+      ? `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}`
+      : `https://api.counterapi.dev/v1/${NAMESPACE}/${KEY}/up`;
+
+    fetch(url)
+      .then((r) => r.json())
+      .then((data) => {
+        if (data && typeof data.count === 'number') {
+          setCount(data.count);
+          if (!counted) sessionStorage.setItem('visitor-counted', '1');
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  if (count === null) return null;
+  return (
+    <span className="inline-flex items-center gap-1 text-[11px] text-text-muted">
+      👀 {count.toLocaleString()} {count === 1 ? 'visit' : 'visits'}
+    </span>
+  );
+}
 
 export default function Footer() {
   return (
@@ -18,16 +50,19 @@ export default function Footer() {
             <Link href="/" className="text-xs text-text-secondary hover:text-text-primary transition">Home</Link>
             <Link href="/templates" className="text-xs text-text-secondary hover:text-text-primary transition">Email Templates</Link>
             <Link href="/prompts" className="text-xs text-text-secondary hover:text-text-primary transition">Prompt Library</Link>
-            <Link href="/#scenarios" className="text-xs text-text-secondary hover:text-text-primary transition">Scenarios</Link>
-            <Link href="/#phases" className="text-xs text-text-secondary hover:text-text-primary transition">Recruiting Phases</Link>
+            <Link href="/scenarios" className="text-xs text-text-secondary hover:text-text-primary transition">Scenarios</Link>
+            <Link href="/phases" className="text-xs text-text-secondary hover:text-text-primary transition">Recruiting Phases</Link>
             <Link href="/ai-assistant" className="text-xs text-text-secondary hover:text-text-primary transition">AI Assistant</Link>
           </div>
         </div>
         <div className="border-t border-border pt-4 space-y-2">
-          <p className="text-[11px] text-text-muted leading-relaxed">
-            ⚠️ Templates are for general guidance only. Please tailor wording to your company policy and local regulations.
-            Do not paste sensitive personal data or candidate PII on this public site.
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-text-muted leading-relaxed">
+              ⚠️ Templates are for general guidance only. Please tailor wording to your company policy and local regulations.
+              Do not paste sensitive personal data or candidate PII on this public site.
+            </p>
+            <SiteVisitorCount />
+          </div>
           <p className="text-[11px] text-text-muted">
             Copyright © 2026 Clarice Wang. All rights reserved.
           </p>
