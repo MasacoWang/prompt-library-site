@@ -88,7 +88,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
   const handleSaveEdit = useCallback(() => {
     if (!editDraft.title || !editDraft.body) { showToast('Title and body required'); return; }
     if (editDraft.id) {
-      setTemplates((prev) => prev.map((t) => t.id === editDraft.id ? { ...t, ...editDraft, updatedAt: new Date().toISOString() } as Template : t));
+      setTemplates((prev) => prev.map((t) => t.id === editDraft.id ? { ...t, ...editDraft, phase: [(editDraft.category || t.category).toLowerCase()], updatedAt: new Date().toISOString() } as Template : t));
       setSelectedId(editDraft.id);
     } else {
       const now = new Date().toISOString();
@@ -98,6 +98,8 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
         kind: (editDraft.kind as 'prompt' | 'template') || (kindFilter || 'prompt'),
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
+        phase: [(editDraft.category || 'Strategy').toLowerCase()],
+        scenario: editDraft.scenario || [],
       };
       setTemplates((prev) => [...prev, newT]);
       setSelectedId(newId);

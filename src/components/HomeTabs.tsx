@@ -116,7 +116,7 @@ export default function HomeTabs() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
-  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template' });
+  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template', scenario: [] as string[] });
   const [categories, setCategories] = useState<string[]>([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -194,13 +194,15 @@ export default function HomeTabs() {
       id: generateId(), title: newDraft.title, category: newDraft.category,
       kind: newDraft.kind, body: newDraft.body, casualBody: '',
       pinned: false, createdAt: now, updatedAt: now,
+      phase: [newDraft.category.toLowerCase()],
+      scenario: newDraft.scenario || [],
     };
     setItems((prev) => {
       const updated = [...prev, newT];
       saveTemplates(updated);
       return updated;
     });
-    setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt' });
+    setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt', scenario: [] });
     setCategories(getAllCategories());
     setHomeCategoryFilter(newDraft.category);
     showToast('Created ✓');
@@ -462,6 +464,27 @@ export default function HomeTabs() {
               )}
             </div>
             <div>
+              <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Scenarios <span className="normal-case font-normal">(optional)</span></label>
+              <div className="flex flex-wrap gap-2">
+                {SCENARIOS.map((sc) => (
+                  <button
+                    key={sc.key}
+                    onClick={() => setNewDraft((d) => ({
+                      ...d,
+                      scenario: d.scenario.includes(sc.key) ? d.scenario.filter((s) => s !== sc.key) : [...d.scenario, sc.key],
+                    }))}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all ${
+                      newDraft.scenario.includes(sc.key)
+                        ? 'bg-primary/10 text-primary border-2 border-primary/30'
+                        : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'
+                    }`}
+                  >
+                    {sc.icon} {sc.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
               <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Body</label>
               <textarea
                 value={newDraft.body}
@@ -479,7 +502,7 @@ export default function HomeTabs() {
                 ✨ Create
               </button>
               <button
-                onClick={() => setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt' })}
+                onClick={() => setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt', scenario: [] })}
                 className="btn-ghost px-4 py-2.5 text-sm"
               >
                 Clear
