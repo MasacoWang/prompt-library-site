@@ -1,13 +1,5 @@
-import Link from 'next/link';
 import ActionGuide from '@/components/ActionGuide';
 import HomeTabs from '@/components/HomeTabs';
-
-const HERO_BULLETS= [
-  'Cold outreach templates',
-  'Interview scheduling',
-  'Candidate evaluation prompts',
-  'Hiring manager updates',
-];
 
 const TRUST_ITEMS = [
   { icon: '⚡', text: 'Save time with consistent, ready-to-use messaging' },
@@ -31,24 +23,8 @@ export default function Home() {
             Simple tools to speed up sourcing, outreach, and hiring workflows.
           </p>
 
-          {/* Bullets */}
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 mb-8 sm:mb-10 animate-fade-in" style={{ animationDelay: '0.15s' }}>
-            {HERO_BULLETS.map((b) => (
-              <span key={b} className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-white border border-border text-xs font-medium text-text-secondary shadow-sm">
-                <span className="text-primary">✓</span> {b}
-              </span>
-            ))}
-          </div>
-
-          {/* CTA */}
-          <div className="animate-fade-in" style={{ animationDelay: '0.2s' }}>
-            <a href="#template-library" className="btn-primary px-8 py-3 text-sm inline-flex items-center gap-2">
-              Browse Templates &amp; Prompts ↓
-            </a>
-          </div>
-
           {/* Usage guide strip */}
-          <div className="mt-6 animate-fade-in" style={{ animationDelay: '0.25s' }}>
+          <div className="animate-fade-in" style={{ animationDelay: '0.15s' }}>
             <ActionGuide />
           </div>
         </div>
