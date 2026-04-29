@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Template } from '@/lib/types';
-import { SCENARIOS, PHASES, CATEGORIES } from '@/lib/types';
+import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
@@ -117,12 +117,16 @@ export default function HomeTabs() {
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
   const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template' });
+  const [categories, setCategories] = useState<string[]>([]);
+  const [showNewCategory, setShowNewCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
     setItems(loadTemplates(STARTER_TEMPLATES));
+    setCategories(getAllCategories());
     const hash = window.location.hash.replace('#', '');
     if (hash === 'scenarios') setActiveTab('scenarios');
     else if (hash === 'phases') setActiveTab('phases');
@@ -372,13 +376,63 @@ export default function HomeTabs() {
             </div>
             <div>
               <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Category</label>
-              <select
-                value={newDraft.category}
-                onChange={(e) => setNewDraft((d) => ({ ...d, category: e.target.value }))}
-                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
-              >
-                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
-              </select>
+              {!showNewCategory ? (
+                <div className="flex gap-2">
+                  <select
+                    value={newDraft.category}
+                    onChange={(e) => {
+                      if (e.target.value === '__new__') { setShowNewCategory(true); return; }
+                      setNewDraft((d) => ({ ...d, category: e.target.value }));
+                    }}
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                  >
+                    {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                    <option value="__new__">＋ Add new category…</option>
+                  </select>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    value={newCategoryName}
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    placeholder="New category name"
+                    autoFocus
+                    className="flex-1 px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && newCategoryName.trim()) {
+                        const updated = saveCustomCategory(newCategoryName.trim());
+                        setCategories(getAllCategories());
+                        setNewDraft((d) => ({ ...d, category: newCategoryName.trim() }));
+                        setNewCategoryName('');
+                        setShowNewCategory(false);
+                        if (updated.length > 0) showToast('Category added ✓');
+                      }
+                    }}
+                  />
+                  <button
+                    onClick={() => {
+                      if (newCategoryName.trim()) {
+                        saveCustomCategory(newCategoryName.trim());
+                        setCategories(getAllCategories());
+                        setNewDraft((d) => ({ ...d, category: newCategoryName.trim() }));
+                        setNewCategoryName('');
+                      }
+                      setShowNewCategory(false);
+                      showToast('Category added ✓');
+                    }}
+                    className="px-4 py-2.5 rounded-xl bg-primary text-white text-sm font-medium hover:bg-primary/90 transition"
+                  >
+                    Add
+                  </button>
+                  <button
+                    onClick={() => { setShowNewCategory(false); setNewCategoryName(''); }}
+                    className="btn-ghost px-3 py-2.5 text-sm"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              )}
             </div>
             <div>
               <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Body</label>

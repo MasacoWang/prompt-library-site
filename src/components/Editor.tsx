@@ -1,8 +1,7 @@
 'use client';
 
 import type { Template, Tone, EditorMode } from '@/lib/types';
-import { CATEGORIES } from '@/lib/types';
-import { extractVariables } from '@/lib/utils';
+import { extractVariables, getAllCategories } from '@/lib/utils';
 
 interface EditorProps {
   template: Template | null;
@@ -150,7 +149,7 @@ export default function Editor({
                     onChange={(e) => onDraftChange({ ...editDraft, category: e.target.value })}
                     className={inputClass}
                   >
-                    {CATEGORIES.map((c) => (
+                    {getAllCategories().map((c) => (
                       <option key={c} value={c}>{c}</option>
                     ))}
                   </select>

@@ -1,7 +1,7 @@
 'use client';
 
 import type { Template } from '@/lib/types';
-import { CATEGORIES } from '@/lib/types';
+import { getAllCategories } from '@/lib/utils';
 
 interface DashboardProps {
   templates: Template[];
@@ -49,7 +49,7 @@ export default function Dashboard({
             >
               All
             </button>
-            {CATEGORIES.map((c) => (
+            {getAllCategories().map((c) => (
               <button
                 key={c}
                 onClick={() => onCategoryChange(c)}

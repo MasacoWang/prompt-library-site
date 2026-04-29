@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
-import { CATEGORIES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
 import {
   loadTemplates, saveTemplates, exportTemplates,
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
   openInOutlook, generateId,
   loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
+  getAllCategories,
 } from '@/lib/utils';
 import Editor from '@/components/Editor';
 import ActionGuide from '@/components/ActionGuide';
@@ -34,11 +34,13 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [allCategories, setAllCategories] = useState<string[]>([]);
 
   useEffect(() => {
     setTemplates(loadTemplates(STARTER_TEMPLATES));
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
+    setAllCategories(getAllCategories());
     setMounted(true);
   }, []);
 
@@ -216,7 +218,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
           >
             All
           </button>
-          {CATEGORIES.map((c) => (
+          {allCategories.map((c) => (
             <button
               key={c}
               onClick={() => setCategoryFilter(c)}

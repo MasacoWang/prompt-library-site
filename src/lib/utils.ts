@@ -37,8 +37,33 @@ export function generateId(): string {
 }
 
 import type { Template } from './types';
+import { CATEGORIES } from './types';
 
 const STORAGE_KEY = 'recruiter-vault-templates';
+const CUSTOM_CATEGORIES_KEY = 'recruiter-vault-custom-categories';
+
+export function loadCustomCategories(): string[] {
+  if (typeof window === 'undefined') return [];
+  try {
+    const stored = localStorage.getItem(CUSTOM_CATEGORIES_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch { return []; }
+}
+
+export function saveCustomCategory(name: string): string[] {
+  const custom = loadCustomCategories();
+  const trimmed = name.trim();
+  if (!trimmed) return custom;
+  const allExisting = [...CATEGORIES, ...custom].map((c) => c.toLowerCase());
+  if (allExisting.includes(trimmed.toLowerCase())) return custom;
+  const updated = [...custom, trimmed];
+  localStorage.setItem(CUSTOM_CATEGORIES_KEY, JSON.stringify(updated));
+  return updated;
+}
+
+export function getAllCategories(): string[] {
+  return [...CATEGORIES, ...loadCustomCategories()];
+}
 
 export function loadTemplates(starters: Template[]): Template[] {
   if (typeof window === 'undefined') return [];
