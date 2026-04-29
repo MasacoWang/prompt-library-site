@@ -1,0 +1,98 @@
+export function extractVariables(body: string): string[] {
+  const regex = /\[([^\]]+)\]/g;
+  const vars = new Set<string>();
+  let match;
+  while ((match = regex.exec(body)) !== null) {
+    vars.add(match[1]);
+  }
+  return Array.from(vars);
+}
+
+export function substituteVariables(body: string, values: Record<string, string>): string {
+  let result = body;
+  for (const [key, value] of Object.entries(values)) {
+    if (value) result = result.replaceAll(`[${key}]`, value);
+  }
+  return result;
+}
+
+const COPILOT_URL = 'https://m365.cloud.microsoft/chat/?titleId=T_7e151bfa-7eaa-0802-049f-5d3b98c95e04';
+
+export async function copyToCopilot(text: string): Promise<void> {
+  await navigator.clipboard.writeText(text);
+  window.open(COPILOT_URL, '_blank');
+}
+
+export async function copyToClipboard(text: string): Promise<void> {
+  await navigator.clipboard.writeText(text);
+}
+
+export function openInOutlook(subject: string, body: string): void {
+  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  window.open(mailto, '_blank');
+}
+
+export function generateId(): string {
+  return `tpl_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+import type { Template } from './types';
+
+const STORAGE_KEY = 'recruiter-vault-templates';
+
+export function loadTemplates(starters: Template[]): Template[] {
+  if (typeof window === 'undefined') return [];
+  const stored = localStorage.getItem(STORAGE_KEY);
+  if (stored) {
+    try {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    } catch { /* fall through */ }
+  }
+  saveTemplates(starters);
+  return starters;
+}
+
+export function saveTemplates(templates: Template[]): void {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+}
+
+export async function exportTemplates(templates: Template[]): Promise<void> {
+  const XLSX = await import('xlsx');
+
+  const rows = templates.map((t, i) => ({
+    '#': i + 1,
+    'Title': t.title,
+    'Category': t.category,
+    'Type': t.kind,
+    'Body': t.body,
+  }));
+
+  const ws = XLSX.utils.json_to_sheet(rows);
+  // Auto-width columns
+  ws['!cols'] = [
+    { wch: 4 },   // #
+    { wch: 35 },  // Title
+    { wch: 15 },  // Category
+    { wch: 10 },  // Type
+    { wch: 80 },  // Body
+  ];
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Templates');
+  XLSX.writeFile(wb, 'recruiter-toolkit-export.xlsx');
+}
+
+export function importTemplates(file: File): Promise<Template[]> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const data = JSON.parse(e.target?.result as string);
+        if (Array.isArray(data)) resolve(data);
+        else reject(new Error('Invalid format'));
+      } catch { reject(new Error('Invalid JSON')); }
+    };
+    reader.readAsText(file);
+  });
+}

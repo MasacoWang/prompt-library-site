@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>AI Recruiter Toolkit</title>
+  <style>
+    body { font-family: system-ui,-apple-system,Segoe UI,Roboto,"Noto Sans TC",Arial; margin:0; background:#f8fafc; color:#0f172a; }
+    .wrap { max-width:1100px; margin:0 auto; padding:24px; }
+    h1 { margin:0 0 6px; font-size:22px; }
+    .sub { margin:0 0 18px; color:#475569; }
+    .grid { display:grid; grid-template-columns:1fr; gap:12px; }
+    @media(min-width:920px){ .grid { grid-template-columns:340px 1fr; } }
+    .card { background:#fff; border:1px solid #e2e8f0; border-radius:16px; padding:14px; box-shadow:0 1px 2px rgba(15,23,42,.04); }
+    label { display:block; font-size:12px; color:#475569; margin:10px 0 6px; }
+    input,textarea,select { width:100%; padding:10px; border:1px solid #cbd5e1; border-radius:12px; background:#fff; font-size:14px; box-sizing:border-box; }
+    textarea { min-height:90px; resize:vertical; }
+    .row { display:grid; grid-template-columns:1fr; gap:10px; }
+    @media(min-width:920px){ .row.two{ grid-template-columns:1fr 1fr; } }
+    .btns { display:flex; gap:8px; flex-wrap:wrap; margin-top:10px; }
+    button { padding:9px 12px; border-radius:12px; border:1px solid #cbd5e1; background:#fff; cursor:pointer; font-size:13px; }
+    button.primary { background:#4f46e5; border-color:#4f46e5; color:#fff; }
+    button.teal { background:#0d9488; border-color:#0d9488; color:#fff; }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+    .pill { display:inline-block; font-size:12px; padding:4px 8px; border-radius:999px; background:#eef2ff; color:#3730a3; margin-right:6px; }
+    .muted { font-size:12px; color:#64748b; }
+    .templateTitle { font-weight:700; margin:0 0 8px; font-size:16px; }
+    pre { white-space:pre-wrap; word-break:break-word; background:#f1f5f9; border:1px solid #e2e8f0; padding:12px; border-radius:12px; font-size:13px; line-height:1.7; }
+    .hr { height:1px; background:#e2e8f0; margin:12px 0; }
+    .back-link { display:inline-flex; align-items:center; gap:6px; color:#4f46e5; text-decoration:none; font-size:13px; margin-bottom:12px; }
+    .back-link:hover { text-decoration:underline; }
+    .empty { text-align:center; padding:60px 20px; }
+    .empty p { color:#94a3b8; margin:8px 0; }
+    .token { display:inline-block; background:#f0fdfa; color:#0d9488; border:1px solid #99f6e4; border-radius:999px; padding:1px 8px; font-size:12px; font-weight:500; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <a href="/" class="back-link">← Back to Recruiter Vault</a>
+    <h1>AI Recruiter Toolkit</h1>
+    <p class="sub" id="subtitle">Fill in variables below → preview updates live → copy when ready</p>
+
+    <div id="mainContent"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const templateTitle = params.get('title') || '';
+    const templateBody = params.get('body') || '';
+
+    // Collect pre-filled variable values from URL (var_KEY=VALUE)
+    const prefilledVars = {};
+    params.forEach((val, key) => {
+      if (key.startsWith('var_')) prefilledVars[key.slice(4)] = val;
+    });
+
+    // Detect [Variable] tokens in the template body
+    function extractVars(text) {
+      const matches = text.match(/\[([^\]]+)\]/g) || [];
+      return [...new Set(matches.map(m => m.slice(1, -1)))];
+    }
+
+    const variables = extractVars(templateBody);
+    const varValues = {};
+    variables.forEach(v => { varValues[v] = prefilledVars[v] || ''; });
+
+    const root = document.getElementById('mainContent');
+
+    if (!templateTitle && !templateBody) {
+      // No template passed — show empty state
+      root.innerHTML = `
+        <div class="empty">
+          <p style="font-size:40px;">📭</p>
+          <p style="font-size:16px; color:#475569; font-weight:600;">No template selected</p>
+          <p>Go to <a href="/" style="color:#4f46e5;">Recruiter Vault</a>, select a template, then click <b>🛠️ Open Toolkit</b></p>
+        </div>
+      `;
+    } else {
+      // Build the toolkit UI
+      root.innerHTML = `
+        <div class="grid">
+          <div class="card">
+            <div class="pill">Variables</div>
+            <div class="muted" style="margin-top:6px;">Fill in each field — the preview updates live</div>
+            <div id="varInputs"></div>
+            <div class="hr"></div>
+            <div class="btns">
+              <button class="teal" id="copyFilled">📋 Copy Filled Template</button>
+              <button id="copyRaw">Copy Raw</button>
+            </div>
+
+            <div class="hr"></div>
+            <div class="pill" style="background:#fef3c7; color:#92400e;">One-click Workflow</div>
+            <div class="muted" style="margin-top:6px;">Paste LinkedIn/CV + JD → generate a Super Prompt for Copilot</div>
+            <div class="row two" style="margin-top:8px;">
+              <div>
+                <label>Output language</label>
+                <select id="outLang">
+                  <option value="en" selected>English</option>
+                  <option value="zh">繁體中文</option>
+                </select>
+              </div>
+              <div>
+                <label>Tone</label>
+                <select id="tone">
+                  <option value="warm" selected>Warm</option>
+                  <option value="concise">Concise</option>
+                  <option value="formal">Formal</option>
+                </select>
+              </div>
+            </div>
+            <label>LinkedIn / Resume text</label>
+            <textarea id="liText" placeholder="Paste LinkedIn profile or resume text..."></textarea>
+            <label>Job Description</label>
+            <textarea id="jdText" placeholder="Paste JD here..."></textarea>
+            <div class="btns">
+              <button class="primary" id="copyWorkflow" disabled>Copy Workflow Super Prompt</button>
+            </div>
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:12px;">
+            <div class="card">
+              <div class="pill">Selected Template</div>
+              <div class="templateTitle" style="margin-top:10px;" id="previewTitle"></div>
+              <pre id="previewBody"></pre>
+            </div>
+
+            <div class="card" id="workflowCard" style="display:none;">
+              <div class="pill" style="background:#fef3c7; color:#92400e;">Workflow Preview</div>
+              <pre id="workflowPreview" style="margin-top:10px;"></pre>
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Render variable inputs
+      const varInputsEl = document.getElementById('varInputs');
+      if (variables.length === 0) {
+        varInputsEl.innerHTML = '<p class="muted" style="margin-top:10px;">No variables detected — template is ready to copy!</p>';
+      } else {
+        variables.forEach(v => {
+          const wrapper = document.createElement('div');
+          wrapper.innerHTML = `<label><span class="token">[${v}]</span></label>`;
+          const input = document.createElement('input');
+          input.placeholder = `Enter ${v}...`;
+          input.value = varValues[v];
+          input.addEventListener('input', () => { varValues[v] = input.value; renderPreview(); });
+          wrapper.appendChild(input);
+          varInputsEl.appendChild(wrapper);
+        });
+      }
+
+      function fillText(text) {
+        let out = text;
+        Object.entries(varValues).forEach(([k, val]) => {
+          if (val) out = out.replaceAll('[' + k + ']', val);
+        });
+        return out;
+      }
+
+      function renderPreview() {
+        document.getElementById('previewTitle').textContent = fillText(templateTitle);
+        document.getElementById('previewBody').textContent = fillText(templateBody);
+      }
+
+      async function copyText(text) {
+        await navigator.clipboard.writeText(text);
+        alert('Copied!');
+      }
+
+      document.getElementById('copyFilled').addEventListener('click', () => copyText(fillText(templateBody)));
+      document.getElementById('copyRaw').addEventListener('click', () => copyText(templateBody));
+
+      // Workflow prompt builder
+      function buildWorkflow() {
+        const outLang = document.getElementById('outLang').value;
+        const tone = document.getElementById('tone').value;
+        const li = document.getElementById('liText').value.trim();
+        const jd = document.getElementById('jdText').value.trim();
+
+        const toneText = tone === 'concise' ? 'concise and direct' : (tone === 'formal' ? 'formal and executive' : 'warm, professional, and candidate-friendly');
+        const langText = outLang === 'zh' ? 'Traditional Chinese (繁體中文)' : 'English';
+
+        const role = varValues['Role'] || varValues['Job Title'] || '[Role]';
+        const company = varValues['Company'] || varValues['Company/Team'] || varValues['Company Name'] || '[Company/Team]';
+        const timeline = varValues['Timeline'] || '1–2 weeks';
+
+        const prompt =
+`You are an expert technical recruiter assistant.
+
+Output language: ${langText}.
+Tone: ${toneText}.
+
+Goal: Based on the candidate LinkedIn/resume and the job description, produce a recruiter one-pager and ready-to-use candidate outreach.
+
+Deliverables (in this exact order):
+1) Candidate Summary (5 bullets: core skills, seniority estimate, domain, leadership vs IC, standout achievements)
+2) JD Match (strengths match, gaps/unknowns, overall fit: Strong/Moderate/Weak)
+3) Outreach Email + LinkedIn Message (two versions, each 4–6 sentences, personalized and non-committal)
+4) Phone Screen Questions (3 recruiter questions, 2 technical depth questions, 1 risk-clarification question)
+
+Guardrails:
+- Keep feedback high-level and avoid statements that invite debate.
+- Do not imply hiring outcome.
+- If information is missing, list what to clarify in the first call.
+
+Context:
+Role: ${role}
+Company/Team: ${company}
+Timeline: ${timeline}
+
+Selected Template (for reference):
+${fillText(templateBody)}
+
+Candidate (LinkedIn/resume):
+${li || '[Paste LinkedIn/resume text here]'}
+
+Job Description:
+${jd || '[Paste JD here]'}`;
+
+        const hasContent = li.length > 20 && jd.length > 20;
+        document.getElementById('copyWorkflow').disabled = !hasContent;
+        document.getElementById('workflowCard').style.display = hasContent ? 'block' : 'none';
+        document.getElementById('workflowPreview').textContent = prompt;
+        return prompt;
+      }
+
+      ['outLang','tone','liText','jdText'].forEach(id => {
+        document.getElementById(id).addEventListener('input', buildWorkflow);
+        document.getElementById(id).addEventListener('change', buildWorkflow);
+      });
+      document.getElementById('copyWorkflow').addEventListener('click', () => copyText(buildWorkflow()));
+
+      renderPreview();
+      buildWorkflow();
+    }
+  </script>
+</body>
+</html>
