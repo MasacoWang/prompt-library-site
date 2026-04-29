@@ -5,7 +5,8 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates } from '@/lib/utils';
+import Swal from 'sweetalert2';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases';
 
@@ -16,9 +17,10 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
 ];
 
-function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void }) {
+function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onTogglePin, onDelete }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onTogglePin?: () => void; onDelete?: () => void }) {
   return (
     <div className="card p-4 group card-enter">
+      {item.pinned && <span className="absolute top-3 right-3 text-xs">📌</span>}
       <div className="mb-2">
         <h4 className="font-semibold text-sm text-text-primary truncate">{item.title}</h4>
         <div className="flex items-center gap-2 mt-1.5">
@@ -42,7 +44,7 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite }: { 
         {(viewCount ?? 0) > 0 && <span>👁 {viewCount}</span>}
         {isFavorite && <span className="text-red-400">❤️</span>}
       </div>
-      <div className="flex items-center gap-1 pt-2 border-t border-border">
+      <div className="flex items-center gap-1 flex-wrap pt-2 border-t border-border">
         {onToggleFavorite && (
           <button
             onClick={onToggleFavorite}
@@ -69,12 +71,22 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite }: { 
         >
           ✉️ Outlook
         </button>
+        {onTogglePin && (
+          <button onClick={onTogglePin} className="btn-ghost px-2 py-1 text-xs">
+            {item.pinned ? '📌 Unpin' : '📍 Pin'}
+          </button>
+        )}
+        {onDelete && (
+          <button onClick={onDelete} className="btn-ghost px-2 py-1 text-xs text-red-500 hover:text-red-600 hover:bg-red-50">
+            🗑️ Delete
+          </button>
+        )}
       </div>
     </div>
   );
 }
 
-function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void }) {
+function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onTogglePin, onDelete }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onTogglePin: (id: string) => void; onDelete: (id: string) => void }) {
   const templates = items.filter((i) => i.kind === 'template');
   const prompts = items.filter((i) => i.kind === 'prompt');
 
@@ -83,7 +95,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">✉️ Email Templates</h5>
         {templates.length > 0 ? (
-          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} />)}</div>
+          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onTogglePin={() => onTogglePin(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No templates for this {emptyLabel}</p>
         )}
@@ -91,7 +103,7 @@ function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggle
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">💡 Prompts</h5>
         {prompts.length > 0 ? (
-          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} />)}</div>
+          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onTogglePin={() => onTogglePin(t.id)} onDelete={() => onDelete(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No prompts for this {emptyLabel}</p>
         )}
@@ -107,11 +119,13 @@ export default function HomeTabs() {
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+  const [items, setItems] = useState<Template[]>([]);
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
+    setItems(loadTemplates(STARTER_TEMPLATES));
     const hash = window.location.hash.replace('#', '');
     if (hash === 'scenarios') setActiveTab('scenarios');
     else if (hash === 'phases') setActiveTab('phases');
@@ -125,8 +139,6 @@ export default function HomeTabs() {
     return () => window.removeEventListener('hashchange', onHash);
   }, []);
 
-  const items = STARTER_TEMPLATES;
-
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
@@ -134,6 +146,36 @@ export default function HomeTabs() {
 
   const handleToggleFavorite = (id: string) => {
     setFavorites((prev) => toggleFavorite(prev, id));
+  };
+
+  const handleTogglePin = (id: string) => {
+    setItems((prev) => {
+      const updated = prev.map((t) => t.id === id ? { ...t, pinned: !t.pinned } : t);
+      saveTemplates(updated);
+      return updated;
+    });
+    showToast('Pin toggled ✓');
+  };
+
+  const handleDelete = async (id: string) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    });
+    if (result.isConfirmed) {
+      setItems((prev) => {
+        const updated = prev.filter((t) => t.id !== id);
+        saveTemplates(updated);
+        return updated;
+      });
+      Swal.fire('Deleted!', 'Your template has been removed.', 'success');
+    }
   };
 
   const emailTemplates = items.filter((t) => t.kind === 'template');
@@ -165,7 +207,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onTogglePin={() => handleTogglePin(t.id)} onDelete={() => handleDelete(t.id)} />
             ))}
           </div>
           {emailTemplates.length > 6 && (
@@ -183,7 +225,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onTogglePin={() => handleTogglePin(t.id)} onDelete={() => handleDelete(t.id)} />
             ))}
           </div>
           {prompts.length > 6 && (
@@ -227,7 +269,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onTogglePin={handleTogglePin} onDelete={handleDelete} />
                 )}
               </div>
             );
@@ -265,7 +307,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onTogglePin={handleTogglePin} onDelete={handleDelete} />
                 )}
               </div>
             );
