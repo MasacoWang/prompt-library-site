@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
+import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
 import {
   loadTemplates, saveTemplates, exportTemplates,
@@ -18,12 +19,14 @@ interface LibraryPageProps {
   kindFilter: 'template' | 'prompt' | null;
   pageTitle: string;
   pageDescription: string;
+  filterMode?: 'scenario' | 'phase';
 }
 
-export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: LibraryPageProps) {
+export default function LibraryPage({ kindFilter, pageTitle, pageDescription, filterMode }: LibraryPageProps) {
   const [templates, setTemplates] = useState<Template[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [subFilter, setSubFilter] = useState('All');
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [editorMode, setEditorMode] = useState<EditorMode>('use');
   const [tone, setTone] = useState<Tone>('professional');
@@ -117,13 +120,23 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
     return () => window.removeEventListener('keydown', handler);
   }, [editorMode, handleSaveEdit, selectedId]);
 
-  // Filter by kind + search + category + favorites
+  // Filter by kind + search + category + favorites + scenario/phase
   const filtered = templates.filter((t) => {
     if (kindFilter && t.kind !== kindFilter) return false;
     if (showFavoritesOnly && !favorites.has(t.id)) return false;
     const q = search.toLowerCase();
     const matchS = !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q) || t.category.toLowerCase().includes(q);
-    return matchS && (categoryFilter === 'All' || t.category === categoryFilter);
+    if (!matchS) return false;
+    if (categoryFilter !== 'All' && t.category !== categoryFilter) return false;
+    if (filterMode === 'scenario' && subFilter !== 'All' && !t.scenario?.includes(subFilter)) return false;
+    if (filterMode === 'phase' && subFilter !== 'All' && !t.phase?.includes(subFilter)) return false;
+    if (filterMode === 'scenario' && subFilter === 'All') {
+      return t.scenario && t.scenario.length > 0;
+    }
+    if (filterMode === 'phase' && subFilter === 'All') {
+      return t.phase && t.phase.length > 0;
+    }
+    return true;
   });
 
   if (!mounted) return null;
@@ -214,32 +227,50 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
             ❤️ Favorites
           </button>
           <span className="w-px h-5 bg-border mx-0.5" />
-          <button
-            onClick={() => setCategoryFilter('All')}
-            className={`cat-pill whitespace-nowrap ${categoryFilter === 'All' ? 'cat-pill-active' : ''}`}
-          >
-            All
-          </button>
-          {allCategories.map((c) => (
-            <span key={c} className="inline-flex items-center gap-0.5">
+          {filterMode === 'scenario' ? (
+            <>
+              <button onClick={() => setSubFilter('All')} className={`cat-pill whitespace-nowrap ${subFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+              {SCENARIOS.map((sc) => (
+                <button key={sc.key} onClick={() => setSubFilter(sc.key)} className={`cat-pill whitespace-nowrap ${subFilter === sc.key ? 'cat-pill-active' : ''}`}>{sc.icon} {sc.label}</button>
+              ))}
+            </>
+          ) : filterMode === 'phase' ? (
+            <>
+              <button onClick={() => setSubFilter('All')} className={`cat-pill whitespace-nowrap ${subFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+              {PHASES.map((ph) => (
+                <button key={ph.key} onClick={() => setSubFilter(ph.key)} className={`cat-pill whitespace-nowrap ${subFilter === ph.key ? 'cat-pill-active' : ''}`}>{ph.icon} {ph.label}</button>
+              ))}
+            </>
+          ) : (
+            <>
               <button
-                onClick={() => setCategoryFilter(c)}
-                className={`cat-pill whitespace-nowrap ${categoryFilter === c ? 'cat-pill-active' : ''}`}
+                onClick={() => setCategoryFilter('All')}
+                className={`cat-pill whitespace-nowrap ${categoryFilter === 'All' ? 'cat-pill-active' : ''}`}
               >
-                {c}
+                All
               </button>
-              {isCustomCategory(c) && (
-                <button
-                  onClick={async () => {
-                    const result = await Swal.fire({ title: 'Delete category?', text: `Remove "${c}"? Templates won't be deleted.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes, delete it!' });
-                    if (result.isConfirmed) { deleteCustomCategory(c); setAllCategories(getAllCategories()); if (categoryFilter === c) setCategoryFilter('All'); Swal.fire('Deleted!', `Category "${c}" removed.`, 'success'); }
-                  }}
-                  className="text-red-400 hover:text-red-600 text-xs ml-[-4px]"
-                  title={`Delete ${c}`}
-                >✕</button>
-              )}
-            </span>
-          ))}
+              {allCategories.map((c) => (
+                <span key={c} className="inline-flex items-center gap-0.5">
+                  <button
+                    onClick={() => setCategoryFilter(c)}
+                    className={`cat-pill whitespace-nowrap ${categoryFilter === c ? 'cat-pill-active' : ''}`}
+                  >
+                    {c}
+                  </button>
+                  {isCustomCategory(c) && (
+                    <button
+                      onClick={async () => {
+                        const result = await Swal.fire({ title: 'Delete category?', text: `Remove "${c}"? Templates won't be deleted.`, icon: 'warning', showCancelButton: true, confirmButtonColor: '#d33', cancelButtonColor: '#3085d6', confirmButtonText: 'Yes, delete it!' });
+                        if (result.isConfirmed) { deleteCustomCategory(c); setAllCategories(getAllCategories()); if (categoryFilter === c) setCategoryFilter('All'); Swal.fire('Deleted!', `Category "${c}" removed.`, 'success'); }
+                      }}
+                      className="text-red-400 hover:text-red-600 text-xs ml-[-4px]"
+                      title={`Delete ${c}`}
+                    >✕</button>
+                  )}
+                </span>
+              ))}
+            </>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

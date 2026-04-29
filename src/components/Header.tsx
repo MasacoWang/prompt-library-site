@@ -8,15 +8,15 @@ const NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Email Templates', href: '/templates' },
   { label: 'Prompt Library', href: '/prompts' },
-  { label: 'Scenarios', href: '/#scenarios' },
-  { label: 'Recruiting Phases', href: '/#phases' },
+  { label: 'Scenarios', href: '/scenarios' },
+  { label: 'Recruiting Phases', href: '/phases' },
 ];
 
 const BROWSE_ITEMS = [
   { label: '✉️ Email Templates', href: '/templates' },
   { label: '💡 Prompt Library', href: '/prompts' },
-  { label: '🎯 Scenarios', href: '/#scenarios' },
-  { label: '📊 Recruiting Phases', href: '/#phases' },
+  { label: '🎯 Scenarios', href: '/scenarios' },
+  { label: '📊 Recruiting Phases', href: '/phases' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 

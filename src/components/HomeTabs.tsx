@@ -82,36 +82,8 @@ function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDe
   );
 }
 
-function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite, onDelete, onOpen }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void; onDelete: (id: string) => void; onOpen: (id: string) => void }) {
-  const templates = items.filter((i) => i.kind === 'template');
-  const prompts = items.filter((i) => i.kind === 'prompt');
-
-  return (
-    <div className="mt-4 pl-2 sm:pl-4 grid grid-cols-1 md:grid-cols-2 gap-6 animate-fade-in">
-      <div>
-        <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">✉️ Email Templates</h5>
-        {templates.length > 0 ? (
-          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} onOpen={() => onOpen(t.id)} />)}</div>
-        ) : (
-          <p className="text-xs text-text-muted italic py-3">No templates for this {emptyLabel}</p>
-        )}
-      </div>
-      <div>
-        <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">💡 Prompts</h5>
-        {prompts.length > 0 ? (
-          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} onDelete={() => onDelete(t.id)} onOpen={() => onOpen(t.id)} />)}</div>
-        ) : (
-          <p className="text-xs text-text-muted italic py-3">No prompts for this {emptyLabel}</p>
-        )}
-      </div>
-    </div>
-  );
-}
-
 export default function HomeTabs() {
   const [activeTab, setActiveTab] = useState<TabKey>('templates');
-  const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
-  const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
@@ -121,6 +93,8 @@ export default function HomeTabs() {
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
   const [homeCategoryFilter, setHomeCategoryFilter] = useState('All');
+  const [homeScenarioFilter, setHomeScenarioFilter] = useState('All');
+  const [homePhaseFilter, setHomePhaseFilter] = useState('All');
   const [selectedDetail, setSelectedDetail] = useState<Template | null>(null);
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
@@ -202,8 +176,14 @@ export default function HomeTabs() {
   const emailTemplates = items.filter((t) => t.kind === 'template' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
   const prompts = items.filter((t) => t.kind === 'prompt' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
   const favoriteItems = items.filter((t) => favorites.has(t.id));
-  const getByScenario = (key: string) => items.filter((t) => t.scenario?.includes(key));
-  const getByPhase = (key: string) => items.filter((t) => t.phase?.includes(key));
+  const scenarioItems = items.filter((t) => {
+    if (homeScenarioFilter === 'All') return t.scenario && t.scenario.length > 0;
+    return t.scenario?.includes(homeScenarioFilter);
+  });
+  const phaseItems = items.filter((t) => {
+    if (homePhaseFilter === 'All') return t.phase && t.phase.length > 0;
+    return t.phase?.includes(homePhaseFilter);
+  });
 
   const handleCreate = () => {
     if (!newDraft.title || !newDraft.body) { showToast('Title and body are required'); return; }
@@ -302,78 +282,61 @@ export default function HomeTabs() {
 
       {/* ── Scenarios tab ── */}
       {activeTab === 'scenarios' && (
-        <div className="space-y-3 animate-fade-in">
-          {SCENARIOS.map((sc) => {
-            const matched = getByScenario(sc.key);
-            const isExpanded = expandedScenario === sc.key;
-            return (
-              <div key={sc.key}>
-                <button
-                  onClick={() => setExpandedScenario(isExpanded ? null : sc.key)}
-                  className={`w-full text-left rounded-2xl p-5 flex items-center gap-4 transition-all ${
-                    isExpanded
-                      ? 'bg-white border-2 border-primary shadow-md'
-                      : 'card hover:border-primary/30'
-                  }`}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-2xl shrink-0">
-                    {sc.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-[15px] text-text-primary">{sc.label}</h4>
-                    <p className="text-xs text-text-muted mt-0.5">{sc.desc}</p>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs font-medium text-text-muted bg-surface-alt px-2.5 py-1 rounded-full">
-                      {matched.length} items
-                    </span>
-                    <span className={`text-text-muted transition-transform ${isExpanded ? 'rotate-90' : ''}`}>▶</span>
-                  </div>
-                </button>
-                {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onOpen={handleOpen} />
-                )}
-              </div>
-            );
-          })}
+        <div className="animate-fade-in">
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            <button onClick={() => setHomeScenarioFilter('All')} className={`cat-pill whitespace-nowrap ${homeScenarioFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+            {SCENARIOS.map((sc) => (
+              <button key={sc.key} onClick={() => setHomeScenarioFilter(sc.key)} className={`cat-pill whitespace-nowrap ${homeScenarioFilter === sc.key ? 'cat-pill-active' : ''}`}>{sc.icon} {sc.label}</button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {scenarioItems.slice(0, 6).map((t) => (
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+            ))}
+          </div>
+          {scenarioItems.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-4xl mb-3 opacity-50">📭</p>
+              <p className="text-base font-medium text-text-secondary">No items found for this scenario</p>
+            </div>
+          )}
+          {scenarioItems.length > 6 && (
+            <div className="text-center mt-8">
+              <Link href="/scenarios" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
+                View All {scenarioItems.length} Scenario Items →
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
       {/* ── Recruiting Phases tab ── */}
       {activeTab === 'phases' && (
-        <div className="space-y-3 animate-fade-in">
-          {PHASES.map((ph) => {
-            const matched = getByPhase(ph.key);
-            const isExpanded = expandedPhase === ph.key;
-            return (
-              <div key={ph.key}>
-                <button
-                  onClick={() => setExpandedPhase(isExpanded ? null : ph.key)}
-                  className={`w-full text-left rounded-2xl p-5 flex items-center gap-4 transition-all ${
-                    isExpanded
-                      ? 'bg-white border-2 border-primary shadow-md'
-                      : 'card hover:border-primary/30'
-                  }`}
-                >
-                  <div className="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center text-2xl shrink-0">
-                    {ph.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="font-semibold text-[15px] text-text-primary">{ph.label}</h4>
-                  </div>
-                  <div className="flex items-center gap-3 shrink-0">
-                    <span className="text-xs font-medium text-text-muted bg-surface-alt px-2.5 py-1 rounded-full">
-                      {matched.length} items
-                    </span>
-                    <span className={`text-text-muted transition-transform ${isExpanded ? 'rotate-90' : ''}`}>▶</span>
-                  </div>
-                </button>
-                {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} onDelete={handleDelete} onOpen={handleOpen} />
-                )}
-              </div>
-            );
-          })}
+        <div className="animate-fade-in">
+          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
+            <button onClick={() => setHomePhaseFilter('All')} className={`cat-pill whitespace-nowrap ${homePhaseFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
+            {PHASES.map((ph) => (
+              <button key={ph.key} onClick={() => setHomePhaseFilter(ph.key)} className={`cat-pill whitespace-nowrap ${homePhaseFilter === ph.key ? 'cat-pill-active' : ''}`}>{ph.icon} {ph.label}</button>
+            ))}
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {phaseItems.slice(0, 6).map((t) => (
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+            ))}
+          </div>
+          {phaseItems.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-4xl mb-3 opacity-50">📭</p>
+              <p className="text-base font-medium text-text-secondary">No items found for this phase</p>
+            </div>
+          )}
+          {phaseItems.length > 6 && (
+            <div className="text-center mt-8">
+              <Link href="/phases" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
+                View All {phaseItems.length} Phase Items →
+              </Link>
+            </div>
+          )}
         </div>
       )}
 
