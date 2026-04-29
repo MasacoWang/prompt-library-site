@@ -8,6 +8,7 @@ const NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'Email Templates', href: '/templates' },
   { label: 'Prompt Library', href: '/prompts' },
+  { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
 export default function Header() {
@@ -49,10 +50,10 @@ export default function Header() {
 
         {/* Desktop CTA */}
         <Link
-          href="/templates"
+          href="/ai-assistant"
           className="hidden md:inline-flex btn-primary px-4 py-2 text-[13px] shrink-0 items-center gap-1.5"
         >
-          Get Started
+          🤖 Try AI Assistant
         </Link>
 
         {/* Mobile hamburger */}
@@ -84,11 +85,11 @@ export default function Header() {
             );
           })}
           <Link
-            href="/templates"
+            href="/ai-assistant"
             onClick={() => setMenuOpen(false)}
             className="block btn-primary px-4 py-2.5 text-sm text-center mt-2"
           >
-            Get Started
+            🤖 Try AI Assistant
           </Link>
         </div>
       )}

@@ -18,6 +18,7 @@ export default function Footer() {
             <Link href="/" className="text-xs text-text-secondary hover:text-text-primary transition">Home</Link>
             <Link href="/templates" className="text-xs text-text-secondary hover:text-text-primary transition">Templates</Link>
             <Link href="/prompts" className="text-xs text-text-secondary hover:text-text-primary transition">Prompts</Link>
+            <Link href="/ai-assistant" className="text-xs text-text-secondary hover:text-text-primary transition">AI Assistant</Link>
           </div>
         </div>
         <div className="border-t border-border pt-4">
