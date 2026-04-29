@@ -7,6 +7,8 @@ import { usePathname } from 'next/navigation';
 const BROWSE_ITEMS = [
   { label: '✉️ Email Templates', href: '/templates' },
   { label: '💡 Prompt Library', href: '/prompts' },
+  { label: '🎯 Scenarios', href: '/#scenarios' },
+  { label: '📊 Recruiting Phases', href: '/#phases' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
@@ -27,7 +29,7 @@ export default function Header() {
     return () => document.removeEventListener('mousedown', handler);
   }, []);
 
-  const isBrowseActive = ['/templates', '/prompts', '/ai-assistant'].includes(pathname);
+  const isBrowseActive = ['/templates', '/prompts', '/ai-assistant'].includes(pathname) || pathname === '/';
 
   return (
     <header className="header-bar sticky top-0 z-50">

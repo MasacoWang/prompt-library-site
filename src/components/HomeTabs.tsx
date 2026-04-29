@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
@@ -92,6 +92,21 @@ export default function HomeTabs() {
   const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash === 'scenarios') setActiveTab('scenarios');
+    else if (hash === 'phases') setActiveTab('phases');
+
+    const onHash = () => {
+      const h = window.location.hash.replace('#', '');
+      if (h === 'scenarios') setActiveTab('scenarios');
+      else if (h === 'phases') setActiveTab('phases');
+    };
+    window.addEventListener('hashchange', onHash);
+    return () => window.removeEventListener('hashchange', onHash);
+  }, []);
 
   const items = STARTER_TEMPLATES;
 
