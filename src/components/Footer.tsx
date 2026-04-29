@@ -9,7 +9,7 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-md bg-primary flex items-center justify-center text-white text-xs font-bold">C</div>
+              <img src="/favicon.svg" alt="Logo" className="w-6 h-6 rounded-md" />
               <span className="text-sm font-semibold text-text-primary">AI Recruiter Toolkit</span>
             </div>
             <p className="text-xs text-text-muted">Prompts, templates, and AI tools for modern recruiters.</p>
@@ -23,10 +23,13 @@ export default function Footer() {
             <Link href="/ai-assistant" className="text-xs text-text-secondary hover:text-text-primary transition">AI Assistant</Link>
           </div>
         </div>
-        <div className="border-t border-border pt-4">
+        <div className="border-t border-border pt-4 space-y-2">
           <p className="text-[11px] text-text-muted leading-relaxed">
             ⚠️ Templates are for general guidance only. Please tailor wording to your company policy and local regulations.
             Do not paste sensitive personal data or candidate PII on this public site.
+          </p>
+          <p className="text-[11px] text-text-muted">
+            Copyright © 2026 Clarice Wang. All rights reserved.
           </p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite } from '@/lib/utils';
 
 type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases';
 
@@ -16,7 +16,7 @@ const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
 ];
 
-function ItemCard({ item, onToast }: { item: Template; onToast: (msg: string) => void }) {
+function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void }) {
   return (
     <div className="card p-4 group card-enter">
       <div className="mb-2">
@@ -34,10 +34,23 @@ function ItemCard({ item, onToast }: { item: Template; onToast: (msg: string) =>
           </span>
         </div>
       </div>
-      <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-3">
+      <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-2">
         {item.body.slice(0, 120)}
       </p>
+      {/* Stats */}
+      <div className="flex items-center gap-3 text-[10px] text-text-muted mb-3">
+        {(viewCount ?? 0) > 0 && <span>👁 {viewCount}</span>}
+        {isFavorite && <span className="text-red-400">❤️</span>}
+      </div>
       <div className="flex items-center gap-1 pt-2 border-t border-border">
+        {onToggleFavorite && (
+          <button
+            onClick={onToggleFavorite}
+            className={`btn-ghost px-2 py-1 text-xs ${isFavorite ? 'text-red-500' : ''}`}
+          >
+            {isFavorite ? '❤️' : '🤍'}
+          </button>
+        )}
         <button
           onClick={async () => { await copyToCopilot(item.body); onToast('Copied & opened Copilot ✓'); }}
           className="btn-ghost px-2 py-1 text-xs"
@@ -61,7 +74,7 @@ function ItemCard({ item, onToast }: { item: Template; onToast: (msg: string) =>
   );
 }
 
-function SplitList({ items, onToast, emptyLabel }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string }) {
+function SplitList({ items, onToast, emptyLabel, viewCounts, favorites, onToggleFavorite }: { items: Template[]; onToast: (msg: string) => void; emptyLabel: string; viewCounts: Record<string, number>; favorites: Set<string>; onToggleFavorite: (id: string) => void }) {
   const templates = items.filter((i) => i.kind === 'template');
   const prompts = items.filter((i) => i.kind === 'prompt');
 
@@ -70,7 +83,7 @@ function SplitList({ items, onToast, emptyLabel }: { items: Template[]; onToast:
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">✉️ Email Templates</h5>
         {templates.length > 0 ? (
-          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} />)}</div>
+          <div className="space-y-3">{templates.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No templates for this {emptyLabel}</p>
         )}
@@ -78,7 +91,7 @@ function SplitList({ items, onToast, emptyLabel }: { items: Template[]; onToast:
       <div>
         <h5 className="text-xs font-semibold text-text-muted uppercase tracking-wider mb-3">💡 Prompts</h5>
         {prompts.length > 0 ? (
-          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} />)}</div>
+          <div className="space-y-3">{prompts.map((t) => <ItemCard key={t.id} item={t} onToast={onToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => onToggleFavorite(t.id)} />)}</div>
         ) : (
           <p className="text-xs text-text-muted italic py-3">No prompts for this {emptyLabel}</p>
         )}
@@ -92,9 +105,13 @@ export default function HomeTabs() {
   const [expandedScenario, setExpandedScenario] = useState<string | null>(null);
   const [expandedPhase, setExpandedPhase] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
+    setFavorites(loadFavorites());
+    setViewCounts(loadViewCounts());
     const hash = window.location.hash.replace('#', '');
     if (hash === 'scenarios') setActiveTab('scenarios');
     else if (hash === 'phases') setActiveTab('phases');
@@ -113,6 +130,10 @@ export default function HomeTabs() {
   const showToast = (msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
+  };
+
+  const handleToggleFavorite = (id: string) => {
+    setFavorites((prev) => toggleFavorite(prev, id));
   };
 
   const emailTemplates = items.filter((t) => t.kind === 'template');
@@ -144,7 +165,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} />
             ))}
           </div>
           {emailTemplates.length > 6 && (
@@ -162,7 +183,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in">
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} />
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} />
             ))}
           </div>
           {prompts.length > 6 && (
@@ -206,7 +227,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="scenario" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
                 )}
               </div>
             );
@@ -244,7 +265,7 @@ export default function HomeTabs() {
                   </div>
                 </button>
                 {isExpanded && (
-                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" />
+                  <SplitList items={matched} onToast={showToast} emptyLabel="phase" viewCounts={viewCounts} favorites={favorites} onToggleFavorite={handleToggleFavorite} />
                 )}
               </div>
             );

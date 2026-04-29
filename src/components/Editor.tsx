@@ -12,6 +12,8 @@ interface EditorProps {
   variables: string[];
   variableValues: Record<string, string>;
   previewText: string;
+  isFavorite?: boolean;
+  viewCount?: number;
   onBack: () => void;
   onEditMode: () => void;
   onSaveEdit: () => void;
@@ -24,12 +26,15 @@ interface EditorProps {
   onOpenOutlook: () => void;
   onDelete: () => void;
   onTogglePin: () => void;
+  onToggleFavorite?: () => void;
 }
 
 export default function Editor({
   template, editorMode, editDraft, tone, variables, variableValues, previewText,
+  isFavorite, viewCount,
   onBack, onEditMode, onSaveEdit, onCancelEdit, onDraftChange, onToneChange,
   onVariableChange, onCopyToCopilot, onCopyPlain, onOpenOutlook, onDelete, onTogglePin,
+  onToggleFavorite,
 }: EditorProps) {
   const isEditing = editorMode === 'edit';
   const displayTitle = isEditing ? (editDraft.title || 'Untitled') : (template?.title || '');
@@ -96,6 +101,14 @@ export default function Editor({
             <button onClick={onTogglePin} className="btn-ghost p-1.5 text-sm">
               {template.pinned ? '📌' : '📍'}
             </button>
+            {onToggleFavorite && (
+              <button onClick={onToggleFavorite} className={`btn-ghost p-1.5 text-sm ${isFavorite ? 'text-red-500' : ''}`} title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}>
+                {isFavorite ? '❤️' : '🤍'}
+              </button>
+            )}
+            {(viewCount ?? 0) > 0 && (
+              <span className="text-xs text-text-muted flex items-center gap-1 px-2">👁 {viewCount}</span>
+            )}
             <button onClick={onEditMode} className="btn-ghost px-3 py-1.5 text-sm">
               ✏️ Edit
             </button>

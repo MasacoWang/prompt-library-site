@@ -8,6 +8,7 @@ import {
   loadTemplates, saveTemplates, exportTemplates,
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
   openInOutlook, generateId,
+  loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
 } from '@/lib/utils';
 import Editor from '@/components/Editor';
 import ActionGuide from '@/components/ActionGuide';
@@ -30,9 +31,14 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
   const [editDraft, setEditDraft] = useState<Partial<Template>>({});
   const [toast, setToast] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [favorites, setFavorites] = useState<Set<string>>(new Set());
+  const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
+  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
   useEffect(() => {
     setTemplates(loadTemplates(STARTER_TEMPLATES));
+    setFavorites(loadFavorites());
+    setViewCounts(loadViewCounts());
     setMounted(true);
   }, []);
 
@@ -62,6 +68,19 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
     setTimeout(() => setToast(null), 2500);
+  }, []);
+
+  const handleFavoriteToggle = useCallback((id: string, e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setFavorites((prev) => toggleFavorite(prev, id));
+  }, []);
+
+  const handleSelectItem = useCallback((id: string) => {
+    setSelectedId(id);
+    setEditorMode('use');
+    setVariableValues({});
+    const updated = incrementViewCount(id);
+    setViewCounts(updated);
   }, []);
 
   const handleSaveEdit = useCallback(() => {
@@ -94,9 +113,10 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
     return () => window.removeEventListener('keydown', handler);
   }, [editorMode, handleSaveEdit, selectedId]);
 
-  // Filter by kind + search + category
+  // Filter by kind + search + category + favorites
   const filtered = templates.filter((t) => {
     if (kindFilter && t.kind !== kindFilter) return false;
+    if (showFavoritesOnly && !favorites.has(t.id)) return false;
     const q = search.toLowerCase();
     const matchS = !q || t.title.toLowerCase().includes(q) || t.body.toLowerCase().includes(q) || t.category.toLowerCase().includes(q);
     return matchS && (categoryFilter === 'All' || t.category === categoryFilter);
@@ -117,6 +137,8 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
             variables={variables}
             variableValues={variableValues}
             previewText={previewText}
+            isFavorite={selectedTemplate ? favorites.has(selectedTemplate.id) : false}
+            viewCount={selectedTemplate ? (viewCounts[selectedTemplate.id] || 0) : 0}
             onBack={() => { setSelectedId(null); setEditorMode('use'); }}
             onEditMode={() => { if (selectedTemplate) { setEditDraft({ ...selectedTemplate }); setEditorMode('edit'); } }}
             onSaveEdit={handleSaveEdit}
@@ -127,6 +149,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
             onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('Copied & opened Copilot ✓'); }}
             onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
             onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
+            onToggleFavorite={() => { if (selectedTemplate) handleFavoriteToggle(selectedTemplate.id); }}
             onDelete={async () => {
               if (!selectedTemplate) return;
               const result = await Swal.fire({
@@ -184,6 +207,13 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
 
         <div className="flex items-center gap-1.5 flex-wrap overflow-x-auto pb-1 -mb-1">
           <button
+            onClick={() => { setShowFavoritesOnly(!showFavoritesOnly); }}
+            className={`cat-pill whitespace-nowrap ${showFavoritesOnly ? 'cat-pill-active !bg-red-500 !border-red-500' : ''}`}
+          >
+            ❤️ Favorites
+          </button>
+          <span className="w-px h-5 bg-border mx-0.5" />
+          <button
             onClick={() => setCategoryFilter('All')}
             className={`cat-pill whitespace-nowrap ${categoryFilter === 'All' ? 'cat-pill-active' : ''}`}
           >
@@ -230,7 +260,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
           {filtered.map((t, i) => (
             <div
               key={t.id}
-              onClick={() => { setSelectedId(t.id); setEditorMode('use'); setVariableValues({}); }}
+              onClick={() => handleSelectItem(t.id)}
               className="card p-5 cursor-pointer group card-enter"
               style={{ animationDelay: `${i * 0.03}s` }}
             >
@@ -253,7 +283,23 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription }: 
               <p className="text-sm text-text-muted line-clamp-3 leading-relaxed mb-4">
                 {t.body.slice(0, 180)}
               </p>
+              {/* Stats row */}
+              <div className="flex items-center gap-3 text-[11px] text-text-muted mb-3">
+                {viewCounts[t.id] > 0 && (
+                  <span className="flex items-center gap-1">👁 {viewCounts[t.id]} {viewCounts[t.id] === 1 ? 'view' : 'views'}</span>
+                )}
+                {favorites.has(t.id) && (
+                  <span className="flex items-center gap-1 text-red-400">❤️ Favorited</span>
+                )}
+              </div>
               <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity pt-3 border-t border-border">
+                <button
+                  onClick={(e) => { e.stopPropagation(); handleFavoriteToggle(t.id, e); }}
+                  className={`btn-ghost p-1.5 text-xs ${favorites.has(t.id) ? 'text-red-500' : ''}`}
+                  title={favorites.has(t.id) ? 'Remove from favorites' : 'Add to favorites'}
+                >
+                  {favorites.has(t.id) ? '❤️ Unfavorite' : '🤍 Favorite'}
+                </button>
                 <button
                   onClick={(e) => { e.stopPropagation(); setTemplates((prev) => prev.map((x) => x.id === t.id ? { ...x, pinned: !x.pinned } : x)); }}
                   className="btn-ghost p-1.5 text-xs"

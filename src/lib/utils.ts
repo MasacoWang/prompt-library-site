@@ -83,6 +83,49 @@ export async function exportTemplates(templates: Template[]): Promise<void> {
   XLSX.writeFile(wb, 'recruiter-toolkit-export.xlsx');
 }
 
+// ── Favorites ──
+const FAVORITES_KEY = 'recruiter-vault-favorites';
+
+export function loadFavorites(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const stored = localStorage.getItem(FAVORITES_KEY);
+    if (stored) return new Set(JSON.parse(stored));
+  } catch { /* ignore */ }
+  return new Set();
+}
+
+export function saveFavorites(favorites: Set<string>): void {
+  localStorage.setItem(FAVORITES_KEY, JSON.stringify([...favorites]));
+}
+
+export function toggleFavorite(favorites: Set<string>, id: string): Set<string> {
+  const next = new Set(favorites);
+  if (next.has(id)) next.delete(id);
+  else next.add(id);
+  saveFavorites(next);
+  return next;
+}
+
+// ── View Counts ──
+const VIEWS_KEY = 'recruiter-vault-views';
+
+export function loadViewCounts(): Record<string, number> {
+  if (typeof window === 'undefined') return {};
+  try {
+    const stored = localStorage.getItem(VIEWS_KEY);
+    if (stored) return JSON.parse(stored);
+  } catch { /* ignore */ }
+  return {};
+}
+
+export function incrementViewCount(id: string): Record<string, number> {
+  const counts = loadViewCounts();
+  counts[id] = (counts[id] || 0) + 1;
+  localStorage.setItem(VIEWS_KEY, JSON.stringify(counts));
+  return counts;
+}
+
 export function importTemplates(file: File): Promise<Template[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
