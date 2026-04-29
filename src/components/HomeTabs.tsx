@@ -3,18 +3,20 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import type { Template } from '@/lib/types';
-import { SCENARIOS, PHASES } from '@/lib/types';
+import { SCENARIOS, PHASES, CATEGORIES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
-import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates } from '@/lib/utils';
+import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
-type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases';
+type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
 
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'templates', label: 'Email Templates', icon: '✉️' },
   { key: 'prompts', label: 'Prompt Library', icon: '💡' },
   { key: 'scenarios', label: 'Scenarios', icon: '🎯' },
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
+  { key: 'favorites', label: 'Favorites', icon: '❤️' },
+  { key: 'new', label: '+ New', icon: '✨' },
 ];
 
 function ItemCard({ item, onToast, viewCount, isFavorite, onToggleFavorite, onDelete }: { item: Template; onToast: (msg: string) => void; viewCount?: number; isFavorite?: boolean; onToggleFavorite?: () => void; onDelete?: () => void }) {
@@ -114,6 +116,7 @@ export default function HomeTabs() {
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
+  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template' });
 
   // Switch tab based on URL hash (e.g. /#scenarios, /#phases)
   useEffect(() => {
@@ -165,8 +168,27 @@ export default function HomeTabs() {
 
   const emailTemplates = items.filter((t) => t.kind === 'template');
   const prompts = items.filter((t) => t.kind === 'prompt');
+  const favoriteItems = items.filter((t) => favorites.has(t.id));
   const getByScenario = (key: string) => items.filter((t) => t.scenario?.includes(key));
   const getByPhase = (key: string) => items.filter((t) => t.phase?.includes(key));
+
+  const handleCreate = () => {
+    if (!newDraft.title || !newDraft.body) { showToast('Title and body are required'); return; }
+    const now = new Date().toISOString();
+    const newT: Template = {
+      id: generateId(), title: newDraft.title, category: newDraft.category,
+      kind: newDraft.kind, body: newDraft.body, casualBody: '',
+      pinned: false, createdAt: now, updatedAt: now,
+    };
+    setItems((prev) => {
+      const updated = [...prev, newT];
+      saveTemplates(updated);
+      return updated;
+    });
+    setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt' });
+    showToast('Created ✓');
+    setActiveTab(newT.kind === 'template' ? 'templates' : 'prompts');
+  };
 
   return (
     <div>
@@ -297,6 +319,92 @@ export default function HomeTabs() {
               </div>
             );
           })}
+        </div>
+      )}
+
+      {/* ── Favorites tab ── */}
+      {activeTab === 'favorites' && (
+        <div className="animate-fade-in">
+          {favoriteItems.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {favoriteItems.map((t) => (
+                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} isFavorite={true} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-16">
+              <div className="text-5xl mb-4">🤍</div>
+              <h3 className="text-lg font-semibold text-text-primary mb-2">No favorites yet</h3>
+              <p className="text-sm text-text-muted">Click the ❤️ button on any template or prompt to add it here.</p>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── + New tab ── */}
+      {activeTab === 'new' && (
+        <div className="animate-fade-in max-w-2xl mx-auto">
+          <div className="card p-6 space-y-5">
+            <h3 className="text-lg font-semibold text-text-primary">Create New</h3>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setNewDraft((d) => ({ ...d, kind: 'prompt' }))}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'prompt' ? 'bg-purple-100 text-purple-700 border-2 border-purple-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
+              >
+                💡 Prompt
+              </button>
+              <button
+                onClick={() => setNewDraft((d) => ({ ...d, kind: 'template' }))}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'template' ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
+              >
+                ✉️ Email Template
+              </button>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Title</label>
+              <input
+                type="text"
+                value={newDraft.title}
+                onChange={(e) => setNewDraft((d) => ({ ...d, title: e.target.value }))}
+                placeholder="e.g. Follow-up after screening call"
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              />
+            </div>
+            <div>
+              <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Category</label>
+              <select
+                value={newDraft.category}
+                onChange={(e) => setNewDraft((d) => ({ ...d, category: e.target.value }))}
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+              >
+                {CATEGORIES.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+            </div>
+            <div>
+              <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-1.5 block">Body</label>
+              <textarea
+                value={newDraft.body}
+                onChange={(e) => setNewDraft((d) => ({ ...d, body: e.target.value }))}
+                placeholder="Write your prompt or email template here... Use {{variable}} for dynamic fields."
+                rows={8}
+                className="w-full px-4 py-2.5 rounded-xl border border-border bg-white text-sm text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary resize-y"
+              />
+            </div>
+            <div className="flex gap-3 pt-2">
+              <button
+                onClick={handleCreate}
+                className="px-6 py-2.5 rounded-xl bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition shadow-sm"
+              >
+                ✨ Create
+              </button>
+              <button
+                onClick={() => setNewDraft({ title: '', body: '', category: 'Strategy', kind: 'prompt' })}
+                className="btn-ghost px-4 py-2.5 text-sm"
+              >
+                Clear
+              </button>
+            </div>
+          </div>
         </div>
       )}
 
