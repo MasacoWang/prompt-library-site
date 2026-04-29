@@ -1,7 +1,9 @@
 import type { Template } from './types';
-import { generateId } from './utils';
 
 const now = new Date().toISOString();
+function stableId(title: string, kind: string): string {
+  return 'starter-' + kind + '-' + title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
 function t(
   title: string,
   category: string,
@@ -13,7 +15,7 @@ function t(
 ): Template {
   const phase = [category.toLowerCase()];
   return {
-    id: generateId() + '_' + Math.random().toString(36).slice(2, 4),
+    id: stableId(title, kind),
     title, category, kind, body, casualBody, pinned, scenario, phase,
     createdAt: now, updatedAt: now,
   };

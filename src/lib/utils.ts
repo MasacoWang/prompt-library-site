@@ -49,8 +49,20 @@ export function loadTemplates(starters: Template[]): Template[] {
       if (Array.isArray(parsed) && parsed.length > 0) {
         // Merge: always keep starter templates up-to-date, preserve user additions
         const starterIds = new Set(starters.map((s) => s.id));
-        const userAdded = parsed.filter((t: Template) => !starterIds.has(t.id));
-        const merged = [...starters, ...userAdded];
+        const starterTitles = new Set(starters.map((s) => s.title.toLowerCase()));
+        // Filter out old stored copies of starters (by id OR title match)
+        const userAdded = parsed.filter((t: Template) =>
+          !starterIds.has(t.id) && !starterTitles.has(t.title.toLowerCase())
+        );
+        // Deduplicate user-added by title
+        const seenTitles = new Set(starters.map((s) => s.title.toLowerCase()));
+        const uniqueUserAdded = userAdded.filter((t: Template) => {
+          const key = t.title.toLowerCase();
+          if (seenTitles.has(key)) return false;
+          seenTitles.add(key);
+          return true;
+        });
+        const merged = [...starters, ...uniqueUserAdded];
         saveTemplates(merged);
         return merged;
       }
