@@ -1,6 +1,5 @@
 import ActionGuide from '@/components/ActionGuide';
 import HomeTabs from '@/components/HomeTabs';
-import TopPopular from '@/components/TopPopular';
 
 const TRUST_ITEMS = [
   { icon: '⚡', text: 'Save time with consistent, ready-to-use messaging' },
@@ -26,9 +25,6 @@ export default function Home() {
 
         </div>
       </section>
-
-      {/* ── TOP 10 POPULAR ── */}
-      <TopPopular />
 
       {/* ── TABBED DISCOVERY ── */}
       <section id="template-library" className="px-4 sm:px-6 pb-12 sm:pb-16 scroll-mt-20">
