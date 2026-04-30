@@ -29,13 +29,13 @@ function getAuthOptions(): any {
 // GET - Load favorites for logged-in user
 export async function GET() {
   try {
-    const session = await getServerSession(getAuthOptions());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session: any = await getServerSession(getAuthOptions());
     if (!session?.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const userId = (session.user as any).id || session.user.email;
+    const userId = session.user.id || session.user.email;
     const favorites = await kv.get<string[]>(`favorites:${userId}`) || [];
     return NextResponse.json({ favorites });
   } catch {
@@ -46,14 +46,14 @@ export async function GET() {
 // POST - Save favorites for logged-in user
 export async function POST(req: NextRequest) {
   try {
-    const session = await getServerSession(getAuthOptions());
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const session: any = await getServerSession(getAuthOptions());
     if (!session?.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
     const { favorites } = await req.json();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const userId = (session.user as any).id || session.user.email;
+    const userId = session.user.id || session.user.email;
     await kv.set(`favorites:${userId}`, favorites);
     return NextResponse.json({ success: true });
   } catch {
