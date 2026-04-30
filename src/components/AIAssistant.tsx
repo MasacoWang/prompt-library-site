@@ -27,10 +27,11 @@ const SUMMARY_TYPES = [
 /* ─────────────────────────────────────────────
    Tools definition
    ───────────────────────────────────────────── */
-type ToolKey = 'email' | 'summary' | 'custom';
+type ToolKey = 'email' | 'summary' | 'jobpost' | 'custom';
 
 const TOOLS: { key: ToolKey; icon: string; title: string; desc: string; cta: string }[] = [
   { key: 'email', icon: '✉️', title: 'Email Generator', desc: 'Create ready-to-send recruiting emails', cta: 'Write an Email' },
+  { key: 'jobpost', icon: '📝', title: 'Job Post Generator', desc: 'Create LinkedIn job posting templates', cta: 'Write a Post' },
   { key: 'summary', icon: '📊', title: 'Hiring Summary', desc: 'Summarize notes, pipeline, or debriefs', cta: 'Create Summary' },
   { key: 'custom', icon: '🔧', title: 'Custom Prompt', desc: 'Build any recruiting prompt for Copilot', cta: 'Build Prompt' },
 ];
@@ -129,6 +130,7 @@ export default function AIAssistant() {
   });
   const [summaryFields, setSummaryFields] = useState({ summaryType: 'interview-notes', role: '', content: '', additionalContext: '' });
   const [customFields, setCustomFields] = useState({ description: '', audience: '', outputFormat: '', additionalContext: '' });
+  const [jobPostFields, setJobPostFields] = useState({ role: '', team: '', location: '', level: '', highlights: '', requirements: '', postType: 'general' });
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
   const inputClass = 'input-field';
@@ -157,7 +159,7 @@ export default function AIAssistant() {
           TOOL PICKER (when no tool selected)
           ═══════════════════════════════════════ */}
       {!activeTool && (
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
           {TOOLS.map((tool) => (
             <button
               key={tool.key}
@@ -437,6 +439,131 @@ export default function AIAssistant() {
                   <button onClick={() => setPromptResult('')} className="text-xs text-text-secondary hover:text-primary transition">← Edit data</button>
                   <button onClick={() => { setPromptResult(''); setSummaryFields({ summaryType: 'interview-notes', role: '', content: '', additionalContext: '' }); }}
                     className="text-xs text-primary font-medium hover:underline">+ New summary</button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ═══════════════════════════════════════
+          JOB POST GENERATOR
+          ═══════════════════════════════════════ */}
+      {activeTool === 'jobpost' && (
+        <div>
+          <div className="flex items-center justify-between mb-6">
+            <button onClick={handleBack} className="text-xs text-text-secondary hover:text-primary transition flex items-center gap-1">← Back to tools</button>
+            <div className="flex items-center gap-4">
+              <StepBadge num={1} label="Fill details" active={!promptResult} />
+              <div className="w-6 h-px bg-border" />
+              <StepBadge num={2} label="Copy & Post" active={!!promptResult} />
+            </div>
+          </div>
+
+          {!promptResult ? (
+            <div className="card p-6 sm:p-8 max-w-2xl mx-auto">
+              <h2 className="text-lg font-bold text-text-primary mb-1">📝 Job Post Generator</h2>
+              <p className="text-xs text-text-muted mb-6">Fill in the details and we&apos;ll generate a LinkedIn-ready job posting.</p>
+
+              <div className="space-y-5">
+                <div>
+                  <label className={labelClass}>Post Type</label>
+                  <select value={jobPostFields.postType} onChange={(e) => setJobPostFields({ ...jobPostFields, postType: e.target.value })} className={inputClass}>
+                    <option value="general">General Hiring Post</option>
+                    <option value="intern">Internship</option>
+                    <option value="campus">Campus Recruiting</option>
+                    <option value="diversity">Diversity Initiative</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Role / Job Title *</label>
+                    <input value={jobPostFields.role} onChange={(e) => setJobPostFields({ ...jobPostFields, role: e.target.value })}
+                      placeholder="e.g. Software Engineer" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Team / Product</label>
+                    <input value={jobPostFields.team} onChange={(e) => setJobPostFields({ ...jobPostFields, team: e.target.value })}
+                      placeholder="e.g. Azure, Teams, Office" className={inputClass} />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelClass}>Location</label>
+                    <input value={jobPostFields.location} onChange={(e) => setJobPostFields({ ...jobPostFields, location: e.target.value })}
+                      placeholder="e.g. Taipei / Remote / Hybrid" className={inputClass} />
+                  </div>
+                  <div>
+                    <label className={labelClass}>Level</label>
+                    <input value={jobPostFields.level} onChange={(e) => setJobPostFields({ ...jobPostFields, level: e.target.value })}
+                      placeholder="e.g. L59-63, Senior" className={inputClass} />
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Key Highlights / Selling Points</label>
+                  <textarea value={jobPostFields.highlights} onChange={(e) => setJobPostFields({ ...jobPostFields, highlights: e.target.value })}
+                    placeholder={"What makes this role/team special?\ne.g. Work on AI-powered features, great WLB, fast-growing team"}
+                    rows={3} className={`${inputClass} resize-y text-[13px]`} />
+                </div>
+
+                <div>
+                  <label className={labelClass}>Requirements / Qualifications</label>
+                  <textarea value={jobPostFields.requirements} onChange={(e) => setJobPostFields({ ...jobPostFields, requirements: e.target.value })}
+                    placeholder={"e.g. 3+ years experience, TypeScript, Python, Azure\nStrong communication skills"}
+                    rows={3} className={`${inputClass} resize-y text-[13px]`} />
+                </div>
+
+                <button
+                  onClick={() => {
+                    const f = jobPostFields;
+                    const role = f.role || '[Job Title]';
+                    const team = f.team ? ` on ${f.team}` : '';
+                    const location = f.location || '[Location]';
+                    const level = f.level ? `\n💼 Level: ${f.level}` : '';
+                    const highlights = f.highlights ? `\nWhy this role:\n${f.highlights.split('\n').map(l => `✅ ${l.trim()}`).join('\n')}` : '\nWhy this role:\n✅ [Highlight 1]\n✅ [Highlight 2]\n✅ [Highlight 3]';
+                    const reqs = f.requirements ? `\nWhat we\'re looking for:\n${f.requirements.split('\n').map(l => `• ${l.trim()}`).join('\n')}` : '\nWhat we\'re looking for:\n• [Requirement 1]\n• [Requirement 2]\n• [Requirement 3]';
+
+                    let post = '';
+                    if (f.postType === 'intern') {
+                      post = `🎓 Internship Alert: ${role} @ Microsoft\n\nCalling all students! 🙋‍♀️🙋‍♂️\n\nMicrosoft is looking for curious, driven interns to join us${team} in ${location}. This is your chance to work on real projects and kick-start your tech career.\n${highlights}\n${reqs}\n\n📍 Location: ${location}${level}\n\n👉 Apply now: [Link]\n📅 Deadline: [Date]\n\nKnow someone who'd be a great fit? Tag them below! 👇\n\n#MicrosoftIntern #Internship #Hiring #TechCareers`;
+                    } else if (f.postType === 'campus') {
+                      post = `🏫 Campus Recruiting: ${role} @ Microsoft\n\nHey students! 👋\n\nMicrosoft will be on campus for [Event: Career Fair / Info Session / Tech Talk].\n\nCome meet our team${team} and learn about opportunities in ${location}.\n${highlights}\n\n📍 Where: [Venue]\n🕐 When: [Time]\n🎁 Swag + snacks included!\n\nCan't make it? Apply online: [Link]\n\n#CampusRecruiting #Microsoft #TechCareers #NewGrad`;
+                    } else if (f.postType === 'diversity') {
+                      post = `🌍 We're Hiring: ${role} @ Microsoft\n\nAt Microsoft, diverse teams build better products. We're actively looking for talent from all backgrounds to join us${team}.\n\n📍 Location: ${location}${level}\n${highlights}\n${reqs}\n\nOur commitment:\n✅ Inclusive interview process\n✅ Employee Resource Groups\n✅ Mentorship programs\n✅ Equal pay for equal work\n\n📩 DM me or apply here: [Link]\n\n#DiversityInTech #InclusiveHiring #Microsoft #Hiring`;
+                    } else {
+                      post = `🚀 We're Hiring: ${role} @ Microsoft\n\nI'm excited to share that my team${team} is hiring!\n\n📍 Location: ${location}${level}\n${highlights}\n${reqs}\n\nWhat we offer:\n💡 Innovation — ship fast and learn faster\n🤝 Inclusive, supportive culture\n📈 Clear career growth paths\n⚖️ Work-life balance & hybrid flexibility\n\nInterested? Drop me a DM or apply here: [Link]\n\n#Hiring #${role.replace(/\s+/g, '')} #Microsoft #TechJobs #Careers`;
+                    }
+
+                    setPromptResult(post);
+                  }}
+                  disabled={!jobPostFields.role}
+                  className="btn-primary w-full py-3 text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  ✨ Generate Post
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="max-w-2xl mx-auto">
+              <div className="card p-6 sm:p-8">
+                <div className="bg-surface-alt rounded-xl p-4 mb-5 max-h-[400px] overflow-y-auto">
+                  <pre className="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed font-mono">{promptResult}</pre>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('Sent to Copilot ✓'); }}
+                    className="btn-primary py-3 text-sm font-semibold">🤖 Copilot</button>
+                  <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied ✓'); }}
+                    className="btn-secondary py-3 text-sm font-semibold">📋 Copy</button>
+                  <button onClick={() => { window.open('https://www.linkedin.com/feed/', '_blank'); copyToClipboard(promptResult); showToast('Copied! Paste on LinkedIn'); }}
+                    className="btn-secondary py-3 text-sm font-semibold">💼 LinkedIn</button>
+                </div>
+                <div className="flex justify-between items-center mt-5 pt-4 border-t border-border">
+                  <button onClick={() => setPromptResult('')} className="text-xs text-text-secondary hover:text-primary transition">← Edit details</button>
+                  <button onClick={() => { setPromptResult(''); setJobPostFields({ role: '', team: '', location: '', level: '', highlights: '', requirements: '', postType: 'general' }); }}
+                    className="text-xs text-primary font-medium hover:underline">+ New post</button>
                 </div>
               </div>
             </div>
