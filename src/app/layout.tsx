@@ -4,6 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CodeProtection from '@/components/CodeProtection';
 import AuthProvider from '@/components/AuthProvider';
+import FloatingFavorites from '@/components/FloatingFavorites';
 
 export const metadata: Metadata = {
   title: 'AI Recruiter Toolkit',
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
+          <FloatingFavorites />
         </AuthProvider>
       </body>
     </html>
