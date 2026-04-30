@@ -43,7 +43,7 @@ export default function Home() {
               <p className="text-xs text-text-muted">Create high‑impact job posts</p>
             </Link>
             <Link href="/templates" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
-              <div className="text-3xl mb-2">📊</div>
+              <div className="text-3xl mb-2">🧭</div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Recruiting Phases</p>
               <p className="text-xs text-text-muted">Find the right content for each stage of hiring</p>
             </Link>
