@@ -207,21 +207,26 @@ export default function HomeTabs() {
     <div>
       {/* ── Tab navigation ── */}
       <div className="flex items-stretch gap-3 mb-8 overflow-x-auto pb-1">
-        {/* 4 main tabs as big square icons */}
-        {TABS.filter(tab => tab.key !== 'favorites' && tab.key !== 'new').map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key)}
-            className={`flex flex-col items-center justify-center gap-2 min-w-[100px] p-4 sm:p-5 rounded-2xl border-2 transition-all shrink-0 ${
-              activeTab === tab.key
-                ? 'bg-white border-primary shadow-md scale-[1.02]'
-                : 'bg-white/60 border-border hover:border-primary/40 hover:shadow-sm'
-            }`}
-          >
-            <span className="text-2xl sm:text-3xl">{tab.icon}</span>
-            <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight ${activeTab === tab.key ? 'text-primary' : 'text-text-secondary'}`}>{tab.label}</span>
-          </button>
-        ))}
+        {/* 5 main tabs as big square icons → link to full pages */}
+        {TABS.filter(tab => tab.key !== 'favorites' && tab.key !== 'new').map((tab) => {
+          const hrefMap: Record<string, string> = {
+            templates: '/templates',
+            prompts: '/prompts',
+            copywriting: '/copywriting',
+            scenarios: '/scenarios',
+            phases: '/phases',
+          };
+          return (
+            <Link
+              key={tab.key}
+              href={hrefMap[tab.key] || '/'}
+              className="flex flex-col items-center justify-center gap-2 min-w-[100px] p-4 sm:p-5 rounded-2xl border-2 transition-all shrink-0 bg-white/60 border-border hover:border-primary/40 hover:shadow-md hover:scale-[1.02]"
+            >
+              <span className="text-2xl sm:text-3xl">{tab.icon}</span>
+              <span className="text-[11px] sm:text-xs font-semibold text-center leading-tight text-text-secondary">{tab.label}</span>
+            </Link>
+          );
+        })}
         {/* Favorites + New as small pill buttons */}
         <div className="flex flex-col justify-center gap-2 ml-2 shrink-0">
           <button
@@ -246,147 +251,6 @@ export default function HomeTabs() {
           </button>
         </div>
       </div>
-
-      {/* ── Email Templates tab ── */}
-      {activeTab === 'templates' && (
-        <div className="animate-fade-in">
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-            <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
-            {categories.map((c) => (
-              <span key={c} className="inline-flex items-center gap-0.5">
-                <button onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
-                {isCustomCategory(c) && <button onClick={() => handleDeleteCategory(c)} className="text-red-400 hover:text-red-600 text-xs ml-[-4px]" title={`Delete ${c}`}>✕</button>}
-              </span>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {emailTemplates.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
-            ))}
-          </div>
-          {emailTemplates.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/templates" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
-                View All {emailTemplates.length} Email Templates →
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Prompt Library tab ── */}
-      {activeTab === 'prompts' && (
-        <div className="animate-fade-in">
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-            <button onClick={() => setHomeCategoryFilter('All')} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
-            {categories.map((c) => (
-              <span key={c} className="inline-flex items-center gap-0.5">
-                <button onClick={() => setHomeCategoryFilter(c)} className={`cat-pill whitespace-nowrap ${homeCategoryFilter === c ? 'cat-pill-active' : ''}`}>{c}</button>
-                {isCustomCategory(c) && <button onClick={() => handleDeleteCategory(c)} className="text-red-400 hover:text-red-600 text-xs ml-[-4px]" title={`Delete ${c}`}>✕</button>}
-              </span>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {prompts.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
-            ))}
-          </div>
-          {prompts.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/prompts" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
-                View All {prompts.length} Prompts →
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Job Post Templates tab ── */}
-      {activeTab === 'copywriting' && (
-        <div className="animate-fade-in">
-          <div className="mb-5">
-            <p className="text-sm text-text-muted">LinkedIn job posting templates — copy, customize, and post to attract top talent.</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {copywritingItems.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
-            ))}
-          </div>
-          {copywritingItems.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-4xl mb-3 opacity-50">📭</p>
-              <p className="text-base font-medium text-text-secondary">No copywriting posts yet</p>
-            </div>
-          )}
-          {copywritingItems.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/copywriting" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
-                View All {copywritingItems.length} Posts →
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Scenarios tab ── */}
-      {activeTab === 'scenarios' && (
-        <div className="animate-fade-in">
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-            <button onClick={() => setHomeScenarioFilter('All')} className={`cat-pill whitespace-nowrap ${homeScenarioFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
-            {SCENARIOS.map((sc) => (
-              <button key={sc.key} onClick={() => setHomeScenarioFilter(sc.key)} className={`cat-pill whitespace-nowrap ${homeScenarioFilter === sc.key ? 'cat-pill-active' : ''}`}>{sc.icon} {sc.label}</button>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {scenarioItems.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
-            ))}
-          </div>
-          {scenarioItems.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-4xl mb-3 opacity-50">📭</p>
-              <p className="text-base font-medium text-text-secondary">No items found for this scenario</p>
-            </div>
-          )}
-          {scenarioItems.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/scenarios" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
-                View All {scenarioItems.length} Scenario Items →
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
-
-      {/* ── Recruiting Phases tab ── */}
-      {activeTab === 'phases' && (
-        <div className="animate-fade-in">
-          <div className="flex items-center gap-2 mb-5 overflow-x-auto pb-1">
-            <button onClick={() => setHomePhaseFilter('All')} className={`cat-pill whitespace-nowrap ${homePhaseFilter === 'All' ? 'cat-pill-active' : ''}`}>All</button>
-            {PHASES.map((ph) => (
-              <button key={ph.key} onClick={() => setHomePhaseFilter(ph.key)} className={`cat-pill whitespace-nowrap ${homePhaseFilter === ph.key ? 'cat-pill-active' : ''}`}>{ph.icon} {ph.label}</button>
-            ))}
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-            {phaseItems.slice(0, 6).map((t) => (
-              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
-            ))}
-          </div>
-          {phaseItems.length === 0 && (
-            <div className="text-center py-16">
-              <p className="text-4xl mb-3 opacity-50">📭</p>
-              <p className="text-base font-medium text-text-secondary">No items found for this phase</p>
-            </div>
-          )}
-          {phaseItems.length > 6 && (
-            <div className="text-center mt-8">
-              <Link href="/phases" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
-                View All {phaseItems.length} Phase Items →
-              </Link>
-            </div>
-          )}
-        </div>
-      )}
 
       {/* ── Favorites tab ── */}
       {activeTab === 'favorites' && (
