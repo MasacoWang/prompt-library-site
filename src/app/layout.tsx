@@ -3,7 +3,6 @@ import './globals.css';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import CodeProtection from '@/components/CodeProtection';
-import AuthGate from '@/components/AuthGate';
 
 export const metadata: Metadata = {
   title: 'AI Recruiter Toolkit',
@@ -22,12 +21,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-sans antialiased bg-surface-alt text-text-primary min-h-screen flex flex-col">
-        <AuthGate>
-          <CodeProtection />
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </AuthGate>
+        <CodeProtection />
+        <Header />
+        <main className="flex-1">{children}</main>
+        <Footer />
       </body>
     </html>
   );
