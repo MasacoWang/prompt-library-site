@@ -31,36 +31,56 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BROWSE THE TOOLKIT ── */}
-      <section className="px-4 sm:px-6 pb-12 sm:pb-16">
+      {/* ── BROWSE THE TOOLKIT (light background) ── */}
+      <section className="px-4 sm:px-6 py-10 sm:py-14 bg-[#f5f6fa]">
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-6">
             <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-1">Browse the Toolkit</h2>
             <p className="text-sm text-text-secondary">Choose what you need to get started</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <Link href="/templates?kind=template" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
-              <div className="text-3xl mb-2">✉️</div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Email Templates</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Microsoft Blue - Email Templates */}
+            <Link href="/templates?kind=template" className="p-5 text-center rounded-xl border-2 border-[#0078d4]/20 bg-white hover:border-[#0078d4]/50 hover:shadow-md transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#0078d4]/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-xl">✉️</span>
+              </div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-[#0078d4] transition-colors mb-1">Email Templates</p>
               <p className="text-xs text-text-muted">Ready‑to‑send recruiting emails</p>
             </Link>
-            <Link href="/templates?kind=prompt" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
-              <div className="text-3xl mb-2">💡</div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Prompt Library</p>
+
+            {/* Microsoft Green - Prompt Library */}
+            <Link href="/templates?kind=prompt" className="p-5 text-center rounded-xl border-2 border-[#107c10]/20 bg-white hover:border-[#107c10]/50 hover:shadow-md transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#107c10]/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-xl">💡</span>
+              </div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-[#107c10] transition-colors mb-1">Prompt Library</p>
               <p className="text-xs text-text-muted">Generate recruiter insights instantly</p>
             </Link>
-            <Link href="/templates?kind=copywriting" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
-              <div className="text-3xl mb-2">📝</div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Job Post Templates</p>
+
+            {/* Microsoft Yellow/Orange - Job Post Templates */}
+            <Link href="/templates?kind=copywriting" className="p-5 text-center rounded-xl border-2 border-[#ffb900]/20 bg-white hover:border-[#ffb900]/50 hover:shadow-md transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#ffb900]/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-xl">📝</span>
+              </div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">Job Post Templates</p>
               <p className="text-xs text-text-muted">Create high‑impact job posts</p>
+            </Link>
+
+            {/* Microsoft Red - AI Assistant */}
+            <Link href="/ai-assistant" className="p-5 text-center rounded-xl border-2 border-[#d83b01]/20 bg-white hover:border-[#d83b01]/50 hover:shadow-md transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#d83b01]/10 flex items-center justify-center mx-auto mb-3">
+                <span className="text-xl">🤖</span>
+              </div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">AI Assistant</p>
+              <p className="text-xs text-text-muted">Generate emails, job posts & summaries with AI</p>
             </Link>
           </div>
 
           {/* Filter guide */}
-          <div className="mt-6 p-4 rounded-xl bg-surface-alt border border-border text-center">
+          <div className="mt-6 p-4 rounded-xl bg-white border border-border text-center">
             <p className="text-xs text-text-secondary">
-              💡 <span className="font-medium text-text-primary">Tip:</span> Use the filters on the templates page to narrow by <span className="font-medium">Recruiting Phase</span> (Strategy, Sourcing, Screening, Interview, Offer) or <span className="font-medium">Use Case</span> (Outreach, Interview Prep, Evaluation, HM Communication).
+              💡 <span className="font-medium text-text-primary">Tip:</span> Use filters to narrow by <span className="font-medium">Recruiting Phase</span> or <span className="font-medium">Use Case</span> on the templates page.
             </p>
           </div>
         </div>
