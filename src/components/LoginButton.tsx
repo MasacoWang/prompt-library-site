@@ -26,11 +26,18 @@ export default function LoginButton() {
   }
 
   return (
-    <button
-      onClick={() => signIn()}
-      className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-text-secondary hover:text-text-primary hover:bg-surface-hover transition"
-    >
-      🔑 Sign in
-    </button>
+    <div className="relative group">
+      <button
+        onClick={() => signIn()}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg border border-border text-text-secondary hover:text-text-primary hover:bg-surface-hover transition"
+      >
+        🔑 Sign in
+      </button>
+      {/* Tooltip hint */}
+      <div className="absolute top-full right-0 mt-2 w-52 p-2.5 rounded-lg bg-text-primary text-white text-[11px] leading-relaxed shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
+        <p className="font-medium mb-1">Optional — no sign‑in needed!</p>
+        <p>Sign in only if you want to sync favorites across devices. All templates work without an account.</p>
+      </div>
+    </div>
   );
 }
