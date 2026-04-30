@@ -1,59 +1,53 @@
-import ActionGuide from '@/components/ActionGuide';
-import HomeTabs from '@/components/HomeTabs';
 import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-mesh">
-      {/* ── HERO (compact) ── */}
-      <section className="pt-6 sm:pt-8 pb-4 px-4 sm:px-6">
+      {/* ── HERO ── */}
+      <section className="pt-12 sm:pt-16 pb-8 sm:pb-10 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight mb-1 animate-fade-in">
-            AI Recruiter Toolkit
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-3 animate-fade-in">
+            Create ready‑to‑send recruiting content in seconds
           </h1>
-          <p className="text-xs text-text-secondary max-w-md mx-auto mb-3 animate-fade-in" style={{ animationDelay: '0.05s' }}>
-            One-click templates for sourcing, outreach, interviews & offers. No login needed.
+          <p className="text-base sm:text-lg font-medium text-text-secondary mb-2 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+            Choose → Run → Send
           </p>
-          <ActionGuide />
+          <p className="text-sm text-text-muted animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            Run in Copilot · Copy · Open in Outlook
+          </p>
         </div>
       </section>
 
-      {/* ── WHAT YOU CAN DO (moved up) ── */}
-      <section className="px-4 sm:px-6 pb-4">
+      {/* ── BROWSE THE TOOLKIT ── */}
+      <section className="px-4 sm:px-6 pb-12 sm:pb-16">
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Link href="/templates?kind=template" className="card p-3 text-center hover:border-primary/40 transition-colors group">
-              <div className="text-xl mb-1">✉️</div>
-              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Email Templates</p>
-              <p className="text-[10px] text-text-muted">Every recruiting stage</p>
-            </Link>
-            <Link href="/templates?kind=prompt" className="card p-3 text-center hover:border-primary/40 transition-colors group">
-              <div className="text-xl mb-1">💡</div>
-              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">AI Prompts</p>
-              <p className="text-[10px] text-text-muted">Copilot-ready drafts</p>
-            </Link>
-            <Link href="/templates?kind=copywriting" className="card p-3 text-center hover:border-primary/40 transition-colors group">
-              <div className="text-xl mb-1">📝</div>
-              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Job Post Templates</p>
-              <p className="text-[10px] text-text-muted">LinkedIn-ready posts</p>
-            </Link>
-            <Link href="/ai-assistant" className="card p-3 text-center hover:border-primary/40 transition-colors group">
-              <div className="text-xl mb-1">🤖</div>
-              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">AI Assistant</p>
-              <p className="text-[10px] text-text-muted">Generate & customize</p>
-            </Link>
+          <div className="text-center mb-6">
+            <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-1">Browse the Toolkit</h2>
+            <p className="text-sm text-text-secondary">Choose what you need to get started</p>
           </div>
-        </div>
-      </section>
 
-      {/* ── BROWSE TOOLKIT ── */}
-      <section id="template-library" className="px-4 sm:px-6 pb-10 sm:pb-14 scroll-mt-20">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-4">
-            <h2 className="text-sm sm:text-base font-bold text-text-primary mb-0.5">Browse the Toolkit</h2>
-            <p className="text-[11px] text-text-secondary">Click a category to explore all templates, prompts, and job posts</p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            <Link href="/templates?kind=template" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
+              <div className="text-3xl mb-2">✉️</div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Email Templates</p>
+              <p className="text-xs text-text-muted">Ready‑to‑send recruiting emails</p>
+            </Link>
+            <Link href="/templates?kind=prompt" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
+              <div className="text-3xl mb-2">💡</div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Prompt Library</p>
+              <p className="text-xs text-text-muted">Generate recruiter insights instantly</p>
+            </Link>
+            <Link href="/templates?kind=copywriting" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
+              <div className="text-3xl mb-2">📝</div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Job Post Templates</p>
+              <p className="text-xs text-text-muted">Create high‑impact job posts</p>
+            </Link>
+            <Link href="/templates" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
+              <div className="text-3xl mb-2">📊</div>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Recruiting Phases</p>
+              <p className="text-xs text-text-muted">Find the right content for each stage of hiring</p>
+            </Link>
           </div>
-          <HomeTabs />
         </div>
       </section>
     </div>
