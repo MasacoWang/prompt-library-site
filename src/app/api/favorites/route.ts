@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { kv } from '@vercel/kv';
 
-function getAuthOptions() {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getAuthOptions(): any {
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const GitHubProvider = require('next-auth/providers/github').default;
   return {
@@ -14,9 +15,10 @@ function getAuthOptions() {
     ],
     secret: process.env.NEXTAUTH_SECRET,
     callbacks: {
-      async session({ session, token }: { session: Record<string, unknown>; token: Record<string, unknown> }) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      async session({ session, token }: any) {
         if (session.user) {
-          (session.user as Record<string, unknown>).id = token.sub;
+          session.user.id = token.sub;
         }
         return session;
       },
@@ -32,7 +34,8 @@ export async function GET() {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
 
-    const userId = (session.user as Record<string, unknown>).id || session.user.email;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userId = (session.user as any).id || session.user.email;
     const favorites = await kv.get<string[]>(`favorites:${userId}`) || [];
     return NextResponse.json({ favorites });
   } catch {
@@ -49,7 +52,8 @@ export async function POST(req: NextRequest) {
     }
 
     const { favorites } = await req.json();
-    const userId = (session.user as Record<string, unknown>).id || session.user.email;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const userId = (session.user as any).id || session.user.email;
     await kv.set(`favorites:${userId}`, favorites);
     return NextResponse.json({ success: true });
   } catch {

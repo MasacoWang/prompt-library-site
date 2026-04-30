@@ -7,18 +7,13 @@ const handler = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID!,
       clientSecret: process.env.GITHUB_CLIENT_SECRET!,
     }),
-    // Microsoft provider can be added later:
-    // AzureADProvider({
-    //   clientId: process.env.AZURE_AD_CLIENT_ID!,
-    //   clientSecret: process.env.AZURE_AD_CLIENT_SECRET!,
-    //   tenantId: process.env.AZURE_AD_TENANT_ID!,
-    // }),
   ],
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
-    async session({ session, token }) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async session({ session, token }: any) {
       if (session.user) {
-        (session.user as Record<string, unknown>).id = token.sub;
+        session.user.id = token.sub;
       }
       return session;
     },
