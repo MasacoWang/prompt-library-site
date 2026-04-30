@@ -237,8 +237,8 @@ export default function Editor({
 
               {/* Quick Actions */}
               <div className="flex flex-wrap gap-2 pt-3 border-t border-border">
-                <button onClick={onCopyToCopilot} className="btn-primary px-3 py-1.5 text-xs">
-                  🤖 Copy to Copilot
+                <button onClick={onCopyToCopilot} className="btn-primary px-3 py-1.5 text-xs" title="Auto-copies text — just paste in Copilot">
+                  🤖 Run in Copilot
                 </button>
                 <button onClick={onCopyPlain} className="btn-secondary px-3 py-1.5 text-xs">
                   📋 Copy
@@ -247,6 +247,7 @@ export default function Editor({
                   ✉️ Outlook
                 </button>
               </div>
+              <p className="text-[10px] text-text-muted mt-1.5">💡 Clicking "Run in Copilot" auto‑copies the text. Just paste (Ctrl+V) in the Copilot chat.</p>
             </div>
           )}
         </div>

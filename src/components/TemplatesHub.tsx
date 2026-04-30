@@ -169,7 +169,7 @@ export default function TemplatesHub() {
     if (e) e.stopPropagation();
     try {
       await copyToCopilot(text);
-      showToastMsg('Copied to clipboard — paste in Copilot to run');
+      showToastMsg('✅ Copied! Paste (Ctrl+V) in Copilot chat to run');
     } catch {
       showToastMsg('Copy failed — please use Copy, then paste in Copilot');
     }
@@ -581,7 +581,7 @@ function TemplateCard({
 
       {/* Primary actions (always visible) */}
       <div className="flex items-center gap-1 pt-2 border-t border-border" onClick={(e) => e.stopPropagation()}>
-        <button onClick={onCopilot} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition">
+        <button onClick={onCopilot} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition" title="Auto-copies text — just paste in Copilot">
           🤖 Copilot
         </button>
         <button onClick={onCopy} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition">
