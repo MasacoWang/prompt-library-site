@@ -8,11 +8,12 @@ import { STARTER_TEMPLATES } from '@/lib/data';
 import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory, loadSharedFavCounts } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
-type TabKey = 'templates' | 'prompts' | 'scenarios' | 'phases' | 'favorites' | 'new';
+type TabKey = 'templates' | 'prompts' | 'copywriting' | 'scenarios' | 'phases' | 'favorites' | 'new';
 
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'templates', label: 'Email Templates', icon: '✉️' },
   { key: 'prompts', label: 'Prompt Library', icon: '💡' },
+  { key: 'copywriting', label: 'Recruiting 文案', icon: '📝' },
   { key: 'scenarios', label: 'Scenarios', icon: '🎯' },
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
   { key: 'favorites', label: 'Favorites', icon: '❤️' },
@@ -30,10 +31,12 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
             className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
               item.kind === 'prompt'
                 ? 'bg-purple-50 text-purple-600 border border-purple-200'
+                : item.kind === 'copywriting'
+                ? 'bg-green-50 text-green-600 border border-green-200'
                 : 'bg-amber-50 text-amber-600 border border-amber-200'
             }`}
           >
-            {item.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
+            {item.kind === 'prompt' ? '💡 Prompt' : item.kind === 'copywriting' ? '📝 文案' : '✉️ Template'}
           </span>
         </div>
       </div>
@@ -90,7 +93,7 @@ export default function HomeTabs() {
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
-  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template', scenario: [] as string[] });
+  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template' | 'copywriting', scenario: [] as string[] });
   const [categories, setCategories] = useState<string[]>([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -168,6 +171,7 @@ export default function HomeTabs() {
 
   const emailTemplates = items.filter((t) => t.kind === 'template' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
   const prompts = items.filter((t) => t.kind === 'prompt' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
+  const copywritingItems = items.filter((t) => t.kind === 'copywriting');
   const favoriteItems = items.filter((t) => favorites.has(t.id));
   const scenarioItems = items.filter((t) => {
     if (homeScenarioFilter === 'All') return t.scenario && t.scenario.length > 0;
@@ -297,6 +301,33 @@ export default function HomeTabs() {
         </div>
       )}
 
+      {/* ── Recruiting 文案 tab ── */}
+      {activeTab === 'copywriting' && (
+        <div className="animate-fade-in">
+          <div className="mb-5">
+            <p className="text-sm text-text-muted">LinkedIn job posting templates — copy, customize, and post to attract top talent.</p>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {copywritingItems.slice(0, 6).map((t) => (
+              <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onDelete={() => handleDelete(t.id)} onOpen={() => handleOpen(t.id)} />
+            ))}
+          </div>
+          {copywritingItems.length === 0 && (
+            <div className="text-center py-16">
+              <p className="text-4xl mb-3 opacity-50">📭</p>
+              <p className="text-base font-medium text-text-secondary">No copywriting posts yet</p>
+            </div>
+          )}
+          {copywritingItems.length > 6 && (
+            <div className="text-center mt-8">
+              <Link href="/copywriting" className="btn-secondary px-6 py-2.5 text-sm inline-flex items-center gap-1.5">
+                View All {copywritingItems.length} Posts →
+              </Link>
+            </div>
+          )}
+        </div>
+      )}
+
       {/* ── Scenarios tab ── */}
       {activeTab === 'scenarios' && (
         <div className="animate-fade-in">
@@ -381,7 +412,7 @@ export default function HomeTabs() {
         <div className="animate-fade-in max-w-2xl mx-auto">
           <div className="card p-6 space-y-5">
             <h3 className="text-lg font-semibold text-text-primary">Create New</h3>
-            <div className="flex gap-3">
+            <div className="flex gap-3 flex-wrap">
               <button
                 onClick={() => setNewDraft((d) => ({ ...d, kind: 'prompt' }))}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'prompt' ? 'bg-purple-100 text-purple-700 border-2 border-purple-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
@@ -393,6 +424,12 @@ export default function HomeTabs() {
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'template' ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
               >
                 ✉️ Email Template
+              </button>
+              <button
+                onClick={() => setNewDraft((d) => ({ ...d, kind: 'copywriting' }))}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'copywriting' ? 'bg-green-100 text-green-700 border-2 border-green-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
+              >
+                📝 Recruiting 文案
               </button>
             </div>
             <div>

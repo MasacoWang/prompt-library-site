@@ -158,11 +158,12 @@ export default function Editor({
                   <label className={labelClass}>Type</label>
                   <select
                     value={editDraft.kind || 'prompt'}
-                    onChange={(e) => onDraftChange({ ...editDraft, kind: e.target.value as 'prompt' | 'template' })}
+                    onChange={(e) => onDraftChange({ ...editDraft, kind: e.target.value as 'prompt' | 'template' | 'copywriting' })}
                     className={inputClass}
                   >
                     <option value="prompt">💡 Prompt</option>
                     <option value="template">✉️ Email Template</option>
+                    <option value="copywriting">📝 Recruiting 文案</option>
                   </select>
                 </div>
               </div>

@@ -106,7 +106,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
       const newId = generateId();
       const newT: Template = {
         id: newId, title: editDraft.title!, category: editDraft.category || 'Strategy',
-        kind: (editDraft.kind as 'prompt' | 'template') || (kindFilter || 'prompt'),
+        kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || (kindFilter || 'prompt'),
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
         phase: [(editDraft.category || 'Strategy').toLowerCase()],

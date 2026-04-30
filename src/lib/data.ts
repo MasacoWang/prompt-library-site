@@ -7,7 +7,7 @@ function stableId(title: string, kind: string): string {
 function t(
   title: string,
   category: string,
-  kind: 'prompt' | 'template',
+  kind: 'prompt' | 'template' | 'copywriting',
   body: string,
   casualBody?: string,
   pinned = false,
@@ -494,4 +494,154 @@ Tone: [Tone Style]
 Include: clear subject line, concise body, specific call-to-action.
 Keep under 200 words.`,
 undefined, false, ['outreach', 'hm-communication']),
+
+  // ── RECRUITING 文案 (Job Posting Copywriting) ──────────────────────────────────
+  t('Software Engineer — LinkedIn Post', 'Sourcing', 'copywriting',
+`🚀 We're Hiring: Software Engineer @ Microsoft
+
+Are you passionate about building products that empower millions of people worldwide?
+
+We're looking for a Software Engineer to join our team in [Location/Remote]. You'll work on [Product/Team] — designing, building, and shipping features that make a real impact.
+
+What you'll do:
+• Build scalable services and delightful user experiences
+• Collaborate with cross-functional teams (PM, Design, Data Science)
+• Own your features end-to-end — from architecture to production
+
+What we're looking for:
+• Strong CS fundamentals & coding skills
+• Experience with [Tech Stack, e.g., C#, TypeScript, Python, Azure]
+• A growth mindset and passion for learning
+
+Why Microsoft?
+✅ Inclusive culture where you can be yourself
+✅ Competitive compensation & benefits
+✅ Hybrid flexibility & work-life balance
+✅ Career growth & learning resources
+
+📩 Interested? Drop me a DM or apply here: [Link]
+
+#Hiring #SoftwareEngineer #Microsoft #TechJobs #Careers`,
+undefined, false, ['outreach']),
+
+  t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'copywriting',
+`🎓 Internship Alert: Microsoft [Year] Summer Internship
+
+Calling all students! 🙋‍♀️🙋‍♂️
+
+Microsoft is looking for curious, driven interns to join us this summer in [Location]. This is your chance to work on real projects, learn from world-class engineers, and kick-start your tech career.
+
+What to expect:
+• A meaningful project with real business impact
+• Mentorship from experienced engineers & leaders
+• Fun intern events, networking, and community
+• Competitive pay + housing assistance
+
+Who should apply:
+• Currently pursuing a Bachelor's/Master's in CS, EE, or related field
+• Graduating between [Date Range]
+• Passionate about technology and problem-solving
+
+We welcome students from all backgrounds — diversity makes us stronger 🌈
+
+👉 Apply now: [Link]
+📅 Application deadline: [Date]
+
+Know someone who'd be a great fit? Tag them below! 👇
+
+#MicrosoftIntern #Internship #TechInternship #Students #Hiring`,
+undefined, false, ['outreach']),
+
+  t('General Role Posting — LinkedIn Post', 'Sourcing', 'copywriting',
+`📢 Open Role: [Job Title] @ Microsoft
+
+I'm excited to share that my team is hiring a [Job Title]!
+
+About the role:
+We're looking for someone who [brief description of what the role does and why it matters]. You'll be part of [Team/Org] working on [Product/Mission].
+
+Key responsibilities:
+• [Responsibility 1]
+• [Responsibility 2]
+• [Responsibility 3]
+
+Ideal candidate:
+• [X] years of experience in [Field]
+• Strong skills in [Skill 1], [Skill 2]
+• Excellent communication and collaboration
+
+What makes this team special:
+💡 Innovation — we ship fast and learn faster
+🤝 Culture — supportive, inclusive, and fun
+📈 Growth — clear career paths and development opportunities
+
+📍 Location: [City] / Hybrid / Remote
+💼 Level: [Level Range]
+
+If this sounds like you (or someone you know), let's connect!
+Apply here: [Link]
+
+#OpenToWork #Hiring #[JobTitle] #Microsoft #Careers`,
+undefined, false, ['outreach']),
+
+  t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'copywriting',
+`🏫 Campus Recruiting Season is Here!
+
+Hey [University Name] students! 👋
+
+Microsoft will be on campus [Date] for [Event: Career Fair / Info Session / Tech Talk].
+
+Come meet our team, learn about full-time & internship opportunities, and see what it's like to build technology that changes the world.
+
+📍 Where: [Venue]
+🕐 When: [Time]
+🎁 Swag + snacks included!
+
+Roles we're hiring for:
+• Software Engineer
+• Product Manager
+• Data Scientist
+• UX Designer
+• And more!
+
+No appointment needed — just show up and say hi! 🙌
+
+Can't make it? You can still apply online: [Link]
+
+See you there! 👀
+
+#CampusRecruiting #Microsoft #[UniversityName] #TechCareers #NewGrad`,
+undefined, false, ['outreach']),
+
+  t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'copywriting',
+`🌍 Diversity in Tech Starts with Intentional Hiring
+
+At Microsoft, we believe diverse teams build better products. That's why we're committed to creating opportunities for underrepresented talent in tech.
+
+We're actively hiring for multiple roles across engineering, design, and product — and we want to hear from YOU.
+
+🙋 Whether you're:
+• A career changer breaking into tech
+• A bootcamp grad looking for your first opportunity
+• A professional from a non-traditional background
+
+We see your potential and value your unique perspective.
+
+Open roles include:
+• [Role 1]
+• [Role 2]
+• [Role 3]
+
+Our commitment to you:
+✅ Inclusive interview process
+✅ Employee Resource Groups (ERGs)
+✅ Mentorship programs
+✅ Equal pay for equal work
+
+📩 DM me or apply here: [Link]
+
+Let's build a future that represents everyone. 🤝
+
+#DiversityInTech #InclusiveHiring #Microsoft #TechForAll #Hiring`,
+undefined, false, ['outreach']),
 ];

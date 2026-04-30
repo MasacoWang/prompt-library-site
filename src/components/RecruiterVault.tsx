@@ -80,7 +80,7 @@ export default function RecruiterVault() {
       const newId = generateId();
       const newT: Template = {
         id: newId, title: editDraft.title!, category: editDraft.category || 'Strategy',
-        kind: (editDraft.kind as 'prompt' | 'template') || 'prompt',
+        kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
       };
