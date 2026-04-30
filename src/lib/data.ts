@@ -459,7 +459,7 @@ If you have any questions or experience any issues accessing the Action Center, 
 We are very excited to welcome you to the Microsoft team and look forward to your acceptance!
 
 [Sender Name]
-[Sender Position Title]`),
+[Sender Position Title]`, undefined, false, ['outreach']),
 
   t('Salary Expectation Misalignment', 'Offer', 'template',
 `Subject: Thank You for Your Time
