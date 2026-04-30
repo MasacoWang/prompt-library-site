@@ -12,6 +12,7 @@ import {
   getAllCategories, deleteCustomCategory, isCustomCategory,
   loadSharedFavCounts,
 } from '@/lib/utils';
+import { useFavoritesSync } from '@/lib/useFavoritesSync';
 import Editor from '@/components/Editor';
 import ActionGuide from '@/components/ActionGuide';
 import Swal from 'sweetalert2';
@@ -40,6 +41,9 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [allCategories, setAllCategories] = useState<string[]>([]);
+
+  // Sync favorites with server when logged in
+  useFavoritesSync(favorites, setFavorites);
 
   useEffect(() => {
     setTemplates(loadTemplates(STARTER_TEMPLATES));

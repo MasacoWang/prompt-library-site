@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import LoginButton from '@/components/LoginButton';
 
 const NAV_ITEMS = [
   { label: 'Home', href: '/' },
@@ -141,6 +142,12 @@ export default function Header() {
               </div>
             )}
           </div>
+
+          {/* Divider */}
+          <div className="w-px h-5 bg-border mx-1" />
+
+          {/* Login Button */}
+          <LoginButton />
         </nav>
 
         {/* Mobile hamburger */}
