@@ -108,6 +108,23 @@ export default function HomeTabs() {
     setSharedFavCounts(loadSharedFavCounts());
     setItems(loadTemplates(STARTER_TEMPLATES));
     setCategories(getAllCategories());
+
+    // Read URL hash to activate the correct tab
+    const hash = window.location.hash.replace('#', '') as TabKey;
+    const validTabs: TabKey[] = ['templates', 'prompts', 'copywriting', 'scenarios', 'phases', 'favorites', 'new'];
+    if (hash && validTabs.includes(hash)) {
+      setActiveTab(hash);
+    }
+
+    const onHashChange = () => {
+      const h = window.location.hash.replace('#', '') as TabKey;
+      if (h && validTabs.includes(h)) {
+        setActiveTab(h);
+        document.getElementById('template-library')?.scrollIntoView({ behavior: 'smooth' });
+      }
+    };
+    window.addEventListener('hashchange', onHashChange);
+    return () => window.removeEventListener('hashchange', onHashChange);
   }, []);
 
   const showToast = (msg: string) => {
