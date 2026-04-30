@@ -163,7 +163,7 @@ export default function Editor({
                   >
                     <option value="prompt">💡 Prompt</option>
                     <option value="template">✉️ Email Template</option>
-                    <option value="copywriting">📝 Recruiting 文案</option>
+                    <option value="copywriting">📝 Job Post Template</option>
                   </select>
                 </div>
               </div>

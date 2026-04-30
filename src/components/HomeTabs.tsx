@@ -13,7 +13,7 @@ type TabKey = 'templates' | 'prompts' | 'copywriting' | 'scenarios' | 'phases' |
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'templates', label: 'Email Templates', icon: '✉️' },
   { key: 'prompts', label: 'Prompt Library', icon: '💡' },
-  { key: 'copywriting', label: 'Recruiting 文案', icon: '📝' },
+  { key: 'copywriting', label: 'Job Post Templates', icon: '📝' },
   { key: 'scenarios', label: 'Scenarios', icon: '🎯' },
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
   { key: 'favorites', label: 'Favorites', icon: '❤️' },
@@ -36,7 +36,7 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
                 : 'bg-amber-50 text-amber-600 border border-amber-200'
             }`}
           >
-            {item.kind === 'prompt' ? '💡 Prompt' : item.kind === 'copywriting' ? '📝 文案' : '✉️ Template'}
+            {item.kind === 'prompt' ? '💡 Prompt' : item.kind === 'copywriting' ? '📝 Job Post' : '✉️ Template'}
           </span>
         </div>
       </div>
@@ -301,7 +301,7 @@ export default function HomeTabs() {
         </div>
       )}
 
-      {/* ── Recruiting 文案 tab ── */}
+      {/* ── Job Post Templates tab ── */}
       {activeTab === 'copywriting' && (
         <div className="animate-fade-in">
           <div className="mb-5">
@@ -429,7 +429,7 @@ export default function HomeTabs() {
                 onClick={() => setNewDraft((d) => ({ ...d, kind: 'copywriting' }))}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'copywriting' ? 'bg-green-100 text-green-700 border-2 border-green-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
               >
-                📝 Recruiting 文案
+                📝 Job Post Template
               </button>
             </div>
             <div>
