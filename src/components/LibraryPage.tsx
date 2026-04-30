@@ -18,7 +18,7 @@ import ActionGuide from '@/components/ActionGuide';
 import Swal from 'sweetalert2';
 
 interface LibraryPageProps {
-  kindFilter: 'template' | 'prompt' | null;
+  kindFilter: 'template' | 'prompt' | 'copywriting' | null;
   pageTitle: string;
   pageDescription: string;
   filterMode?: 'scenario' | 'phase';
@@ -324,9 +324,11 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
                   <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                     t.kind === 'prompt'
                       ? 'bg-purple-50 text-purple-600 border border-purple-200'
+                      : t.kind === 'copywriting'
+                      ? 'bg-green-50 text-green-600 border border-green-200'
                       : 'bg-amber-50 text-amber-600 border border-amber-200'
                   }`}>
-                    {t.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
+                    {t.kind === 'prompt' ? '💡 Prompt' : t.kind === 'copywriting' ? '📝 Job Post' : '✉️ Template'}
                   </span>
                 </div>
               </div>
