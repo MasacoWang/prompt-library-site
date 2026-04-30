@@ -307,21 +307,21 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
           <p className="text-sm text-text-muted mt-1">Try adjusting your search or category filter</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
           {filtered.map((t, i) => (
             <div
               key={t.id}
               onClick={() => handleSelectItem(t.id)}
-              className="card p-5 cursor-pointer group card-enter"
+              className="card p-3.5 cursor-pointer group card-enter"
               style={{ animationDelay: `${i * 0.03}s` }}
             >
-              <div className="mb-3">
-                <h3 className="font-semibold text-text-primary text-[15px] mb-2 group-hover:text-primary transition truncate">
+              <div className="mb-2">
+                <h3 className="font-semibold text-text-primary text-sm mb-1.5 group-hover:text-primary transition truncate">
                   {t.title}
                 </h3>
-                <div className="flex items-center gap-2">
-                  <span className="token-pill">{t.category}</span>
-                  <span className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                <div className="flex items-center gap-1.5">
+                  <span className="token-pill text-[10px]">{t.category}</span>
+                  <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                     t.kind === 'prompt'
                       ? 'bg-purple-50 text-purple-600 border border-purple-200'
                       : t.kind === 'copywriting'
@@ -332,22 +332,22 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
                   </span>
                 </div>
               </div>
-              <p className="text-sm text-text-muted line-clamp-3 leading-relaxed mb-4">
-                {t.body.slice(0, 180)}
+              <p className="text-xs text-text-muted line-clamp-2 leading-relaxed mb-2">
+                {t.body.slice(0, 120)}
               </p>
               {/* Stats row */}
-              <div className="flex items-center gap-3 text-[11px] text-text-muted mb-3">
+              <div className="flex items-center gap-2 text-[10px] text-text-muted mb-2">
                 {viewCounts[t.id] > 0 && (
-                  <span className="flex items-center gap-1">👁 {viewCounts[t.id]} {viewCounts[t.id] === 1 ? 'view' : 'views'}</span>
+                  <span className="flex items-center gap-1">👁 {viewCounts[t.id]}</span>
                 )}
                 {(sharedFavCounts[t.id] || 0) > 0 && (
                   <span className="flex items-center gap-1 text-red-400">❤️ {sharedFavCounts[t.id]}</span>
                 )}
                 {favorites.has(t.id) && !(sharedFavCounts[t.id] > 0) && (
-                  <span className="flex items-center gap-1 text-red-400">❤️ Favorited</span>
+                  <span className="flex items-center gap-1 text-red-400">❤️</span>
                 )}
               </div>
-              <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity pt-3 border-t border-border">
+              <div className="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity pt-2 border-t border-border">
                 <button
                   onClick={(e) => { e.stopPropagation(); handleFavoriteToggle(t.id, e); }}
                   className={`btn-ghost p-1.5 text-xs ${favorites.has(t.id) ? 'text-red-500' : ''}`}
