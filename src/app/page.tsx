@@ -40,36 +40,36 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-            {/* Microsoft Blue - Email Templates */}
-            <Link href="/templates?kind=template" className="p-5 text-center rounded-xl border-2 border-[#0078d4]/20 bg-white hover:border-[#0078d4]/50 hover:shadow-md transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#0078d4]/10 flex items-center justify-center mx-auto mb-3">
+            {/* Blue - Email Templates */}
+            <Link href="/templates?kind=template" className="p-5 text-center rounded-xl border border-[#0078d4]/15 bg-[#0078d4]/[0.03] hover:bg-[#0078d4]/[0.06] hover:border-[#0078d4]/30 hover:shadow-sm transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#0078d4]/[0.07] flex items-center justify-center mx-auto mb-3">
                 <span className="text-xl">✉️</span>
               </div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-[#0078d4] transition-colors mb-1">Email Templates</p>
               <p className="text-xs text-text-muted">Ready‑to‑send recruiting emails</p>
             </Link>
 
-            {/* Microsoft Green - Prompt Library */}
-            <Link href="/templates?kind=prompt" className="p-5 text-center rounded-xl border-2 border-[#107c10]/20 bg-white hover:border-[#107c10]/50 hover:shadow-md transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#107c10]/10 flex items-center justify-center mx-auto mb-3">
+            {/* Green - Prompt Library */}
+            <Link href="/templates?kind=prompt" className="p-5 text-center rounded-xl border border-[#107c10]/15 bg-[#107c10]/[0.03] hover:bg-[#107c10]/[0.06] hover:border-[#107c10]/30 hover:shadow-sm transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#107c10]/[0.07] flex items-center justify-center mx-auto mb-3">
                 <span className="text-xl">💡</span>
               </div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-[#107c10] transition-colors mb-1">Prompt Library</p>
               <p className="text-xs text-text-muted">Generate recruiter insights instantly</p>
             </Link>
 
-            {/* Microsoft Yellow/Orange - Job Post Templates */}
-            <Link href="/templates?kind=copywriting" className="p-5 text-center rounded-xl border-2 border-[#ffb900]/20 bg-white hover:border-[#ffb900]/50 hover:shadow-md transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#ffb900]/10 flex items-center justify-center mx-auto mb-3">
+            {/* Yellow - Job Post Templates */}
+            <Link href="/templates?kind=copywriting" className="p-5 text-center rounded-xl border border-[#ffb900]/15 bg-[#ffb900]/[0.03] hover:bg-[#ffb900]/[0.06] hover:border-[#ffb900]/30 hover:shadow-sm transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#ffb900]/[0.07] flex items-center justify-center mx-auto mb-3">
                 <span className="text-xl">📝</span>
               </div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">Job Post Templates</p>
               <p className="text-xs text-text-muted">Create high‑impact job posts</p>
             </Link>
 
-            {/* Microsoft Red - AI Assistant */}
-            <Link href="/ai-assistant" className="p-5 text-center rounded-xl border-2 border-[#d83b01]/20 bg-white hover:border-[#d83b01]/50 hover:shadow-md transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#d83b01]/10 flex items-center justify-center mx-auto mb-3">
+            {/* Red - AI Assistant */}
+            <Link href="/ai-assistant" className="p-5 text-center rounded-xl border border-[#d83b01]/15 bg-[#d83b01]/[0.03] hover:bg-[#d83b01]/[0.06] hover:border-[#d83b01]/30 hover:shadow-sm transition-all group">
+              <div className="w-10 h-10 rounded-lg bg-[#d83b01]/[0.07] flex items-center justify-center mx-auto mb-3">
                 <span className="text-xl">🤖</span>
               </div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">AI Assistant</p>
