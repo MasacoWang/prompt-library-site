@@ -1,12 +1,5 @@
-import LibraryPage from '@/components/LibraryPage';
+import { redirect } from 'next/navigation';
 
 export default function ScenariosPage() {
-  return (
-    <LibraryPage
-      kindFilter={null}
-      pageTitle="Scenarios"
-      pageDescription="Browse templates and prompts organized by recruiting scenario."
-      filterMode="scenario"
-    />
-  );
+  redirect('/templates');
 }

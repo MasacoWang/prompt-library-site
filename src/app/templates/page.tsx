@@ -1,11 +1,10 @@
-import LibraryPage from '@/components/LibraryPage';
+import { Suspense } from 'react';
+import TemplatesHub from '@/components/TemplatesHub';
 
 export default function TemplatesPage() {
   return (
-    <LibraryPage
-      kindFilter="template"
-      pageTitle="Email Templates"
-      pageDescription="Ready-to-send candidate communication templates for every recruiting stage."
-    />
+    <Suspense fallback={<div className="min-h-screen bg-mesh flex items-center justify-center"><p className="text-text-muted">Loading...</p></div>}>
+      <TemplatesHub />
+    </Suspense>
   );
 }

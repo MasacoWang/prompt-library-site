@@ -207,19 +207,19 @@ export default function HomeTabs() {
     <div>
       {/* ── Tab navigation ── */}
       <div className="flex items-stretch gap-3 mb-8 overflow-x-auto pb-1">
-        {/* 5 main tabs as big square icons → link to full pages */}
+        {/* 5 main tabs as big square icons → link to /templates with filters */}
         {TABS.filter(tab => tab.key !== 'favorites' && tab.key !== 'new').map((tab) => {
           const hrefMap: Record<string, string> = {
-            templates: '/templates',
-            prompts: '/prompts',
-            copywriting: '/copywriting',
-            scenarios: '/scenarios',
-            phases: '/phases',
+            templates: '/templates?kind=template',
+            prompts: '/templates?kind=prompt',
+            copywriting: '/templates?kind=copywriting',
+            scenarios: '/templates',
+            phases: '/templates',
           };
           return (
             <Link
               key={tab.key}
-              href={hrefMap[tab.key] || '/'}
+              href={hrefMap[tab.key] || '/templates'}
               className="flex flex-col items-center justify-center gap-2 min-w-[100px] p-4 sm:p-5 rounded-2xl border-2 transition-all shrink-0 bg-white/60 border-border hover:border-primary/40 hover:shadow-md hover:scale-[1.02]"
             >
               <span className="text-2xl sm:text-3xl">{tab.icon}</span>

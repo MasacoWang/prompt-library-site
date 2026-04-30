@@ -7,18 +7,17 @@ import LoginButton from '@/components/LoginButton';
 
 const NAV_ITEMS = [
   { label: 'Home', href: '/' },
-  { label: 'Email Templates', href: '/templates' },
-  { label: 'Prompt Library', href: '/prompts' },
-  { label: 'Scenarios', href: '/scenarios' },
-  { label: 'Recruiting Phases', href: '/phases' },
+  { label: 'All Templates', href: '/templates' },
+  { label: 'Email Templates', href: '/templates?kind=template' },
+  { label: 'Prompts', href: '/templates?kind=prompt' },
 ];
 
 const BROWSE_ITEMS = [
-  { label: '✉️ Email Templates', href: '/templates' },
-  { label: '💡 Prompt Library', href: '/prompts' },
-  { label: '📝 Job Post Templates', href: '/copywriting' },
-  { label: '🎯 Scenarios', href: '/scenarios' },
-  { label: '📊 Recruiting Phases', href: '/phases' },
+  { label: '✉️ Email Templates', href: '/templates?kind=template' },
+  { label: '💡 Prompt Library', href: '/templates?kind=prompt' },
+  { label: '📝 Job Post Templates', href: '/templates?kind=copywriting' },
+  { label: '🎯 Scenarios', href: '/templates' },
+  { label: '📊 Recruiting Phases', href: '/templates' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
@@ -50,6 +49,11 @@ export default function Header() {
     if (href.startsWith('/#')) {
       const hash = href.replace('/', '');
       return pathname === '/' && currentHash === hash;
+    }
+    // Handle query param links like /templates?kind=prompt
+    const [hrefPath, hrefQuery] = href.split('?');
+    if (hrefQuery) {
+      return pathname === hrefPath && typeof window !== 'undefined' && window.location.search === `?${hrefQuery}`;
     }
     return pathname === href;
   };

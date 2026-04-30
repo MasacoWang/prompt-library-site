@@ -1,11 +1,5 @@
-import LibraryPage from '@/components/LibraryPage';
+import { redirect } from 'next/navigation';
 
 export default function PromptsPage() {
-  return (
-    <LibraryPage
-      kindFilter="prompt"
-      pageTitle="Prompt Library"
-      pageDescription="AI prompts for sourcing, screening, interview prep, and hiring manager updates."
-    />
-  );
+  redirect('/templates?kind=prompt');
 }

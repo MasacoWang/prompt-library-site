@@ -22,17 +22,17 @@ export default function Home() {
       <section className="px-4 sm:px-6 pb-4">
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Link href="/templates" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+            <Link href="/templates?kind=template" className="card p-3 text-center hover:border-primary/40 transition-colors group">
               <div className="text-xl mb-1">✉️</div>
               <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Email Templates</p>
               <p className="text-[10px] text-text-muted">Every recruiting stage</p>
             </Link>
-            <Link href="/prompts" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+            <Link href="/templates?kind=prompt" className="card p-3 text-center hover:border-primary/40 transition-colors group">
               <div className="text-xl mb-1">💡</div>
               <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">AI Prompts</p>
               <p className="text-[10px] text-text-muted">Copilot-ready drafts</p>
             </Link>
-            <Link href="/copywriting" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+            <Link href="/templates?kind=copywriting" className="card p-3 text-center hover:border-primary/40 transition-colors group">
               <div className="text-xl mb-1">📝</div>
               <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Job Post Templates</p>
               <p className="text-[10px] text-text-muted">LinkedIn-ready posts</p>

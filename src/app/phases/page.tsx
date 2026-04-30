@@ -1,12 +1,5 @@
-import LibraryPage from '@/components/LibraryPage';
+import { redirect } from 'next/navigation';
 
 export default function PhasesPage() {
-  return (
-    <LibraryPage
-      kindFilter={null}
-      pageTitle="Recruiting Phases"
-      pageDescription="Browse templates and prompts organized by recruiting pipeline phase."
-      filterMode="phase"
-    />
-  );
+  redirect('/templates');
 }
