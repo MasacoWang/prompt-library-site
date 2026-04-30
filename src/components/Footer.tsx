@@ -48,10 +48,9 @@ export default function Footer() {
           </div>
           <div className="flex items-center gap-6">
             <Link href="/" className="text-xs text-text-secondary hover:text-text-primary transition">Home</Link>
-            <Link href="/templates" className="text-xs text-text-secondary hover:text-text-primary transition">Email Templates</Link>
-            <Link href="/prompts" className="text-xs text-text-secondary hover:text-text-primary transition">Prompt Library</Link>
-            <Link href="/scenarios" className="text-xs text-text-secondary hover:text-text-primary transition">Scenarios</Link>
-            <Link href="/phases" className="text-xs text-text-secondary hover:text-text-primary transition">Recruiting Phases</Link>
+            <Link href="/templates?kind=template" className="text-xs text-text-secondary hover:text-text-primary transition">Email Templates</Link>
+            <Link href="/templates?kind=prompt" className="text-xs text-text-secondary hover:text-text-primary transition">Prompt Library</Link>
+            <Link href="/templates?kind=copywriting" className="text-xs text-text-secondary hover:text-text-primary transition">Job Posts</Link>
             <Link href="/ai-assistant" className="text-xs text-text-secondary hover:text-text-primary transition">AI Assistant</Link>
           </div>
         </div>

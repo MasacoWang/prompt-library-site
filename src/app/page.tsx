@@ -39,7 +39,7 @@ export default function Home() {
             <p className="text-sm text-text-secondary">Choose what you need to get started</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Link href="/templates?kind=template" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
               <div className="text-3xl mb-2">✉️</div>
               <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Email Templates</p>
@@ -55,11 +55,13 @@ export default function Home() {
               <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Job Post Templates</p>
               <p className="text-xs text-text-muted">Create high‑impact job posts</p>
             </Link>
-            <Link href="/templates" className="card p-5 text-center hover:border-primary/40 hover:shadow-md transition-all group">
-              <div className="text-3xl mb-2">🧭</div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-primary transition-colors mb-1">Recruiting Phases</p>
-              <p className="text-xs text-text-muted">Find the right content for each stage of hiring</p>
-            </Link>
+          </div>
+
+          {/* Filter guide */}
+          <div className="mt-6 p-4 rounded-xl bg-surface-alt border border-border text-center">
+            <p className="text-xs text-text-secondary">
+              💡 <span className="font-medium text-text-primary">Tip:</span> Use the filters on the templates page to narrow by <span className="font-medium">Recruiting Phase</span> (Strategy, Sourcing, Screening, Interview, Offer) or <span className="font-medium">Use Case</span> (Outreach, Interview Prep, Evaluation, HM Communication).
+            </p>
           </div>
         </div>
       </section>

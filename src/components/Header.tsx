@@ -16,8 +16,6 @@ const BROWSE_ITEMS = [
   { label: '✉️ Email Templates', href: '/templates?kind=template' },
   { label: '💡 Prompt Library', href: '/templates?kind=prompt' },
   { label: '📝 Job Post Templates', href: '/templates?kind=copywriting' },
-  { label: '🎯 Scenarios', href: '/templates' },
-  { label: '📊 Recruiting Phases', href: '/templates' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
