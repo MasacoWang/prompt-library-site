@@ -440,6 +440,27 @@ Let me know if you have any questions — happy to help.
 Best regards,
 [Recruiter Name]`),
 
+  t('Offer Letter Ready for Signature', 'Offer', 'template',
+`Subject: Your Microsoft Offer Letter is Ready for Signature
+
+Dear [Candidate Name],
+
+Congratulations! We are pleased to inform you that your official offer letter from Microsoft has been issued and is now ready for your review and signature.
+
+Next Steps — Please complete the following:
+
+1. Log in to the Microsoft Careers website and navigate to the Action Center to access your offer letter: 👉 https://careers.microsoft.com/ (Action Center)
+2. Review the offer letter carefully, including your role, compensation, start date, and other terms.
+3. Sign the offer letter using your official full legal name (as it appears on your government-issued ID).
+4. Provide your National ID number (身分證字號 / National Identification Number) in the designated field. This is required for employment registration and payroll setup in Taiwan.
+
+If you have any questions or experience any issues accessing the Action Center, please don't hesitate to reach out to me directly.
+
+We are very excited to welcome you to the Microsoft team and look forward to your acceptance!
+
+[Sender Name]
+[Sender Position Title]`),
+
   t('Salary Expectation Misalignment', 'Offer', 'template',
 `Subject: Thank You for Your Time
 
