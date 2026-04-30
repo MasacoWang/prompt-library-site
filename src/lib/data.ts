@@ -495,6 +495,62 @@ Include: clear subject line, concise body, specific call-to-action.
 Keep under 200 words.`,
 undefined, false, ['outreach', 'hm-communication']),
 
+  // ── NEXT STEPS / HM FOLLOW-UP ──────────────────────────────────
+  t('Next Steps Confirmation — After Screen', 'Interview', 'template',
+`Subject: Next Steps — [Candidate Name] for [Role]
+
+Hi [Hiring Manager Name],
+
+Thank you for taking the time to screen [Candidate Name] for the [Role] position. I'd like to confirm the next steps based on your assessment.
+
+Candidate: [Candidate Name]
+Position: [Role]
+Interview completed: [Date]
+
+Please confirm your recommendation:
+• ✅ Move forward — proceed to [next round / onsite / team match]
+• ⏸️ Hold — need more information (please specify)
+• ❌ Pass — not moving forward
+
+If moving forward:
+• Suggested next step: [Technical interview / Hiring manager loop / Team match]
+• Preferred timeline: [ASAP / Within 1 week / Flexible]
+• Any specific interviewers you'd like involved?
+
+Note: The candidate mentioned they are actively interviewing with other companies, so I'd recommend we move quickly if interested.
+
+Please let me know and I'll coordinate scheduling.
+
+Best regards,
+[Your Name]`,
+undefined, false, ['hm-communication']),
+
+  t('Post-Interview Next Steps — To Hiring Manager', 'Interview', 'template',
+`Subject: Debrief & Next Steps — [Candidate Name] for [Role]
+
+Hi [Hiring Manager Name],
+
+[Candidate Name] has completed [interview type] for the [Role] position. I wanted to follow up to align on next steps.
+
+Interview Summary:
+• Date: [Date]
+• Interviewers: [Names]
+• Format: [Phone / Video / Onsite]
+
+Questions for you:
+1. What is your overall assessment of the candidate?
+2. Do you recommend moving forward to the next stage?
+3. Are there any concerns we should address before proceeding?
+4. If yes, what should the next step be? (e.g., additional interview, team match, offer discussion)
+
+Timeline consideration: [Candidate is evaluating other offers / has a deadline / is flexible]
+
+I'll consolidate all feedback and prepare the next steps once I hear back from you.
+
+Thank you!
+[Your Name]`,
+undefined, false, ['hm-communication']),
+
   // ── RECRUITING 文案 (Job Posting Copywriting) ──────────────────────────────────
   t('Software Engineer — LinkedIn Post', 'Sourcing', 'copywriting',
 `🚀 We're Hiring: Software Engineer @ Microsoft
