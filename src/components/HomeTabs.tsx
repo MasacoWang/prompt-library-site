@@ -201,21 +201,46 @@ export default function HomeTabs() {
 
   return (
     <div>
-      {/* ── Tab bar ── */}
-      <div className="flex items-center gap-1 p-1 bg-surface-alt rounded-2xl border border-border mb-8 overflow-x-auto">
-        {TABS.map((tab) => (
+      {/* ── Tab navigation ── */}
+      <div className="flex items-stretch gap-3 mb-8 overflow-x-auto pb-1">
+        {/* 4 main tabs as big square icons */}
+        {TABS.filter(tab => tab.key !== 'favorites' && tab.key !== 'new').map((tab) => (
           <button
             key={tab.key}
             onClick={() => setActiveTab(tab.key)}
-            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+            className={`flex flex-col items-center justify-center gap-2 min-w-[100px] p-4 sm:p-5 rounded-2xl border-2 transition-all shrink-0 ${
               activeTab === tab.key
+                ? 'bg-white border-primary shadow-md scale-[1.02]'
+                : 'bg-white/60 border-border hover:border-primary/40 hover:shadow-sm'
+            }`}
+          >
+            <span className="text-2xl sm:text-3xl">{tab.icon}</span>
+            <span className={`text-[11px] sm:text-xs font-semibold text-center leading-tight ${activeTab === tab.key ? 'text-primary' : 'text-text-secondary'}`}>{tab.label}</span>
+          </button>
+        ))}
+        {/* Favorites + New as small pill buttons */}
+        <div className="flex flex-col justify-center gap-2 ml-2 shrink-0">
+          <button
+            onClick={() => setActiveTab('favorites')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+              activeTab === 'favorites'
                 ? 'bg-white text-primary shadow-sm border border-border'
                 : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
             }`}
           >
-            <span>{tab.icon}</span> {tab.label}
+            <span>❤️</span> Favorites
           </button>
-        ))}
+          <button
+            onClick={() => setActiveTab('new')}
+            className={`flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-sm font-medium transition-all whitespace-nowrap ${
+              activeTab === 'new'
+                ? 'bg-white text-primary shadow-sm border border-border'
+                : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+            }`}
+          >
+            <span>✨</span> + New
+          </button>
+        </div>
       </div>
 
       {/* ── Email Templates tab ── */}
