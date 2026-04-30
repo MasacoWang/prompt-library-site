@@ -4,17 +4,30 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-mesh">
       {/* ── HERO ── */}
-      <section className="pt-12 sm:pt-16 pb-8 sm:pb-10 px-4 sm:px-6">
+      <section className="pt-10 sm:pt-14 pb-6 sm:pb-8 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-3 animate-fade-in">
-            Create ready‑to‑send recruiting content in seconds
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary tracking-tight leading-tight mb-2 animate-fade-in">
+            AI Recruiter Toolkit
           </h1>
-          <p className="text-base sm:text-lg font-medium text-text-secondary mb-2 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+          <p className="text-sm sm:text-base text-text-secondary mb-4 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+            Create ready‑to‑send recruiting content in seconds
+          </p>
+          <p className="text-base sm:text-lg font-semibold text-text-primary mb-3 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             Choose → Run → Send
           </p>
-          <p className="text-sm text-text-muted animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            Run in Copilot · Copy · Open in Outlook
-          </p>
+          <div className="inline-flex items-center gap-3 sm:gap-5 px-4 py-2 rounded-full bg-white/80 border border-border shadow-sm animate-fade-in" style={{ animationDelay: '0.15s' }}>
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm text-text-secondary font-medium">
+              🤖 Run in Copilot
+            </span>
+            <span className="text-border">·</span>
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm text-text-secondary font-medium">
+              📋 Copy
+            </span>
+            <span className="text-border">·</span>
+            <span className="flex items-center gap-1.5 text-xs sm:text-sm text-text-secondary font-medium">
+              ✉️ Open in Outlook
+            </span>
+          </div>
         </div>
       </section>
 
