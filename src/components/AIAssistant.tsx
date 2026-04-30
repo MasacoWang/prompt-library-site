@@ -41,14 +41,15 @@ const TOOLS: { key: ToolKey; icon: string; title: string; desc: string; cta: str
    ───────────────────────────────────────────── */
 type EmailFields = {
   candidateName: string; role: string; stage: string; recipient: string;
-  jd: string; candidateInfo: string; additionalContext: string; tone: string;
+  hiringManagerName: string; jd: string; candidateInfo: string; additionalContext: string; tone: string;
 };
 
 function generateEmail(f: EmailFields): { subject: string; body: string } {
   const name = f.candidateName || '[Candidate Name]';
   const role = f.role || '[Role]';
   const isHM = f.recipient === 'hiring-manager';
-  const greeting = isHM ? 'Hi [Hiring Manager],' : `Hi ${name},`;
+  const hmName = f.hiringManagerName || '[Hiring Manager]';
+  const greeting = isHM ? `Hi ${hmName},` : `Hi ${name},`;
   const toneAdj = f.tone === 'casual' ? 'Hope you\'re doing well! ' :
                   f.tone === 'warm' ? 'I hope this message finds you well. ' : '';
   const jdSnippet = f.jd ? `\n\nKey highlights from the role:\n${f.jd.split('\n').slice(0, 3).map(l => `• ${l.trim()}`).join('\n')}` : '';
@@ -126,7 +127,7 @@ export default function AIAssistant() {
 
   const [emailFields, setEmailFields] = useState<EmailFields>({
     candidateName: '', role: '', stage: 'outreach', recipient: 'candidate',
-    jd: '', candidateInfo: '', additionalContext: '', tone: 'professional',
+    hiringManagerName: '', jd: '', candidateInfo: '', additionalContext: '', tone: 'professional',
   });
   const [summaryFields, setSummaryFields] = useState({ summaryType: 'interview-notes', role: '', content: '', additionalContext: '' });
   const [customFields, setCustomFields] = useState({ description: '', audience: '', outputFormat: '', additionalContext: '' });
@@ -231,6 +232,14 @@ export default function AIAssistant() {
                     <input value={emailFields.role} onChange={(e) => setEmailFields({ ...emailFields, role: e.target.value })} placeholder="e.g. Senior SWE" className={inputClass} />
                   </div>
                 </div>
+
+                {/* Hiring Manager Name */}
+                {emailFields.recipient === 'hiring-manager' && (
+                  <div>
+                    <label className={labelClass}>Hiring Manager Name</label>
+                    <input value={emailFields.hiringManagerName} onChange={(e) => setEmailFields({ ...emailFields, hiringManagerName: e.target.value })} placeholder="e.g. David Lin" className={inputClass} />
+                  </div>
+                )}
 
                 {/* Stage */}
                 <div>
