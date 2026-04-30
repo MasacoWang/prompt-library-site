@@ -1,13 +1,13 @@
 export default function ActionGuide() {
   return (
-    <div className="flex items-center justify-center gap-3 sm:gap-4 whitespace-nowrap overflow-x-auto text-sm sm:text-base text-text-secondary font-medium">
-      <span>Choose a prompt or template</span>
+    <div className="inline-flex items-center gap-2 sm:gap-3 px-4 py-2 rounded-xl bg-surface-alt border border-border text-xs sm:text-sm text-text-secondary font-medium">
+      <span>Click a template</span>
       <span className="text-text-muted">→</span>
-      <span className="inline-flex items-center gap-1.5">🤖 Copilot</span>
+      <span className="inline-flex items-center gap-1">🤖 Copilot</span>
       <span className="text-text-muted">·</span>
-      <span className="inline-flex items-center gap-1.5">📋 Copy</span>
+      <span className="inline-flex items-center gap-1">📋 Copy</span>
       <span className="text-text-muted">·</span>
-      <span className="inline-flex items-center gap-1.5">✉️ Outlook</span>
+      <span className="inline-flex items-center gap-1">✉️ Outlook</span>
     </div>
   );
 }
