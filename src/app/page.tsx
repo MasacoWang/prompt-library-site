@@ -1,80 +1,59 @@
 import ActionGuide from '@/components/ActionGuide';
 import HomeTabs from '@/components/HomeTabs';
+import Link from 'next/link';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-mesh">
-      {/* ── HERO ── */}
-      <section className="hero pt-8 sm:pt-12 pb-6 sm:pb-8 px-4 sm:px-6">
+      {/* ── HERO (compact) ── */}
+      <section className="pt-6 sm:pt-8 pb-4 px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary-50 border border-primary-100 text-primary text-xs font-medium mb-4 animate-fade-in">
-            ⚡ Ready-to-Use Recruiting Templates & AI Prompts
-          </div>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-text-primary tracking-tight leading-[1.15] mb-3 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+          <h1 className="text-lg sm:text-xl font-bold text-text-primary tracking-tight mb-1 animate-fade-in">
             AI Recruiter Toolkit
           </h1>
-          <p className="text-sm sm:text-base text-text-secondary max-w-xl mx-auto mb-4 leading-relaxed animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            One-click templates for sourcing, outreach, interviews, and offers. No login needed. Pick a template → send it.
+          <p className="text-xs text-text-secondary max-w-md mx-auto mb-3 animate-fade-in" style={{ animationDelay: '0.05s' }}>
+            One-click templates for sourcing, outreach, interviews & offers. No login needed.
           </p>
+          <ActionGuide />
+        </div>
+      </section>
 
-          {/* How it works - 3 steps */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-5 animate-fade-in" style={{ animationDelay: '0.15s' }}>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">1</span>
-              <span className="text-xs text-text-secondary">Pick a template</span>
-            </div>
-            <span className="hidden sm:block text-text-muted text-xs">→</span>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">2</span>
-              <span className="text-xs text-text-secondary">Customize [variables]</span>
-            </div>
-            <span className="hidden sm:block text-text-muted text-xs">→</span>
-            <div className="flex items-center gap-2">
-              <span className="w-5 h-5 rounded-full bg-primary text-white text-[10px] font-bold flex items-center justify-center">3</span>
-              <span className="text-xs text-text-secondary">Send via Copilot / Outlook / Copy</span>
-            </div>
+      {/* ── WHAT YOU CAN DO (moved up) ── */}
+      <section className="px-4 sm:px-6 pb-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <Link href="/templates" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+              <div className="text-xl mb-1">✉️</div>
+              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Email Templates</p>
+              <p className="text-[10px] text-text-muted">Every recruiting stage</p>
+            </Link>
+            <Link href="/prompts" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+              <div className="text-xl mb-1">💡</div>
+              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">AI Prompts</p>
+              <p className="text-[10px] text-text-muted">Copilot-ready drafts</p>
+            </Link>
+            <Link href="/copywriting" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+              <div className="text-xl mb-1">📝</div>
+              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">Job Post Templates</p>
+              <p className="text-[10px] text-text-muted">LinkedIn-ready posts</p>
+            </Link>
+            <Link href="/ai-assistant" className="card p-3 text-center hover:border-primary/40 transition-colors group">
+              <div className="text-xl mb-1">🤖</div>
+              <p className="text-[11px] font-semibold text-text-primary group-hover:text-primary transition-colors">AI Assistant</p>
+              <p className="text-[10px] text-text-muted">Generate & customize</p>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* ── TABBED DISCOVERY ── */}
+      {/* ── BROWSE TOOLKIT ── */}
       <section id="template-library" className="px-4 sm:px-6 pb-10 sm:pb-14 scroll-mt-20">
         <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-5">
-            <h2 className="text-lg sm:text-xl font-bold text-text-primary mb-1">Browse the Toolkit</h2>
-            <p className="text-xs text-text-secondary mb-3">Click any category below to explore all templates, prompts, and job posts</p>
-            <ActionGuide />
+          <div className="text-center mb-4">
+            <h2 className="text-sm sm:text-base font-bold text-text-primary mb-0.5">Browse the Toolkit</h2>
+            <p className="text-[11px] text-text-secondary">Click a category to explore all templates, prompts, and job posts</p>
           </div>
           <HomeTabs />
-        </div>
-      </section>
-
-      {/* ── FEATURES ── */}
-      <section className="px-4 sm:px-6 pb-16 sm:pb-20">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-xl sm:text-2xl font-bold text-text-primary text-center mb-8">What You Can Do</h2>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="card p-4 text-center">
-              <div className="text-2xl mb-2">✉️</div>
-              <p className="text-xs font-semibold text-text-primary mb-1">Email Templates</p>
-              <p className="text-[11px] text-text-muted">Ready-to-send emails for every recruiting stage</p>
-            </div>
-            <div className="card p-4 text-center">
-              <div className="text-2xl mb-2">💡</div>
-              <p className="text-xs font-semibold text-text-primary mb-1">AI Prompts</p>
-              <p className="text-[11px] text-text-muted">Copy to Copilot for instant AI-powered drafts</p>
-            </div>
-            <div className="card p-4 text-center">
-              <div className="text-2xl mb-2">📝</div>
-              <p className="text-xs font-semibold text-text-primary mb-1">Job Post Templates</p>
-              <p className="text-[11px] text-text-muted">LinkedIn-ready posts to attract candidates</p>
-            </div>
-            <div className="card p-4 text-center">
-              <div className="text-2xl mb-2">🤖</div>
-              <p className="text-xs font-semibold text-text-primary mb-1">AI Assistant</p>
-              <p className="text-[11px] text-text-muted">Generate custom emails, posts & summaries</p>
-            </div>
-          </div>
         </div>
       </section>
     </div>
