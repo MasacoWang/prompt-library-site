@@ -59,7 +59,7 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
           </button>
         )}
         <button
-          onClick={async () => { await copyToCopilot(item.body); onToast('Copied & opened Copilot ✓'); }}
+          onClick={async () => { await copyToCopilot(item.body); onToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
           className="btn-ghost px-2 py-1 text-xs"
         >
           🤖 Copilot
@@ -82,6 +82,9 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
           </button>
         )}
       </div>
+      <p className="text-[9px] text-text-muted mt-1 opacity-70">
+        💡 Copilot: auto-copies text → just paste (Ctrl+V) in chat
+      </p>
     </div>
   );
 }
@@ -456,7 +459,7 @@ export default function HomeTabs() {
                 {favorites.has(selectedDetail.id) ? '❤️ Unfavorite' : '🤍 Favorite'}
               </button>
               <button
-                onClick={async () => { await copyToCopilot(selectedDetail.body); showToast('Copied & opened Copilot ✓'); }}
+                onClick={async () => { await copyToCopilot(selectedDetail.body); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                 className="btn-ghost px-3 py-1.5 text-sm"
               >
                 🤖 Copilot

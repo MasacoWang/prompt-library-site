@@ -23,6 +23,8 @@ export async function copyToCopilot(text: string): Promise<void> {
   window.open(COPILOT_URL, '_blank');
 }
 
+export const COPILOT_TOAST_MSG = '✅ Copied! Paste (Ctrl+V) in Copilot chat to run';
+
 export async function copyToClipboard(text: string): Promise<void> {
   await navigator.clipboard.writeText(text);
 }

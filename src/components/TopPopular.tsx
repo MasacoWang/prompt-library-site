@@ -102,7 +102,7 @@ export default function TopPopular() {
               <button onClick={() => { setFavorites((prev) => toggleFavorite(prev, selectedDetail.id)); setTimeout(() => setFavCounts(loadSharedFavCounts()), 500); }} className={`btn-ghost px-3 py-1.5 text-xs ${favorites.has(selectedDetail.id) ? 'text-red-500' : ''}`}>
                 {favorites.has(selectedDetail.id) ? '❤️ Favorited' : '🤍 Favorite'}
               </button>
-              <button onClick={async () => { await copyToCopilot(selectedDetail.body); showToast('Copied & opened Copilot ✓'); }} className="btn-ghost px-3 py-1.5 text-xs">🤖 Copilot</button>
+              <button onClick={async () => { await copyToCopilot(selectedDetail.body); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }} className="btn-ghost px-3 py-1.5 text-xs">🤖 Copilot</button>
               <button onClick={async () => { await copyToClipboard(selectedDetail.body); showToast('Copied ✓'); }} className="btn-ghost px-3 py-1.5 text-xs">📋 Copy</button>
               <button onClick={() => openInOutlook(selectedDetail.title, selectedDetail.body)} className="btn-ghost px-3 py-1.5 text-xs">✉️ Outlook</button>
             </div>

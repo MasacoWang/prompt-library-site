@@ -182,7 +182,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
             onDraftChange={setEditDraft}
             onToneChange={setTone}
             onVariableChange={(k, v) => setVariableValues((p) => ({ ...p, [k]: v }))}
-            onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('Copied & opened Copilot ✓'); }}
+            onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
             onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
             onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
             onToggleFavorite={() => { if (selectedTemplate) handleFavoriteToggle(selectedTemplate.id); }}

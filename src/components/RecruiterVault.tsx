@@ -186,7 +186,7 @@ export default function RecruiterVault() {
                 onDraftChange={setEditDraft}
                 onToneChange={setTone}
                 onVariableChange={(k, v) => setVariableValues((p) => ({ ...p, [k]: v }))}
-                onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('Copied & opened Copilot ✓'); }}
+                onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                 onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
                 onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
                 onDelete={() => { if (selectedTemplate) handleDelete(selectedTemplate.id); }}
@@ -201,7 +201,7 @@ export default function RecruiterVault() {
         <div className="max-w-[1800px] mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button
-              onClick={async () => { await copyToCopilot(previewText); showToast('Copied & opened Copilot ✓'); }}
+              onClick={async () => { await copyToCopilot(previewText); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
               disabled={!selectedTemplate}
               className="btn-teal px-5 py-2 rounded-full text-sm"
             >

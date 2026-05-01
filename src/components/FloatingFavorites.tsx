@@ -63,7 +63,7 @@ export default function FloatingFavorites() {
                   </div>
                   <div className="flex items-center gap-1 mt-2">
                     <button
-                      onClick={async () => { await copyToCopilot(t.body); showToast('Copied & opened Copilot ✓'); }}
+                      onClick={async () => { await copyToCopilot(t.body); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                       className="text-[10px] px-2 py-1 rounded-lg bg-surface-alt hover:bg-primary/10 text-text-secondary hover:text-primary transition"
                     >
                       🤖 Copilot

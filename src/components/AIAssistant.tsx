@@ -349,7 +349,7 @@ export default function AIAssistant() {
                     📋 Copy Email
                   </button>
                   <button
-                    onClick={async () => { await copyToCopilot(`Subject: ${generatedEmail.subject}\n\n${generatedEmail.body}`); showToast('Sent to Copilot ✓'); }}
+                    onClick={async () => { await copyToCopilot(`Subject: ${generatedEmail.subject}\n\n${generatedEmail.body}`); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                     className="btn-ghost px-5 py-3 text-sm font-semibold"
                   >
                     🤖 Refine in Copilot
@@ -442,7 +442,7 @@ export default function AIAssistant() {
                   <pre className="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed font-mono">{promptResult}</pre>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('Sent to Copilot ✓'); }}
+                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                     className="btn-primary py-3 text-sm font-semibold">🤖 Send to Copilot</button>
                   <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied ✓'); }}
                     className="btn-secondary py-3 text-sm font-semibold">📋 Copy Prompt</button>
@@ -565,7 +565,7 @@ export default function AIAssistant() {
                   <pre className="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed font-mono">{promptResult}</pre>
                 </div>
                 <div className="grid grid-cols-3 gap-3">
-                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('Sent to Copilot ✓'); }}
+                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                     className="btn-primary py-3 text-sm font-semibold">🤖 Copilot</button>
                   <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied ✓'); }}
                     className="btn-secondary py-3 text-sm font-semibold">📋 Copy</button>
@@ -641,7 +641,7 @@ export default function AIAssistant() {
                   <pre className="text-xs text-text-secondary whitespace-pre-wrap leading-relaxed font-mono">{promptResult}</pre>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
-                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('Sent to Copilot ✓'); }}
+                  <button onClick={async () => { await copyToCopilot(promptResult); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                     className="btn-primary py-3 text-sm font-semibold">🤖 Send to Copilot</button>
                   <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied ✓'); }}
                     className="btn-secondary py-3 text-sm font-semibold">📋 Copy Prompt</button>
