@@ -19,12 +19,11 @@ const BROWSE_ITEMS = [
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
-const GUIDE_ITEMS = [
-  { icon: '📁', title: 'Browse Templates', desc: 'Explore email templates, prompts, and job posts by category or recruiting phase.' },
-  { icon: '✏️', title: 'Edit & Create', desc: 'Customize any template or create your own — changes are saved automatically.' },
-  { icon: '🤖', title: 'AI Assistant', desc: 'Generate personalized emails and job posts with the built-in AI tools.' },
-  { icon: '📋', title: 'Copy & Use', desc: 'Click "Copy" to grab the text, or send directly to Copilot Chat or Outlook.' },
-  { icon: '🔑', title: 'Sign In to Save', desc: 'Register with any email + passcode to keep your templates, edits, and favorites across devices.' },
+const GUIDE_STEPS = [
+  { step: 1, title: 'Browse', desc: 'Pick a category — Email Templates, Prompts, or Job Posts — or use filters to find what you need.' },
+  { step: 2, title: 'Select', desc: 'Click any template to preview the full content.' },
+  { step: 3, title: 'Customize', desc: 'Fill in the variables, switch tone, or edit the content to make it yours.' },
+  { step: 4, title: 'Use', desc: 'Copy the text, send to Outlook, or open in Copilot Chat — ready to go.' },
 ];
 
 export default function Header() {
@@ -174,18 +173,27 @@ export default function Header() {
             </button>
 
             {guideOpen && (
-              <div className="absolute top-full right-0 mt-1.5 w-72 bg-white rounded-xl border border-border shadow-lg p-4 animate-fade-in z-50">
-                <p className="text-xs font-bold text-text-primary mb-3">How to Use This Site</p>
-                <div className="space-y-2.5">
-                  {GUIDE_ITEMS.map((item) => (
-                    <div key={item.title} className="flex gap-2.5">
-                      <span className="text-base shrink-0">{item.icon}</span>
+              <div className="absolute top-full right-0 mt-1.5 w-80 bg-white rounded-xl border border-border shadow-lg p-5 animate-fade-in z-50">
+                <p className="text-[13px] font-bold text-text-primary mb-1">Welcome to AI Recruiter Toolkit</p>
+                <p className="text-[11px] text-text-muted leading-relaxed mb-4">
+                  Your one-stop resource for recruiting emails, AI prompts, and job post templates — find, customize, and send in seconds.
+                </p>
+                <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider mb-2.5">How It Works</p>
+                <div className="space-y-3">
+                  {GUIDE_STEPS.map((item) => (
+                    <div key={item.step} className="flex gap-3">
+                      <span className="shrink-0 w-5 h-5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">{item.step}</span>
                       <div>
                         <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
                         <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
                       </div>
                     </div>
                   ))}
+                </div>
+                <div className="mt-4 pt-3 border-t border-border">
+                  <p className="text-[11px] text-text-muted">
+                    💡 <span className="font-medium">Tip:</span> Sign in with any email to keep your templates, edits, and favorites saved across devices.
+                  </p>
                 </div>
               </div>
             )}
@@ -248,17 +256,25 @@ export default function Header() {
           </Link>
           <div className="border-t border-border my-2" />
           <div className="px-3 pt-1 pb-1">
-            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">❓ How to Use</p>
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">❓ How It Works</p>
           </div>
-          {GUIDE_ITEMS.map((item) => (
-            <div key={item.title} className="flex gap-2.5 px-3 py-2">
-              <span className="text-base shrink-0">{item.icon}</span>
-              <div>
-                <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
-                <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
+          <div className="px-3 py-2">
+            <p className="text-[11px] text-text-muted leading-relaxed mb-3">
+              Your one-stop resource for recruiting emails, AI prompts, and job post templates — find, customize, and send in seconds.
+            </p>
+            {GUIDE_STEPS.map((item) => (
+              <div key={item.step} className="flex gap-2.5 py-1.5">
+                <span className="shrink-0 w-5 h-5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">{item.step}</span>
+                <div>
+                  <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
+                  <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+            <p className="text-[11px] text-text-muted mt-2">
+              💡 <span className="font-medium">Tip:</span> Sign in to keep your changes saved across devices.
+            </p>
+          </div>
         </div>
       )}
     </header>
