@@ -168,7 +168,7 @@ export default function Header() {
                   : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
               }`}
             >
-              ❓ Guide
+              ℹ️ Guide
               <span className={`text-[10px] transition-transform ${guideOpen ? 'rotate-180' : ''}`}>▼</span>
             </button>
 
@@ -256,7 +256,7 @@ export default function Header() {
           </Link>
           <div className="border-t border-border my-2" />
           <div className="px-3 pt-1 pb-1">
-            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">❓ How It Works</p>
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">ℹ️ How It Works</p>
           </div>
           <div className="px-3 py-2">
             <p className="text-[11px] text-text-muted leading-relaxed mb-3">
