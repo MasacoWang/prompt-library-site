@@ -14,7 +14,7 @@ function SignInForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [mode, setMode] = useState<'signin' | 'register'>('signin');
+  const [mode, setMode] = useState<'signin' | 'register' | 'reset'>('signin');
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -79,6 +79,49 @@ function SignInForm() {
     }
   };
 
+  const handleReset = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !passcode) { setError('Please enter email and new passcode'); return; }
+    if (passcode.length < 4) { setError('Passcode must be at least 4 characters'); return; }
+    if (passcode !== confirmPasscode) { setError('Passcodes do not match'); return; }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, passcode, reset: true }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Reset failed');
+        setLoading(false);
+        return;
+      }
+      setSuccess('Passcode reset successfully! Signing you in...');
+      const result = await signIn('credentials', {
+        email,
+        password: passcode,
+        callbackUrl,
+        redirect: false,
+      });
+      if (result?.ok) {
+        window.location.href = callbackUrl;
+      } else {
+        setSuccess('');
+        setError('Passcode reset but sign-in failed. Please try signing in manually.');
+        setLoading(false);
+      }
+    } catch {
+      setError('Reset failed. Please try again.');
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = mode === 'signin' ? handleEmailSignIn : mode === 'register' ? handleRegister : handleReset;
+
   return (
     <div className="min-h-screen bg-mesh flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
@@ -104,10 +147,23 @@ function SignInForm() {
             >
               Register
             </button>
+            <button
+              type="button"
+              onClick={() => { setMode('reset'); setError(''); setSuccess(''); }}
+              className={`flex-1 py-2 text-xs font-medium transition ${mode === 'reset' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-surface-hover'}`}
+            >
+              Reset
+            </button>
           </div>
 
+          {mode === 'reset' && (
+            <p className="text-[11px] text-text-muted leading-relaxed">
+              Forgot your passcode? Enter your email and set a new one. This will overwrite your previous passcode.
+            </p>
+          )}
+
           {/* Email + Passcode Form */}
-          <form onSubmit={mode === 'signin' ? handleEmailSignIn : handleRegister} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Email</label>
               <input
@@ -119,16 +175,18 @@ function SignInForm() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Passcode</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">
+                {mode === 'reset' ? 'New Passcode' : 'Passcode'}
+              </label>
               <input
                 type="password"
                 value={passcode}
                 onChange={(e) => setPasscode(e.target.value)}
-                placeholder="Your passcode (min 4 chars)"
+                placeholder={mode === 'reset' ? 'Set a new passcode (min 4 chars)' : 'Your passcode (min 4 chars)'}
                 className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
-            {mode === 'register' && (
+            {(mode === 'register' || mode === 'reset') && (
               <div>
                 <label className="block text-xs font-medium text-text-secondary mb-1">Confirm Passcode</label>
                 <input
@@ -147,7 +205,10 @@ function SignInForm() {
               disabled={loading}
               className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition disabled:opacity-50"
             >
-              {loading ? (mode === 'signin' ? 'Signing in...' : 'Registering...') : (mode === 'signin' ? '✉️ Sign in with Email' : '✉️ Register with Email')}
+              {loading
+                ? (mode === 'signin' ? 'Signing in...' : mode === 'register' ? 'Registering...' : 'Resetting...')
+                : (mode === 'signin' ? '✉️ Sign in with Email' : mode === 'register' ? '✉️ Register with Email' : '🔄 Reset Passcode')
+              }
             </button>
           </form>
 

@@ -8,7 +8,7 @@ function hashPasscode(passcode: string): string {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, passcode } = await req.json();
+    const { email, passcode, reset } = await req.json();
 
     if (!email || !passcode) {
       return NextResponse.json({ error: 'Email and passcode are required' }, { status: 400 });
@@ -19,14 +19,15 @@ export async function POST(req: NextRequest) {
 
     const normalizedEmail = email.toLowerCase().trim();
     const existing = await kv.get(`user:${normalizedEmail}`);
-    if (existing) {
-      return NextResponse.json({ error: 'This email is already registered. Please sign in.' }, { status: 409 });
+
+    if (existing && !reset) {
+      return NextResponse.json({ error: 'This email is already registered. Please sign in or reset your passcode.' }, { status: 409 });
     }
 
     const hashed = hashPasscode(passcode);
     await kv.set(`user:${normalizedEmail}`, { hashedPasscode: hashed, createdAt: Date.now() });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, isReset: !!existing });
   } catch {
     return NextResponse.json({ error: 'Registration failed. Please try again.' }, { status: 500 });
   }
