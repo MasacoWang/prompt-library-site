@@ -3,10 +3,10 @@
 import Link from 'next/link';
 
 const STEPS = [
-  { step: 1, title: 'Browse Templates', desc: 'Pick a category — Email Templates, Prompts, or Job Posts — or use filters by recruiting phase and use case to find what you need.', link: '/templates', linkLabel: 'Go to All Templates →' },
-  { step: 2, title: 'Select & Preview', desc: 'Click any template card to open it and preview the full content. You can switch between professional and casual tone.', link: '/templates', linkLabel: 'Browse Templates →' },
-  { step: 3, title: 'Customize', desc: 'Fill in the placeholder variables, edit the text, or create your own template from scratch. All changes save automatically.', link: '/templates', linkLabel: 'Start Editing →' },
-  { step: 4, title: 'Copy & Use', desc: 'Click "Copy" to grab the text, send directly to Outlook, or open in Copilot Chat — your template is ready to send.', link: '/templates', linkLabel: 'Try It Now →' },
+  { step: 1, title: 'Browse', desc: 'Pick a category or filter by recruiting phase', illustration: '/guide-browse.svg' },
+  { step: 2, title: 'Select', desc: 'Click a template to preview the full content', illustration: '/guide-select.svg' },
+  { step: 3, title: 'Customize', desc: 'Fill variables, switch tone, or edit freely', illustration: '/guide-customize.svg' },
+  { step: 4, title: 'Use', desc: 'Copy, send to Outlook, or open in Copilot', illustration: '/guide-use.svg' },
 ];
 
 const QUICK_LINKS = [
@@ -30,7 +30,7 @@ export default function GuidePage() {
     <div className="min-h-screen bg-mesh">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-14">
           <h1 className="text-2xl sm:text-3xl font-bold text-text-primary mb-3">
             Welcome to AI Recruiter Toolkit
           </h1>
@@ -39,28 +39,48 @@ export default function GuidePage() {
           </p>
         </div>
 
-        {/* How It Works */}
-        <section className="mb-12">
-          <h2 className="text-lg font-bold text-text-primary mb-6 flex items-center gap-2">
-            <span className="text-xl">📖</span> How It Works
+        {/* How It Works — Flow */}
+        <section className="mb-14">
+          <h2 className="text-lg font-bold text-text-primary mb-8 text-center">
+            📖 How It Works
           </h2>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {STEPS.map((item) => (
-              <div key={item.step} className="card p-5 hover:shadow-md transition">
-                <div className="flex items-start gap-3">
-                  <span className="shrink-0 w-7 h-7 rounded-full bg-primary text-white text-sm font-bold flex items-center justify-center">
+
+          {/* Flow container */}
+          <div className="relative">
+            {/* Connection line (desktop) */}
+            <div className="hidden sm:block absolute top-[60px] left-[12%] right-[12%] h-0.5 bg-gradient-to-r from-primary/20 via-primary/50 to-primary/20" />
+
+            <div className="grid grid-cols-1 sm:grid-cols-4 gap-8 sm:gap-4">
+              {STEPS.map((item, i) => (
+                <div key={item.step} className="flex flex-col items-center text-center relative">
+                  {/* SVG Illustration */}
+                  <div className="w-[120px] h-[120px] mb-3 relative z-10">
+                    <img src={item.illustration} alt={item.title} className="w-full h-full" />
+                  </div>
+
+                  {/* Arrow between steps (mobile) */}
+                  {i < STEPS.length - 1 && (
+                    <div className="sm:hidden text-primary/50 text-2xl my-2 font-bold">↓</div>
+                  )}
+
+                  {/* Step number */}
+                  <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary text-white text-[11px] font-bold mb-2">
                     {item.step}
                   </span>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-semibold text-text-primary mb-1">{item.title}</h3>
-                    <p className="text-[12px] text-text-muted leading-relaxed mb-2">{item.desc}</p>
-                    <Link href={item.link} className="text-[12px] font-medium text-primary hover:underline">
-                      {item.linkLabel}
-                    </Link>
-                  </div>
+
+                  {/* Text */}
+                  <h3 className="text-[14px] font-semibold text-text-primary mb-1">{item.title}</h3>
+                  <p className="text-[12px] text-text-muted leading-relaxed max-w-[180px]">{item.desc}</p>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Single CTA */}
+          <div className="text-center mt-8">
+            <Link href="/templates" className="inline-flex items-center gap-2 btn-primary px-6 py-2.5 text-sm font-semibold rounded-lg shadow-sm">
+              Get Started →
+            </Link>
           </div>
         </section>
 
