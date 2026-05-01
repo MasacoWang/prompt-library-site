@@ -606,126 +606,181 @@ Include: clear subject line, concise body, specific call-to-action.
 Keep under 200 words.`,
 undefined, false, ['outreach', 'hm-communication']),
 
-  t('Pipeline Health Check & Risk Assessment', 'Strategy', 'prompt',
-`You are a senior recruiting strategist reviewing a hiring pipeline.
+  t('Talent Market Deep Dive — Single Domain', 'Strategy', 'prompt',
+`You are a talent intelligence analyst helping a recruiter understand a specialized technical field.
 
-Analyze the pipeline below and provide:
-1. Pipeline health score (Healthy / At Risk / Critical)
-2. Bottleneck identification — where are candidates dropping off?
-3. Time-to-fill projection based on current velocity
-4. Risk factors (e.g., single-threaded candidates, competing offers, HM responsiveness)
-5. Recommended actions to accelerate or de-risk the pipeline
-6. Suggested backup plan if top candidates decline
+Domain / Technology: [e.g., Liquid Cooling, AI Chip Design, Quantum Computing, Edge AI, etc.]
 
-Pipeline Data:
-Role: [Role]
-Days Open: [Days]
-Candidates Sourced: [Number]
-Screens Completed: [Number]
-Interviews Scheduled: [Number]
-Offers Extended: [Number]
-Current Status: [Description]
+Provide a comprehensive talent market overview:
 
-Output: Structured pipeline assessment with actionable recommendations.`,
+1. **Industry Landscape**
+   - What companies are leading in this space? (Top 10–15 globally)
+   - Which are headquartered or have R&D centers in [Region, e.g., Taiwan / APAC]?
+   - Are there startups disrupting this space?
+
+2. **Talent Profile**
+   - Common job titles for professionals in this field
+   - Typical educational background (degrees, specializations)
+   - Key technical skills and certifications
+   - Career path — where do these professionals come from and where do they go?
+
+3. **Market Dynamics**
+   - Talent pool size: Large / Moderate / Scarce
+   - Demand trend: Growing / Stable / Declining
+   - Average tenure at companies in this space
+   - Compensation benchmarks (if available for region)
+
+4. **Sourcing Strategy**
+   - Best channels to find this talent (conferences, communities, publications, LinkedIn groups)
+   - Keywords and Boolean strings for LinkedIn search
+   - Adjacent industries or roles that could be a talent bridge
+   - What attracts these professionals to new opportunities?
+
+5. **Competitive Intelligence**
+   - Who else is hiring aggressively in this space?
+   - What differentiators can we offer vs. competitors?
+
+Keep insights actionable and recruiter-practical.`,
+`You're my talent research buddy. I need to understand the talent market for [Domain / Technology, e.g., Liquid Cooling].
+
+Give me the quick rundown:
+- Who are the top companies in this space? (especially in [Region])
+- What do these people's profiles look like? (titles, skills, background)
+- Is this talent pool big or tiny?
+- Where do I find them? (communities, events, keywords)
+- Who's competing with us for this talent?
+
+Keep it practical — I need to source from this tomorrow.`, true, ['hm-communication']),
+
+  t('Emerging Tech Field — Recruiter Briefing', 'Strategy', 'prompt',
+`You are a technology analyst preparing a recruiter briefing on an emerging technical field.
+
+Field: [e.g., Immersion Cooling, Neuromorphic Computing, Synthetic Biology, AR/VR Hardware, etc.]
+
+Create a recruiter-friendly briefing that covers:
+
+1. **What is it?** (Explain in plain language — assume no technical background)
+   - What problem does it solve?
+   - Why is it important now?
+   - Real-world applications
+
+2. **Key Players & Ecosystem**
+   - Major companies investing in this (tech giants + specialists)
+   - Notable research labs and universities
+   - Industry consortiums or standards bodies
+   - Key conferences and publications
+
+3. **Talent Landscape**
+   - What roles exist in this field? (engineering, research, product, operations)
+   - What's the typical background? (PhD required? Industry crossover possible?)
+   - Estimated global talent pool size
+   - Geographic clusters (where do these people live?)
+
+4. **Recruiter Talking Points**
+   - How to explain this field to a hiring manager in 2 sentences
+   - How to pitch our opportunity to candidates in this space
+   - Common candidate motivations and concerns
+   - Red flags to watch for in profiles
+
+5. **Search Strategy**
+   - LinkedIn Boolean search strings (3–5 variations)
+   - GitHub / patent / publication search tips
+   - Professional communities to tap into
+   - Adjacent talent pools to consider
+
+Output should be comprehensive yet scannable — use bullet points and headers.`,
 undefined, false, ['hm-communication']),
 
-  t('Stakeholder Alignment — Competing Priorities', 'Strategy', 'prompt',
-`You are a recruiter preparing talking points for a conversation with a hiring manager who has conflicting requirements or unrealistic expectations.
-
-Context:
-- Role: [Role]
-- Issue: [e.g., budget too low for market, too many must-haves, timeline unrealistic, etc.]
-- Market data: [Any relevant data points]
-
-Generate:
-1. Opening framing — acknowledge HM's goals
-2. Data-backed reality check (market rates, talent availability, typical timelines)
-3. 2–3 compromise options with trade-offs clearly explained
-4. Recommended path forward
-5. Closing — maintain partnership tone
-
-Keep it concise, diplomatic, and recruiter-practical.`,
-undefined, false, ['hm-communication']),
-
-  t('Weekly Hiring Update — To Hiring Manager', 'Strategy', 'template',
-`Subject: Weekly Recruiting Update — [Role(s)]
+  t('Talent Market Insights — Sharing with Hiring Manager', 'Strategy', 'template',
+`Subject: Talent Market Insights — [Domain/Field] in [Region]
 
 Hi [Hiring Manager Name],
 
-Here's your weekly update on the [Role] pipeline:
+As we kick off sourcing for the [Role] position, I wanted to share some market intelligence on the [Domain/Field] talent landscape to help align our expectations and strategy.
 
-📊 Pipeline Snapshot:
-• Active candidates: [Number]
-• New sourced this week: [Number]
-• Screens completed: [Number]
-• Interviews scheduled: [Number]
-• Pending decisions: [Number]
+📊 Market Overview:
+• Talent pool size in [Region]: [Estimate — e.g., ~500 professionals in Taiwan]
+• Demand level: [High / Moderate] — [X] companies actively hiring in this space
+• Avg. tenure: [X] years (indicates [high/low] willingness to move)
 
-🔥 Highlights:
-• [Candidate A] — completed final round, strong positive signals
-• [Candidate B] — phone screen scheduled for [Date]
-• [New sourcing channel or strategy tried]
+🏢 Key Talent Sources (Companies):
+• [Company 1] — [why relevant, e.g., largest team in Taiwan]
+• [Company 2] — [context]
+• [Company 3] — [context]
+• [Company 4–5] — [context]
 
-⚠️ Risks / Blockers:
-• [e.g., Top candidate has competing offer expiring Friday]
-• [e.g., Still waiting on interview feedback from [Interviewer]]
+🎯 Candidate Profile Insights:
+• Typical titles: [Title 1], [Title 2], [Title 3]
+• Common background: [Degree/field], [Years of experience]
+• Must-have skills: [Skill 1], [Skill 2]
+• What they care about: [e.g., cutting-edge projects, work-life balance, leadership opportunities]
 
-📋 Action Needed from You:
-• [ ] Please submit feedback for [Candidate] by [Date]
-• [ ] Confirm if we should proceed with [Candidate] to offer stage
-• [ ] Review updated JD for sourcing alignment
+⚡ Competitive Landscape:
+• [Competitor 1] is aggressively hiring — offering [differentiator]
+• [Competitor 2] recently opened a [Region] office
+• Our advantage: [What we can offer that others can't]
 
-📅 Next Week's Plan:
-• [Planned activities]
+💡 Recommended Approach:
+1. [Strategy 1 — e.g., Target passive candidates from Company X]
+2. [Strategy 2 — e.g., Leverage conference network from Event Y]
+3. [Strategy 3 — e.g., Consider adjacent profiles from Field Z]
 
-Let me know if you have any questions or want to discuss any candidates in more detail.
+⚠️ Expectations to Align:
+• This is a [scarce/moderate] talent pool — typical time-to-fill: [X weeks]
+• Compensation expectations may be [above/within/below] our range
+• [Any other alignment needed]
+
+Happy to discuss further — would a 15-min sync be helpful this week?
 
 Best regards,
 [Your Name]`,
 undefined, false, ['hm-communication']),
 
-  t('Intake Meeting Follow-up — Role Kickoff', 'Strategy', 'template',
-`Subject: Intake Meeting Summary & Next Steps — [Role]
+  t('Domain Research Summary — Internal Brief', 'Strategy', 'template',
+`Subject: Talent Intelligence Brief — [Field/Technology]
 
-Hi [Hiring Manager Name],
+Team,
 
-Thank you for the intake discussion today! Here's a summary of what we aligned on:
+Here's a quick research summary on the [Field/Technology] talent space to support our hiring efforts.
 
-📋 Role Overview:
-• Title: [Role Title]
-• Level: [Level]
-• Location: [Location / Hybrid / Remote]
-• Team: [Team Name]
-• Headcount: [Number of openings]
+🔬 What is [Field/Technology]?
+[2–3 sentence plain-language explanation of the domain and why it matters]
 
-🎯 Ideal Candidate Profile:
-• Must-haves: [Skill 1], [Skill 2], [Skill 3]
-• Nice-to-haves: [Skill 4], [Skill 5]
-• Years of experience: [Range]
-• Background preference: [Industry / company type]
+🌍 Industry Landscape:
+| Company | HQ | Relevance | Est. Team Size |
+|---------|-----|-----------|----------------|
+| [Company 1] | [Location] | [Context] | [~Size] |
+| [Company 2] | [Location] | [Context] | [~Size] |
+| [Company 3] | [Location] | [Context] | [~Size] |
+| [Company 4] | [Location] | [Context] | [~Size] |
+| [Company 5] | [Location] | [Context] | [~Size] |
 
-💰 Compensation:
-• Approved range: [Range]
-• Flexibility: [Any notes on flexibility]
+👤 Typical Candidate Profile:
+• Title: [Common titles]
+• Education: [Typical degrees — e.g., MS/PhD in Mechanical Engineering, Thermal Science]
+• Experience: [X–Y years]
+• Key skills: [Skill 1], [Skill 2], [Skill 3], [Skill 4]
+• Certifications: [If applicable]
 
-⏱️ Timeline:
-• Target start date: [Date]
-• Interview loop availability: [Days/times]
-• Decision-making speed: [Fast / Standard]
+🔍 Sourcing Channels:
+• LinkedIn keywords: "[Keyword 1]" OR "[Keyword 2]" OR "[Keyword 3]"
+• Conferences: [Conference 1], [Conference 2]
+• Communities: [Online forum, Slack group, etc.]
+• Publications: [Journal or blog to monitor]
 
-📌 Sourcing Strategy:
-• Target companies: [List]
-• Channels: [LinkedIn, referrals, job boards, etc.]
-• Diversity goals: [If applicable]
+📈 Market Dynamics:
+• Pool availability in [Region]: [Scarce / Moderate / Available]
+• Demand trend: [Growing rapidly / Steady / Emerging]
+• Avg. comp range: [Range if known]
+• Typical notice period: [X months]
 
-📅 Next Steps:
-1. I'll begin sourcing by [Date]
-2. First candidate slate review: [Date]
-3. Please share any referrals or must-meet candidates
+📌 Key Takeaways:
+1. [Insight 1]
+2. [Insight 2]
+3. [Insight 3]
 
-Let me know if anything needs adjustment. Looking forward to filling this role together!
+Let me know if you'd like me to dig deeper into any area.
 
-Best regards,
 [Your Name]`,
 undefined, false, ['hm-communication']),
 
