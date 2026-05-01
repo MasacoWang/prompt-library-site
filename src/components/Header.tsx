@@ -19,13 +19,6 @@ const BROWSE_ITEMS = [
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
-const GUIDE_STEPS = [
-  { step: 1, title: 'Browse', desc: 'Pick a category — Email Templates, Prompts, or Job Posts — or use filters to find what you need.' },
-  { step: 2, title: 'Select', desc: 'Click any template to preview the full content.' },
-  { step: 3, title: 'Customize', desc: 'Fill in the variables, switch tone, or edit the content to make it yours.' },
-  { step: 4, title: 'Use', desc: 'Copy the text, send to Outlook, or open in Copilot Chat — ready to go.' },
-];
-
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -158,12 +151,12 @@ export default function Header() {
             )}
           </div>
 
-          {/* How to Use dropdown */}
+          {/* Guide dropdown */}
           <div ref={guideRef} className="relative">
             <button
               onClick={() => setGuideOpen(!guideOpen)}
               className={`px-2.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-all inline-flex items-center gap-1 whitespace-nowrap ${
-                guideOpen
+                guideOpen || pathname === '/guide'
                   ? 'bg-primary/10 text-primary'
                   : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
               }`}
@@ -173,28 +166,21 @@ export default function Header() {
             </button>
 
             {guideOpen && (
-              <div className="absolute top-full right-0 mt-1.5 w-80 bg-white rounded-xl border border-border shadow-lg p-5 animate-fade-in z-50">
-                <p className="text-[13px] font-bold text-text-primary mb-1">Welcome to AI Recruiter Toolkit</p>
-                <p className="text-[11px] text-text-muted leading-relaxed mb-4">
-                  Your one-stop resource for recruiting emails, AI prompts, and job post templates — find, customize, and send in seconds.
-                </p>
-                <p className="text-[11px] font-semibold text-text-secondary uppercase tracking-wider mb-2.5">How It Works</p>
-                <div className="space-y-3">
-                  {GUIDE_STEPS.map((item) => (
-                    <div key={item.step} className="flex gap-3">
-                      <span className="shrink-0 w-5 h-5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">{item.step}</span>
-                      <div>
-                        <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
-                        <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                <div className="mt-4 pt-3 border-t border-border">
-                  <p className="text-[11px] text-text-muted">
-                    💡 <span className="font-medium">Tip:</span> Sign in with any email to keep your templates, edits, and favorites saved across devices.
-                  </p>
-                </div>
+              <div className="absolute top-full right-0 mt-1.5 w-56 bg-white rounded-xl border border-border shadow-lg py-1.5 animate-fade-in z-50">
+                <Link
+                  href="/guide"
+                  onClick={() => setGuideOpen(false)}
+                  className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition"
+                >
+                  📖 How to Use This Site
+                </Link>
+                <div className="h-px bg-border mx-3 my-1" />
+                <Link href="/templates?kind=template" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">✉️ Email Templates</Link>
+                <Link href="/templates?kind=prompt" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">💡 Prompt Library</Link>
+                <Link href="/templates?kind=copywriting" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">📝 Job Post Templates</Link>
+                <Link href="/ai-assistant" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">🤖 AI Assistant</Link>
+                <div className="h-px bg-border mx-3 my-1" />
+                <Link href="/analytics" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">📊 Analytics</Link>
               </div>
             )}
           </div>
@@ -256,25 +242,15 @@ export default function Header() {
           </Link>
           <div className="border-t border-border my-2" />
           <div className="px-3 pt-1 pb-1">
-            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">ℹ️ How It Works</p>
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">ℹ️ Guide</p>
           </div>
-          <div className="px-3 py-2">
-            <p className="text-[11px] text-text-muted leading-relaxed mb-3">
-              Your one-stop resource for recruiting emails, AI prompts, and job post templates — find, customize, and send in seconds.
-            </p>
-            {GUIDE_STEPS.map((item) => (
-              <div key={item.step} className="flex gap-2.5 py-1.5">
-                <span className="shrink-0 w-5 h-5 rounded-full bg-primary text-white text-[11px] font-bold flex items-center justify-center">{item.step}</span>
-                <div>
-                  <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
-                  <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-            <p className="text-[11px] text-text-muted mt-2">
-              💡 <span className="font-medium">Tip:</span> Sign in to keep your changes saved across devices.
-            </p>
-          </div>
+          <Link
+            href="/guide"
+            onClick={() => setMenuOpen(false)}
+            className="block px-3 py-2.5 rounded-lg text-sm font-medium transition pl-5 text-primary"
+          >
+            📖 How to Use This Site
+          </Link>
         </div>
       )}
     </header>
