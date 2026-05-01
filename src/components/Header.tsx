@@ -19,12 +19,22 @@ const BROWSE_ITEMS = [
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 
+const GUIDE_ITEMS = [
+  { icon: '📁', title: 'Browse Templates', desc: 'Explore email templates, prompts, and job posts by category or recruiting phase.' },
+  { icon: '✏️', title: 'Edit & Create', desc: 'Customize any template or create your own — changes are saved automatically.' },
+  { icon: '🤖', title: 'AI Assistant', desc: 'Generate personalized emails and job posts with the built-in AI tools.' },
+  { icon: '📋', title: 'Copy & Use', desc: 'Click "Copy" to grab the text, or send directly to Copilot Chat or Outlook.' },
+  { icon: '🔑', title: 'Sign In to Save', desc: 'Register with any email + passcode to keep your templates, edits, and favorites across devices.' },
+];
+
 export default function Header() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
   const [browseOpen, setBrowseOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
   const [currentHash, setCurrentHash] = useState('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const guideRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setCurrentHash(window.location.hash);
@@ -33,6 +43,9 @@ export default function Header() {
     const handler = (e: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
         setBrowseOpen(false);
+      }
+      if (guideRef.current && !guideRef.current.contains(e.target as Node)) {
+        setGuideOpen(false);
       }
     };
     document.addEventListener('mousedown', handler);
@@ -146,6 +159,38 @@ export default function Header() {
             )}
           </div>
 
+          {/* How to Use dropdown */}
+          <div ref={guideRef} className="relative">
+            <button
+              onClick={() => setGuideOpen(!guideOpen)}
+              className={`px-2.5 py-1.5 rounded-lg text-[12.5px] font-medium transition-all inline-flex items-center gap-1 whitespace-nowrap ${
+                guideOpen
+                  ? 'bg-primary/10 text-primary'
+                  : 'text-text-secondary hover:text-text-primary hover:bg-surface-hover'
+              }`}
+            >
+              ❓ Guide
+              <span className={`text-[10px] transition-transform ${guideOpen ? 'rotate-180' : ''}`}>▼</span>
+            </button>
+
+            {guideOpen && (
+              <div className="absolute top-full right-0 mt-1.5 w-72 bg-white rounded-xl border border-border shadow-lg p-4 animate-fade-in z-50">
+                <p className="text-xs font-bold text-text-primary mb-3">How to Use This Site</p>
+                <div className="space-y-2.5">
+                  {GUIDE_ITEMS.map((item) => (
+                    <div key={item.title} className="flex gap-2.5">
+                      <span className="text-base shrink-0">{item.icon}</span>
+                      <div>
+                        <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
+                        <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Divider */}
           <div className="w-px h-5 bg-border mx-1" />
 
@@ -201,6 +246,19 @@ export default function Header() {
           >
             🤖 Try AI Assistant
           </Link>
+          <div className="border-t border-border my-2" />
+          <div className="px-3 pt-1 pb-1">
+            <p className="text-[11px] font-semibold text-text-muted uppercase tracking-wider">❓ How to Use</p>
+          </div>
+          {GUIDE_ITEMS.map((item) => (
+            <div key={item.title} className="flex gap-2.5 px-3 py-2">
+              <span className="text-base shrink-0">{item.icon}</span>
+              <div>
+                <p className="text-[12px] font-semibold text-text-primary">{item.title}</p>
+                <p className="text-[11px] text-text-muted leading-relaxed">{item.desc}</p>
+              </div>
+            </div>
+          ))}
         </div>
       )}
     </header>
