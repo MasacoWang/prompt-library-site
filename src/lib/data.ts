@@ -148,6 +148,117 @@ Job:
 [Job Description]`,
 undefined, false, ['interview-prep', 'candidate-eval']),
 
+  t('Screening Disqualification — Respectful Decline', 'Screening', 'prompt',
+`You are a professional recruiter writing a decline email after initial screening.
+
+Context:
+- The candidate was screened but does not meet minimum qualifications for the role.
+- We want to decline respectfully while keeping the door open.
+
+Write an email that:
+- Thanks the candidate for their time and interest
+- Acknowledges something positive about their background
+- Explains we are moving forward with candidates whose experience more closely aligns
+- Encourages them to apply for future roles
+- Keeps it concise (under 150 words)
+
+Inputs:
+Candidate Name: [Candidate Name]
+Role: [Role]
+Positive Note: [Something positive about their background]
+
+Output:
+Professional decline email.`,
+undefined, false, ['candidate-eval']),
+
+  t('Screening Summary to Hiring Manager', 'Screening', 'prompt',
+`You are a recruiter summarizing a phone screen for the hiring manager.
+
+After screening the candidate, provide a structured summary including:
+- Overall impression (1–2 sentences)
+- Relevant experience highlights
+- Motivation & culture fit signals
+- Compensation expectations vs. budget alignment
+- Availability / notice period
+- Red flags or concerns (if any)
+- Recruiter recommendation: Advance / Hold / Pass
+
+Inputs:
+Candidate Name: [Candidate Name]
+Role: [Role]
+Screen Notes: [Paste your screen notes]
+
+Output:
+Structured screening summary for hiring manager review.`,
+undefined, false, ['candidate-eval', 'hm-communication']),
+
+  t('Screening Decline — Does Not Meet Qualifications', 'Screening', 'template',
+`Subject: Update on Your Application — [Role]
+
+Dear [Candidate Name],
+
+Thank you for taking the time to speak with me about the [Role] opportunity at [Company]. I enjoyed learning more about your background and career goals.
+
+After careful consideration, we have decided to move forward with candidates whose experience more closely aligns with the specific requirements for this role at this time.
+
+This is not a reflection of your abilities — we were genuinely impressed by [Positive Note]. We encourage you to keep an eye on our careers page for future opportunities that may be a stronger match.
+
+Thank you again for your interest, and I wish you all the best in your job search.
+
+Best regards,
+[Your Name]`,
+`Subject: Update on Your Application
+
+Hey [Candidate Name],
+
+Thanks so much for chatting with me about the [Role] role — really appreciated hearing about your experience!
+
+After reviewing everything, we've decided to go a different direction for this one. It's not a reflection of you at all — [Positive Note] really stood out.
+
+I'd love to keep in touch for future roles that might be a better fit. Feel free to check back anytime!
+
+Wishing you all the best 🙌
+
+Cheers,
+[Your Name]`, false, ['candidate-eval']),
+
+  t('Screening Summary — To Hiring Manager', 'Screening', 'template',
+`Subject: Phone Screen Summary — [Candidate Name] for [Role]
+
+Hi [Hiring Manager Name],
+
+I completed the initial phone screen with [Candidate Name] for the [Role] position. Here's a quick summary:
+
+📋 Overall Impression:
+[1–2 sentence summary of the candidate]
+
+✅ Strengths:
+• [Strength 1]
+• [Strength 2]
+• [Strength 3]
+
+⚠️ Concerns:
+• [Concern 1, if any]
+• [Concern 2, if any]
+
+💰 Compensation:
+• Expectation: [Candidate's expectation]
+• Budget alignment: [Within range / Slightly above / Significantly above]
+
+📅 Availability:
+• Notice period: [X weeks/months]
+• Preferred start: [Date]
+
+🎯 Recruiter Recommendation: [Advance to next round / Hold / Pass]
+
+Reasoning: [Brief explanation]
+
+Let me know how you'd like to proceed and I'll coordinate next steps.
+
+Best regards,
+[Your Name]`,
+undefined, false, ['candidate-eval', 'hm-communication']),
+
   // ── INTERVIEW ─────────────────────────────────
   t('Interview Notes Summary', 'Interview', 'prompt',
 `Summarize interview notes.
@@ -494,6 +605,129 @@ Tone: [Tone Style]
 Include: clear subject line, concise body, specific call-to-action.
 Keep under 200 words.`,
 undefined, false, ['outreach', 'hm-communication']),
+
+  t('Pipeline Health Check & Risk Assessment', 'Strategy', 'prompt',
+`You are a senior recruiting strategist reviewing a hiring pipeline.
+
+Analyze the pipeline below and provide:
+1. Pipeline health score (Healthy / At Risk / Critical)
+2. Bottleneck identification — where are candidates dropping off?
+3. Time-to-fill projection based on current velocity
+4. Risk factors (e.g., single-threaded candidates, competing offers, HM responsiveness)
+5. Recommended actions to accelerate or de-risk the pipeline
+6. Suggested backup plan if top candidates decline
+
+Pipeline Data:
+Role: [Role]
+Days Open: [Days]
+Candidates Sourced: [Number]
+Screens Completed: [Number]
+Interviews Scheduled: [Number]
+Offers Extended: [Number]
+Current Status: [Description]
+
+Output: Structured pipeline assessment with actionable recommendations.`,
+undefined, false, ['hm-communication']),
+
+  t('Stakeholder Alignment — Competing Priorities', 'Strategy', 'prompt',
+`You are a recruiter preparing talking points for a conversation with a hiring manager who has conflicting requirements or unrealistic expectations.
+
+Context:
+- Role: [Role]
+- Issue: [e.g., budget too low for market, too many must-haves, timeline unrealistic, etc.]
+- Market data: [Any relevant data points]
+
+Generate:
+1. Opening framing — acknowledge HM's goals
+2. Data-backed reality check (market rates, talent availability, typical timelines)
+3. 2–3 compromise options with trade-offs clearly explained
+4. Recommended path forward
+5. Closing — maintain partnership tone
+
+Keep it concise, diplomatic, and recruiter-practical.`,
+undefined, false, ['hm-communication']),
+
+  t('Weekly Hiring Update — To Hiring Manager', 'Strategy', 'template',
+`Subject: Weekly Recruiting Update — [Role(s)]
+
+Hi [Hiring Manager Name],
+
+Here's your weekly update on the [Role] pipeline:
+
+📊 Pipeline Snapshot:
+• Active candidates: [Number]
+• New sourced this week: [Number]
+• Screens completed: [Number]
+• Interviews scheduled: [Number]
+• Pending decisions: [Number]
+
+🔥 Highlights:
+• [Candidate A] — completed final round, strong positive signals
+• [Candidate B] — phone screen scheduled for [Date]
+• [New sourcing channel or strategy tried]
+
+⚠️ Risks / Blockers:
+• [e.g., Top candidate has competing offer expiring Friday]
+• [e.g., Still waiting on interview feedback from [Interviewer]]
+
+📋 Action Needed from You:
+• [ ] Please submit feedback for [Candidate] by [Date]
+• [ ] Confirm if we should proceed with [Candidate] to offer stage
+• [ ] Review updated JD for sourcing alignment
+
+📅 Next Week's Plan:
+• [Planned activities]
+
+Let me know if you have any questions or want to discuss any candidates in more detail.
+
+Best regards,
+[Your Name]`,
+undefined, false, ['hm-communication']),
+
+  t('Intake Meeting Follow-up — Role Kickoff', 'Strategy', 'template',
+`Subject: Intake Meeting Summary & Next Steps — [Role]
+
+Hi [Hiring Manager Name],
+
+Thank you for the intake discussion today! Here's a summary of what we aligned on:
+
+📋 Role Overview:
+• Title: [Role Title]
+• Level: [Level]
+• Location: [Location / Hybrid / Remote]
+• Team: [Team Name]
+• Headcount: [Number of openings]
+
+🎯 Ideal Candidate Profile:
+• Must-haves: [Skill 1], [Skill 2], [Skill 3]
+• Nice-to-haves: [Skill 4], [Skill 5]
+• Years of experience: [Range]
+• Background preference: [Industry / company type]
+
+💰 Compensation:
+• Approved range: [Range]
+• Flexibility: [Any notes on flexibility]
+
+⏱️ Timeline:
+• Target start date: [Date]
+• Interview loop availability: [Days/times]
+• Decision-making speed: [Fast / Standard]
+
+📌 Sourcing Strategy:
+• Target companies: [List]
+• Channels: [LinkedIn, referrals, job boards, etc.]
+• Diversity goals: [If applicable]
+
+📅 Next Steps:
+1. I'll begin sourcing by [Date]
+2. First candidate slate review: [Date]
+3. Please share any referrals or must-meet candidates
+
+Let me know if anything needs adjustment. Looking forward to filling this role together!
+
+Best regards,
+[Your Name]`,
+undefined, false, ['hm-communication']),
 
   // ── NEXT STEPS / HM FOLLOW-UP ──────────────────────────────────
   t('Next Steps Confirmation — After Screen', 'Interview', 'template',
