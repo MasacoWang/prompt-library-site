@@ -84,7 +84,7 @@ function SignInForm() {
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
           <h1 className="text-xl font-bold text-text-primary mb-2">Sign in to AI Recruiter Toolkit</h1>
-          <p className="text-xs text-text-muted">Sign in to sync your favorites across devices</p>
+          <p className="text-xs text-text-muted">Keep your templates, edits, and favorites saved across all your devices</p>
         </div>
 
         <div className="card p-6 space-y-5">
@@ -171,7 +171,10 @@ function SignInForm() {
         {/* Note */}
         <div className="mt-4 p-3 rounded-lg bg-surface-alt border border-border text-center">
           <p className="text-[11px] text-text-muted">
-            🔓 <span className="font-medium">No sign‑in required</span> to use templates. Sign in only syncs your favorites across devices.
+            🔓 <span className="font-medium">No sign‑in required</span> to browse and use templates.
+          </p>
+          <p className="text-[11px] text-text-muted mt-1">
+            Sign in to save your custom templates, edits, and favorites — accessible from any device.
           </p>
         </div>
       </div>

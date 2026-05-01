@@ -124,7 +124,7 @@ export default function LoginButton() {
       {/* Tooltip hint */}
       <div className="absolute top-full right-0 mt-2 w-52 p-2.5 rounded-lg bg-text-primary text-white text-[11px] leading-relaxed shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50">
         <p className="font-medium mb-1">Optional — no sign‑in needed!</p>
-        <p>Sign in with any email + passcode to sync favorites across devices.</p>
+        <p>Sign in to keep all your changes — new templates, edits, and favorites — saved across devices.</p>
       </div>
     </div>
   );
