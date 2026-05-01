@@ -9,25 +9,72 @@ function SignInForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get('callbackUrl') || '/';
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [passcode, setPasscode] = useState('');
+  const [confirmPasscode, setConfirmPasscode] = useState('');
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mode, setMode] = useState<'signin' | 'register'>('signin');
 
   const handleEmailSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !password) { setError('Please enter email and password'); return; }
-    if (password.length < 4) { setError('Password must be at least 4 characters'); return; }
+    if (!email || !passcode) { setError('Please enter email and passcode'); return; }
+    if (passcode.length < 4) { setError('Passcode must be at least 4 characters'); return; }
 
     setLoading(true);
     setError('');
     const result = await signIn('credentials', {
       email,
-      password,
+      password: passcode,
       callbackUrl,
-      redirect: true,
+      redirect: false,
     });
     if (result?.error) {
-      setError('Sign in failed. Please try again.');
+      setError('Invalid email or passcode. Please try again or register first.');
+      setLoading(false);
+    } else if (result?.ok) {
+      window.location.href = callbackUrl;
+    }
+  };
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email || !passcode) { setError('Please enter email and passcode'); return; }
+    if (passcode.length < 4) { setError('Passcode must be at least 4 characters'); return; }
+    if (passcode !== confirmPasscode) { setError('Passcodes do not match'); return; }
+
+    setLoading(true);
+    setError('');
+    setSuccess('');
+    try {
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, passcode }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setError(data.error || 'Registration failed');
+        setLoading(false);
+        return;
+      }
+      setSuccess('Registered successfully! Signing you in...');
+      // Auto sign in after registration
+      const result = await signIn('credentials', {
+        email,
+        password: passcode,
+        callbackUrl,
+        redirect: false,
+      });
+      if (result?.ok) {
+        window.location.href = callbackUrl;
+      } else {
+        setSuccess('');
+        setError('Registered but sign-in failed. Please try signing in manually.');
+        setLoading(false);
+      }
+    } catch {
+      setError('Registration failed. Please try again.');
       setLoading(false);
     }
   };
@@ -41,8 +88,26 @@ function SignInForm() {
         </div>
 
         <div className="card p-6 space-y-5">
-          {/* Email + Password */}
-          <form onSubmit={handleEmailSignIn} className="space-y-3">
+          {/* Mode Toggle */}
+          <div className="flex rounded-lg border border-border overflow-hidden">
+            <button
+              type="button"
+              onClick={() => { setMode('signin'); setError(''); setSuccess(''); }}
+              className={`flex-1 py-2 text-xs font-medium transition ${mode === 'signin' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-surface-hover'}`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMode('register'); setError(''); setSuccess(''); }}
+              className={`flex-1 py-2 text-xs font-medium transition ${mode === 'register' ? 'bg-primary text-white' : 'text-text-secondary hover:bg-surface-hover'}`}
+            >
+              Register
+            </button>
+          </div>
+
+          {/* Email + Passcode Form */}
+          <form onSubmit={mode === 'signin' ? handleEmailSignIn : handleRegister} className="space-y-3">
             <div>
               <label className="block text-xs font-medium text-text-secondary mb-1">Email</label>
               <input
@@ -54,22 +119,35 @@ function SignInForm() {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-text-secondary mb-1">Password</label>
+              <label className="block text-xs font-medium text-text-secondary mb-1">Passcode</label>
               <input
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Your password (min 4 chars)"
+                value={passcode}
+                onChange={(e) => setPasscode(e.target.value)}
+                placeholder="Your passcode (min 4 chars)"
                 className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
             </div>
+            {mode === 'register' && (
+              <div>
+                <label className="block text-xs font-medium text-text-secondary mb-1">Confirm Passcode</label>
+                <input
+                  type="password"
+                  value={confirmPasscode}
+                  onChange={(e) => setConfirmPasscode(e.target.value)}
+                  placeholder="Re-enter your passcode"
+                  className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                />
+              </div>
+            )}
             {error && <p className="text-xs text-red-500">{error}</p>}
+            {success && <p className="text-xs text-green-600">{success}</p>}
             <button
               type="submit"
               disabled={loading}
               className="w-full py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition disabled:opacity-50"
             >
-              {loading ? 'Signing in...' : '✉️ Sign in with Email'}
+              {loading ? (mode === 'signin' ? 'Signing in...' : 'Registering...') : (mode === 'signin' ? '✉️ Sign in with Email' : '✉️ Register with Email')}
             </button>
           </form>
 

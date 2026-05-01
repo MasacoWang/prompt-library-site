@@ -1,6 +1,12 @@
 import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { kv } from '@vercel/kv';
+import { createHash } from 'crypto';
+
+function hashPasscode(passcode: string): string {
+  return createHash('sha256').update(passcode).digest('hex');
+}
 
 const handler = NextAuth({
   providers: [
@@ -12,16 +18,24 @@ const handler = NextAuth({
       name: 'Email',
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'you@example.com' },
-        password: { label: 'Password', type: 'password', placeholder: 'Your password' },
+        password: { label: 'Passcode', type: 'password', placeholder: 'Your passcode' },
       },
       async authorize(credentials) {
-        // Allow any email + password (min 4 chars) — no database, session-only
         if (!credentials?.email || !credentials?.password) return null;
         if (credentials.password.length < 4) return null;
+
+        const normalizedEmail = credentials.email.toLowerCase().trim();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const stored: any = await kv.get(`user:${normalizedEmail}`);
+        if (!stored || !stored.hashedPasscode) return null;
+
+        const inputHash = hashPasscode(credentials.password);
+        if (inputHash !== stored.hashedPasscode) return null;
+
         return {
-          id: credentials.email,
-          email: credentials.email,
-          name: credentials.email.split('@')[0],
+          id: normalizedEmail,
+          email: normalizedEmail,
+          name: normalizedEmail.split('@')[0],
         };
       },
     }),

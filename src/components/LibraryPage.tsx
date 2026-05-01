@@ -41,9 +41,20 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [allCategories, setAllCategories] = useState<string[]>([]);
+  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
 
-  // Sync favorites with server when logged in
-  useFavoritesSync(favorites, setFavorites);
+  const starterIds = new Set(STARTER_TEMPLATES.map((t) => t.id));
+
+  // Sync all user data with server when logged in
+  useFavoritesSync(favorites, setFavorites, {
+    templates,
+    starterTemplateIds: starterIds,
+    setTemplates,
+    customCategories: allCategories.filter((c) => !['Strategy', 'Sourcing', 'Screening', 'Interview', 'Offer'].includes(c)),
+    setCustomCategories: (cats: string[]) => setAllCategories([...['Strategy', 'Sourcing', 'Screening', 'Interview', 'Offer'], ...cats]),
+    deletedTemplateIds,
+    setDeletedTemplateIds,
+  });
 
   useEffect(() => {
     setTemplates(loadTemplates(STARTER_TEMPLATES));
@@ -189,6 +200,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
               });
               if (result.isConfirmed) {
                 setTemplates((prev) => prev.filter((t) => t.id !== selectedTemplate.id));
+                setDeletedTemplateIds((prev) => [...prev, selectedTemplate.id]);
                 setSelectedId(null);
                 Swal.fire('Deleted!', 'Your template has been removed.', 'success');
               }
@@ -376,6 +388,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
                     });
                     if (result.isConfirmed) {
                       setTemplates((prev) => prev.filter((x) => x.id !== t.id));
+                      setDeletedTemplateIds((prev) => [...prev, t.id]);
                       Swal.fire('Deleted!', 'Your template has been removed.', 'success');
                     }
                   }}

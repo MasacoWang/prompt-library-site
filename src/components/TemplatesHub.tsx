@@ -57,8 +57,17 @@ export default function TemplatesHub() {
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
+  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
 
-  useFavoritesSync(favorites, setFavorites);
+  const starterIds = new Set(STARTER_TEMPLATES.map((t) => t.id));
+
+  useFavoritesSync(favorites, setFavorites, {
+    templates,
+    starterTemplateIds: starterIds,
+    setTemplates,
+    deletedTemplateIds,
+    setDeletedTemplateIds,
+  });
 
   // ─── Init from URL params ───
   useEffect(() => {
@@ -160,6 +169,7 @@ export default function TemplatesHub() {
     });
     if (result.isConfirmed) {
       setTemplates((prev) => prev.filter((t) => t.id !== id));
+      setDeletedTemplateIds((prev) => [...prev, id]);
       if (selectedId === id) { setSelectedId(null); setPanelOpen(false); }
       Swal.fire('Deleted!', 'Your template has been removed.', 'success');
     }
