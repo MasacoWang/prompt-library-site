@@ -1,10 +1,12 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
+import { useSharedTemplates } from '@/lib/useSharedTemplates';
 import {
   loadTemplates, saveTemplates, exportTemplates,
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
@@ -37,6 +39,10 @@ const PHASE_OPTIONS = [
 
 export default function TemplatesHub() {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const isAdmin = !!(session?.user as any)?.isAdmin;
+  const { sharedTemplates, addSharedTemplate, deleteSharedTemplate, fetchShared } = useSharedTemplates();
 
   // ─── State ───
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -60,6 +66,7 @@ export default function TemplatesHub() {
   const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
 
   const starterIds = new Set(STARTER_TEMPLATES.map((t) => t.id));
+  const sharedIds = useMemo(() => new Set(sharedTemplates.map((t) => t.id)), [sharedTemplates]);
 
   useFavoritesSync(favorites, setFavorites, {
     templates,
@@ -71,7 +78,8 @@ export default function TemplatesHub() {
 
   // ─── Init from URL params ───
   useEffect(() => {
-    setTemplates(loadTemplates(STARTER_TEMPLATES));
+    const allStarters = [...STARTER_TEMPLATES, ...sharedTemplates.filter(st => !starterIds.has(st.id))];
+    setTemplates(loadTemplates(allStarters));
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
     setSharedFavCounts(loadSharedFavCounts());
@@ -84,7 +92,7 @@ export default function TemplatesHub() {
     if (kind && ['template', 'prompt', 'copywriting'].includes(kind)) setKindFilter(kind);
     if (scenario) setUsecaseFilter(scenario);
     if (phase) setPhaseFilter(phase);
-  }, [searchParams]);
+  }, [searchParams, sharedTemplates]);
 
   // ─── Persist templates ───
   useEffect(() => {
@@ -132,12 +140,34 @@ export default function TemplatesHub() {
     setViewCounts(updated);
   }, []);
 
-  const handleSaveEdit = useCallback(() => {
+  const handleSaveEdit = useCallback(async () => {
     if (!editDraft.title || !editDraft.body) { showToastMsg('Title and body required'); return; }
-    if (editDraft.id) {
+    if (editDraft.id && editDraft.id !== '__new__') {
       setTemplates((prev) => prev.map((t) => t.id === editDraft.id ? { ...t, ...editDraft, updatedAt: new Date().toISOString() } as Template : t));
       setSelectedId(editDraft.id);
     } else {
+      // New template — if admin, save to KV (shared); otherwise localStorage (personal)
+      if (isAdmin) {
+        const result = await addSharedTemplate({
+          title: editDraft.title!,
+          category: editDraft.category || 'Strategy',
+          kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
+          body: editDraft.body!,
+          casualBody: editDraft.casualBody || '',
+          pinned: false,
+          scenario: editDraft.scenario || [],
+          phase: [(editDraft.category || 'Strategy').toLowerCase()],
+        });
+        if (!result.success) {
+          showToastMsg(result.error || 'Failed to save');
+          return;
+        }
+        showToastMsg('Saved to shared library ✓');
+        setEditorMode('use');
+        setPanelOpen(false);
+        setSelectedId(null);
+        return;
+      }
       const now = new Date().toISOString();
       const newId = generateId();
       const newT: Template = {
@@ -153,13 +183,16 @@ export default function TemplatesHub() {
     }
     setEditorMode('use');
     showToastMsg('Saved ✓');
-  }, [editDraft, showToastMsg]);
+  }, [editDraft, showToastMsg, isAdmin, addSharedTemplate]);
 
   const handleDelete = useCallback(async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
+    const isSharedTemplate = sharedIds.has(id);
     const result = await Swal.fire({
       title: 'Delete this template?',
-      text: "This action can't be undone.",
+      text: isSharedTemplate && isAdmin
+        ? "This will remove it for ALL users. This action can't be undone."
+        : "This action can't be undone.",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#d33',
@@ -168,12 +201,19 @@ export default function TemplatesHub() {
       cancelButtonText: 'Cancel',
     });
     if (result.isConfirmed) {
+      if (isSharedTemplate && isAdmin) {
+        const res = await deleteSharedTemplate(id);
+        if (!res.success) {
+          Swal.fire('Error', res.error || 'Failed to delete', 'error');
+          return;
+        }
+      }
       setTemplates((prev) => prev.filter((t) => t.id !== id));
       setDeletedTemplateIds((prev) => [...prev, id]);
       if (selectedId === id) { setSelectedId(null); setPanelOpen(false); }
       Swal.fire('Deleted!', 'Your template has been removed.', 'success');
     }
-  }, [selectedId]);
+  }, [selectedId, isAdmin, sharedIds, deleteSharedTemplate]);
 
   const handleCopilot = useCallback(async (text: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -272,7 +312,7 @@ export default function TemplatesHub() {
               }}
               className="btn-primary px-3 py-2 text-sm whitespace-nowrap"
             >
-              + New
+              + New{isAdmin ? ' (Shared)' : ''}
             </button>
           </div>
 

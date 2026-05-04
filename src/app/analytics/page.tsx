@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import { loadViewCounts, loadTemplates } from '@/lib/utils';
 
 const PASSCODE = 'airt2026';
 
 export default function AnalyticsPage() {
+  const { allStarters } = useAllStarters();
   const [authenticated, setAuthenticated] = useState(false);
   const [code, setCode] = useState('');
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
@@ -15,9 +17,9 @@ export default function AnalyticsPage() {
   useEffect(() => {
     if (authenticated) {
       setViewCounts(loadViewCounts());
-      setTemplates(loadTemplates(STARTER_TEMPLATES));
+      setTemplates(loadTemplates(allStarters));
     }
-  }, [authenticated]);
+  }, [authenticated, allStarters]);
 
   if (!authenticated) {
     return (

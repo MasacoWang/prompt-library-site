@@ -8,6 +8,14 @@ function hashPasscode(passcode: string): string {
   return createHash('sha256').update(passcode).digest('hex');
 }
 
+function checkIsAdmin(email?: string | null, githubLogin?: string | null): boolean {
+  const adminEmails = (process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
+  const adminGithub = (process.env.ADMIN_GITHUB_USERNAMES || '').toLowerCase().split(',').map(u => u.trim()).filter(Boolean);
+  if (email && adminEmails.includes(email.toLowerCase().trim())) return true;
+  if (githubLogin && adminGithub.includes(githubLogin.toLowerCase().trim())) return true;
+  return false;
+}
+
 const handler = NextAuth({
   providers: [
     GitHubProvider({
@@ -47,9 +55,19 @@ const handler = NextAuth({
   },
   callbacks: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    async jwt({ token, account, profile }: any) {
+      // Store GitHub username in the JWT on first sign-in
+      if (account?.provider === 'github' && profile?.login) {
+        token.githubLogin = profile.login;
+      }
+      return token;
+    },
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     async session({ session, token }: any) {
       if (session.user) {
         session.user.id = token.sub;
+        // Recompute admin status from env vars on every session fetch
+        session.user.isAdmin = checkIsAdmin(token.email, token.githubLogin);
       }
       return session;
     },

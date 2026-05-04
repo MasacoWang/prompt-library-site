@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import type { Template } from '@/lib/types';
-import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import { loadTemplates, loadFavorites, copyToCopilot, copyToClipboard, openInOutlook } from '@/lib/utils';
 
 export default function FloatingFavorites() {
+  const { allStarters } = useAllStarters();
   const [open, setOpen] = useState(false);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
   const [items, setItems] = useState<Template[]>([]);
@@ -13,16 +14,16 @@ export default function FloatingFavorites() {
 
   useEffect(() => {
     setFavorites(loadFavorites());
-    setItems(loadTemplates(STARTER_TEMPLATES));
-  }, []);
+    setItems(loadTemplates(allStarters));
+  }, [allStarters]);
 
   // Refresh on open
   useEffect(() => {
     if (open) {
       setFavorites(loadFavorites());
-      setItems(loadTemplates(STARTER_TEMPLATES));
+      setItems(loadTemplates(allStarters));
     }
-  }, [open]);
+  }, [open, allStarters]);
 
   const favoriteItems = items.filter((t) => favorites.has(t.id));
 

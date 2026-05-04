@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import {
   loadTemplates, saveTemplates, exportTemplates,
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
@@ -25,6 +26,7 @@ interface LibraryPageProps {
 }
 
 export default function LibraryPage({ kindFilter, pageTitle, pageDescription, filterMode }: LibraryPageProps) {
+  const { allStarters } = useAllStarters();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [search, setSearch] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('All');
@@ -43,7 +45,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const [allCategories, setAllCategories] = useState<string[]>([]);
   const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
 
-  const starterIds = new Set(STARTER_TEMPLATES.map((t) => t.id));
+  const starterIds = useMemo(() => new Set(allStarters.map((t) => t.id)), [allStarters]);
 
   // Sync all user data with server when logged in
   useFavoritesSync(favorites, setFavorites, {
@@ -57,13 +59,13 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   });
 
   useEffect(() => {
-    setTemplates(loadTemplates(STARTER_TEMPLATES));
+    setTemplates(loadTemplates(allStarters));
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
     setSharedFavCounts(loadSharedFavCounts());
     setAllCategories(getAllCategories());
     setMounted(true);
-  }, []);
+  }, [allStarters]);
 
   useEffect(() => {
     if (mounted && templates.length > 0) saveTemplates(templates);

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import type { Template } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory, loadSharedFavCounts } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
@@ -90,6 +91,7 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
 }
 
 export default function HomeTabs() {
+  const { allStarters } = useAllStarters();
   const [activeTab, setActiveTab] = useState<TabKey>('templates');
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -109,9 +111,9 @@ export default function HomeTabs() {
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
     setSharedFavCounts(loadSharedFavCounts());
-    setItems(loadTemplates(STARTER_TEMPLATES));
+    setItems(loadTemplates(allStarters));
     setCategories(getAllCategories());
-  }, []);
+  }, [allStarters]);
 
   const showToast = (msg: string) => {
     setToast(msg);

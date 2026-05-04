@@ -2,11 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import type { Template } from '@/lib/types';
-import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import { loadTemplates, loadViewCounts, loadSharedFavCounts, loadFavorites, toggleFavorite, incrementViewCount, copyToCopilot, copyToClipboard, openInOutlook } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
 export default function TopPopular() {
+  const { allStarters } = useAllStarters();
   const [items, setItems] = useState<Template[]>([]);
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [favCounts, setFavCounts] = useState<Record<string, number>>({});
@@ -15,11 +16,11 @@ export default function TopPopular() {
   const [toast, setToast] = useState<string | null>(null);
 
   useEffect(() => {
-    setItems(loadTemplates(STARTER_TEMPLATES));
+    setItems(loadTemplates(allStarters));
     setViewCounts(loadViewCounts());
     setFavCounts(loadSharedFavCounts());
     setFavorites(loadFavorites());
-  }, []);
+  }, [allStarters]);
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2500); };
 

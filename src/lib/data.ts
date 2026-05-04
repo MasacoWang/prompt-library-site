@@ -513,6 +513,10 @@ Provide 10–15 LinkedIn search keywords or job titles that would surface releva
 Keep insights recruiter‑practical and specific to sourcing strategy.`,
 undefined, false, ['hm-communication']),
 
+  t('Requisition Strategy Meeting Questions', 'Strategy', 'prompt',
+`Please create a set of questions to focus on during the Requisition Strategy Meeting with hiring managers. The questions should be based on the information provided in the 'Goal and Discussion Points' column from the document titled 'Req Strategy Meeting Template.docx' [Upload Document]. Ensure the questions are ordered to facilitate a clear and logical flow of conversation.`,
+undefined, false, ['hm-communication']),
+
   // ── OFFER ─────────────────────────────────────
   t('Salary Expectation Misalignment', 'Offer', 'prompt',
 `Write a recruiter email explaining that the candidate's salary expectations are outside the approved budget for the role.

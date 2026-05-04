@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import type { Template, ViewMode, Tone, EditorMode } from '@/lib/types';
 import { STARTER_TEMPLATES } from '@/lib/data';
+import { useAllStarters } from '@/lib/useAllStarters';
 import {
   loadTemplates, saveTemplates, exportTemplates,
   extractVariables, substituteVariables, copyToCopilot, copyToClipboard,
@@ -14,6 +15,7 @@ import Editor from './Editor';
 const COPILOT_URL = 'https://m365.cloud.microsoft/chat';
 
 export default function RecruiterVault() {
+  const { allStarters } = useAllStarters();
   const [templates, setTemplates] = useState<Template[]>([]);
   const [view, setView] = useState<ViewMode>('dashboard');
   const [selectedId, setSelectedId] = useState<string | null>(null);
@@ -29,9 +31,9 @@ export default function RecruiterVault() {
   const openCopilot= () => window.open(COPILOT_URL, '_blank');
 
   useEffect(() => {
-    setTemplates(loadTemplates(STARTER_TEMPLATES));
+    setTemplates(loadTemplates(allStarters));
     setMounted(true);
-  }, []);
+  }, [allStarters]);
 
   useEffect(() => {
     if (mounted && templates.length > 0) saveTemplates(templates);
