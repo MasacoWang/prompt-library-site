@@ -60,6 +60,29 @@ function FeedbackButton() {
                 </button>
               ))}
             </div>
+            <div>
+              <p className="text-[11px] text-text-muted mb-1.5">Common topics (click to add):</p>
+              <div className="flex flex-wrap gap-1.5">
+                {[
+                  'Sign in not working',
+                  'Template not loading',
+                  'Outlook button not working',
+                  'Copy to Copilot failed',
+                  'Filter not showing results',
+                  'Variables not filling in',
+                  'Page loading slowly',
+                  'Request a new template',
+                ].map((topic) => (
+                  <button
+                    key={topic}
+                    onClick={() => setMessage((prev) => prev ? `${prev}\n${topic}` : topic)}
+                    className="px-2 py-1 rounded-md text-[10px] font-medium bg-surface-alt text-text-secondary border border-border hover:border-primary/40 hover:text-primary transition-all"
+                  >
+                    {topic}
+                  </button>
+                ))}
+              </div>
+            </div>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
