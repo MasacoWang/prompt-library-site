@@ -162,6 +162,7 @@ export default function Editor({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className={labelClass}>Use Case</label>
+                  <p className="text-[10px] text-text-muted mb-1.5">Click to select · multiple allowed</p>
                   <div className="flex flex-wrap gap-1.5">
                     {SCENARIOS.map((s) => {
                       const selected = editDraft.scenario?.includes(s.key) || false;
@@ -188,6 +189,7 @@ export default function Editor({
                 </div>
                 <div>
                   <label className={labelClass}>Recruiting Phase</label>
+                  <p className="text-[10px] text-text-muted mb-1.5">Click to select · multiple allowed</p>
                   <div className="flex flex-wrap gap-1.5">
                     {PHASES.map((p) => {
                       const selected = editDraft.phase?.includes(p.key) || false;
