@@ -9,7 +9,7 @@ const NAV_ITEMS = [
   { label: 'Home', href: '/' },
   { label: 'All Templates', href: '/templates' },
   { label: 'Email Templates', href: '/templates?kind=template' },
-  { label: 'Prompts', href: '/templates?kind=prompt' },
+  { label: 'Prompt Library', href: '/templates?kind=prompt' },
 ];
 
 const BROWSE_ITEMS = [
