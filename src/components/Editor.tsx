@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
 import { SCENARIOS, PHASES } from '@/lib/types';
-import { extractVariables, getAllCategories } from '@/lib/utils';
+import { extractVariables } from '@/lib/utils';
 
 interface EditorProps {
   template: Template | null;
@@ -147,31 +147,17 @@ export default function Editor({
                   className={`${inputClass} text-xs`}
                 />
               </div>
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={labelClass}>Category</label>
-                  <select
-                    value={editDraft.category || 'Strategy'}
-                    onChange={(e) => onDraftChange({ ...editDraft, category: e.target.value })}
-                    className={`${inputClass} text-xs`}
-                  >
-                    {getAllCategories().map((c) => (
-                      <option key={c} value={c}>{c}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className={labelClass}>Type</label>
-                  <select
-                    value={editDraft.kind || 'prompt'}
-                    onChange={(e) => onDraftChange({ ...editDraft, kind: e.target.value as 'prompt' | 'template' | 'copywriting' })}
-                    className={`${inputClass} text-xs`}
-                  >
-                    <option value="prompt">💡 Prompt</option>
-                    <option value="template">✉️ Email Template</option>
-                    <option value="copywriting">📝 Job Post Template</option>
-                  </select>
-                </div>
+              <div>
+                <label className={labelClass}>Type</label>
+                <select
+                  value={editDraft.kind || 'prompt'}
+                  onChange={(e) => onDraftChange({ ...editDraft, kind: e.target.value as 'prompt' | 'template' | 'copywriting' })}
+                  className={`${inputClass} text-xs`}
+                >
+                  <option value="prompt">💡 Prompt</option>
+                  <option value="template">✉️ Email Template</option>
+                  <option value="copywriting">📝 Job Post Template</option>
+                </select>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
@@ -212,7 +198,10 @@ export default function Editor({
                           onClick={() => {
                             const current = editDraft.phase || [];
                             const updated = selected ? current.filter((k) => k !== p.key) : [...current, p.key];
-                            onDraftChange({ ...editDraft, phase: updated });
+                            const category = updated.length > 0
+                              ? updated[0].charAt(0).toUpperCase() + updated[0].slice(1)
+                              : 'Strategy';
+                            onDraftChange({ ...editDraft, phase: updated, category });
                           }}
                           className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
                             selected
