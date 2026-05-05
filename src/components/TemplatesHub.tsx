@@ -24,7 +24,7 @@ const KIND_OPTIONS = [
   { key: 'all', label: 'All', icon: '📁' },
   { key: 'template', label: 'Email Templates', icon: '✉️' },
   { key: 'prompt', label: 'Prompt Library', icon: '💡' },
-  { key: 'copywriting', label: 'Job Post Templates', icon: '📝' },
+  { key: 'copywriting', label: 'Create a Job Post', icon: '📝' },
 ] as const;
 
 const USECASE_OPTIONS = [

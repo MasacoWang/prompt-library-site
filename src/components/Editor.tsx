@@ -154,7 +154,7 @@ export default function Editor({
                   {([
                     { key: 'prompt', label: '💡 Prompt' },
                     { key: 'template', label: '✉️ Email Template' },
-                    { key: 'copywriting', label: '📝 Job Post Template' },
+                    { key: 'copywriting', label: '📝 Create a Job Post' },
                   ] as const).map((opt) => {
                     const currentKinds = editDraft.kinds || (editDraft.kind ? [editDraft.kind] : ['prompt']);
                     const selected = currentKinds.includes(opt.key);

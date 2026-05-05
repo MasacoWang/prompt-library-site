@@ -63,7 +63,7 @@ export default function Home() {
               <div className="w-10 h-10 rounded-lg bg-[#ffb900]/[0.07] flex items-center justify-center mx-auto mb-3">
                 <span className="text-xl">📝</span>
               </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">Job Post Templates</p>
+              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">Create a Job Post</p>
               <p className="text-xs text-text-muted">Create high‑impact job posts</p>
             </Link>
 

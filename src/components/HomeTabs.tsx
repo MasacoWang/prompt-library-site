@@ -14,7 +14,7 @@ type TabKey = 'templates' | 'prompts' | 'copywriting' | 'scenarios' | 'phases' |
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'templates', label: 'Email Templates', icon: '✉️' },
   { key: 'prompts', label: 'Prompt Library', icon: '💡' },
-  { key: 'copywriting', label: 'Job Post Templates', icon: '📝' },
+  { key: 'copywriting', label: 'Create a Job Post', icon: '📝' },
   { key: 'scenarios', label: 'Scenarios', icon: '🎯' },
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
   { key: 'favorites', label: 'Favorites', icon: '❤️' },
@@ -298,7 +298,7 @@ export default function HomeTabs() {
                 onClick={() => setNewDraft((d) => ({ ...d, kind: 'copywriting' }))}
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'copywriting' ? 'bg-green-100 text-green-700 border-2 border-green-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
               >
-                📝 Job Post Template
+                📝 Create a Job Post
               </button>
             </div>
             <div>

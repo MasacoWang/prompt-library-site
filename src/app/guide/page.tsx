@@ -12,7 +12,7 @@ const STEPS = [
 const QUICK_LINKS = [
   { icon: '✉️', title: 'Email Templates', desc: 'Ready-to-use recruiting emails for every stage — outreach, scheduling, offers, and more.', href: '/templates?kind=template' },
   { icon: '💡', title: 'Prompt Library', desc: 'AI prompts to help you source, screen, and evaluate candidates with Copilot.', href: '/templates?kind=prompt' },
-  { icon: '📝', title: 'Job Post Templates', desc: 'Professional job posting templates you can customize for any role.', href: '/templates?kind=copywriting' },
+  { icon: '📝', title: 'Create a Job Post', desc: 'Professional job posting templates you can customize for any role.', href: '/templates?kind=copywriting' },
   { icon: '🤖', title: 'AI Assistant', desc: 'Generate personalized emails, job posts, and next-step confirmations with AI.', href: '/ai-assistant' },
   { icon: '📊', title: 'Analytics', desc: 'View site usage and template popularity (passcode protected).', href: '/analytics' },
 ];
