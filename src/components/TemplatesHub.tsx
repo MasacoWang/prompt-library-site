@@ -148,10 +148,12 @@ export default function TemplatesHub() {
     } else {
       // New template — if admin, save to KV (shared); otherwise localStorage (personal)
       if (isAdmin) {
+        const kinds = editDraft.kinds || [editDraft.kind || 'prompt'];
         const result = await addSharedTemplate({
           title: editDraft.title!,
           category: editDraft.category || 'Strategy',
-          kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
+          kind: (kinds[0] as 'prompt' | 'template' | 'copywriting') || 'prompt',
+          kinds,
           body: editDraft.body!,
           casualBody: editDraft.casualBody || '',
           pinned: false,
@@ -173,6 +175,7 @@ export default function TemplatesHub() {
       const newT: Template = {
         id: newId, title: editDraft.title!, category: editDraft.category || 'Strategy',
         kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
+        kinds: editDraft.kinds || [editDraft.kind || 'prompt'],
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
         phase: editDraft.phase || [(editDraft.category || 'Strategy').toLowerCase()],
@@ -253,7 +256,7 @@ export default function TemplatesHub() {
 
   // ─── Filtering ───
   const filtered = templates.filter((t) => {
-    if (kindFilter !== 'all' && t.kind !== kindFilter) return false;
+    if (kindFilter !== 'all' && t.kind !== kindFilter && !t.kinds?.includes(kindFilter)) return false;
     if (showFavoritesOnly && !favorites.has(t.id)) return false;
     if (usecaseFilter !== 'all' && !t.scenario?.includes(usecaseFilter)) return false;
     if (phaseFilter !== 'all' && !t.phase?.includes(phaseFilter)) return false;

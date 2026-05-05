@@ -149,15 +149,37 @@ export default function Editor({
               </div>
               <div>
                 <label className={labelClass}>Type</label>
-                <select
-                  value={editDraft.kind || 'prompt'}
-                  onChange={(e) => onDraftChange({ ...editDraft, kind: e.target.value as 'prompt' | 'template' | 'copywriting' })}
-                  className={`${inputClass} text-xs`}
-                >
-                  <option value="prompt">💡 Prompt</option>
-                  <option value="template">✉️ Email Template</option>
-                  <option value="copywriting">📝 Job Post Template</option>
-                </select>
+                <p className="text-[10px] text-text-muted mb-1.5">Click to select · multiple allowed</p>
+                <div className="flex flex-wrap gap-1.5">
+                  {([
+                    { key: 'prompt', label: '💡 Prompt' },
+                    { key: 'template', label: '✉️ Email Template' },
+                    { key: 'copywriting', label: '📝 Job Post Template' },
+                  ] as const).map((opt) => {
+                    const currentKinds = editDraft.kinds || (editDraft.kind ? [editDraft.kind] : ['prompt']);
+                    const selected = currentKinds.includes(opt.key);
+                    return (
+                      <button
+                        key={opt.key}
+                        type="button"
+                        onClick={() => {
+                          const updated = selected
+                            ? currentKinds.filter((k) => k !== opt.key)
+                            : [...currentKinds, opt.key];
+                          if (updated.length === 0) return;
+                          onDraftChange({ ...editDraft, kinds: updated, kind: updated[0] as 'prompt' | 'template' | 'copywriting' });
+                        }}
+                        className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-all ${
+                          selected
+                            ? 'bg-primary text-white'
+                            : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/40'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>

@@ -30,6 +30,7 @@ interface SharedTemplate {
   title: string;
   category: string;
   kind: 'prompt' | 'template' | 'copywriting';
+  kinds?: string[];
   body: string;
   casualBody?: string;
   pinned: boolean;
@@ -40,7 +41,7 @@ interface SharedTemplate {
 }
 
 function validateTemplate(data: Record<string, unknown>): { valid: boolean; error?: string; template?: Omit<SharedTemplate, 'id' | 'createdAt' | 'updatedAt'> } {
-  const { title, category, kind, body, casualBody, pinned, scenario, phase } = data;
+  const { title, category, kind, kinds, body, casualBody, pinned, scenario, phase } = data;
   if (!title || typeof title !== 'string' || title.trim().length === 0) return { valid: false, error: 'Title is required' };
   if (!category || typeof category !== 'string') return { valid: false, error: 'Category is required' };
   if (!kind || !['prompt', 'template', 'copywriting'].includes(kind as string)) return { valid: false, error: 'Kind must be prompt, template, or copywriting' };
@@ -55,6 +56,7 @@ function validateTemplate(data: Record<string, unknown>): { valid: boolean; erro
       title: (title as string).trim(),
       category: category as string,
       kind: kind as 'prompt' | 'template' | 'copywriting',
+      kinds: Array.isArray(kinds) ? kinds.filter((k): k is string => typeof k === 'string') : [kind as string],
       body: (body as string).trim(),
       casualBody: casualBody ? (casualBody as string).trim() : undefined,
       pinned: pinned === true,

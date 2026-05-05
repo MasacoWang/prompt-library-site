@@ -3,6 +3,7 @@ export interface Template {
   title: string;
   category: string;
   kind: 'prompt' | 'template' | 'copywriting';
+  kinds?: string[];
   body: string;
   casualBody?: string;
   pinned: boolean;
