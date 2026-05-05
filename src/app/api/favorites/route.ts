@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { kv } from '@vercel/kv';
+import { kvGet, kvSet } from '@/lib/redis';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getAuthOptions(): any {
@@ -56,10 +56,10 @@ export async function GET() {
 
     const userId = getUserId(session);
     const [favorites, userTemplates, customCategories, deletedIds] = await Promise.all([
-      kv.get<string[]>(`favorites:${userId}`),
-      kv.get(`templates:${userId}`),
-      kv.get<string[]>(`categories:${userId}`),
-      kv.get<string[]>(`deleted:${userId}`),
+      kvGet<string[]>(`favorites:${userId}`),
+      kvGet(`templates:${userId}`),
+      kvGet<string[]>(`categories:${userId}`),
+      kvGet<string[]>(`deleted:${userId}`),
     ]);
 
     return NextResponse.json({
@@ -86,10 +86,10 @@ export async function POST(req: NextRequest) {
     const { favorites, userTemplates, customCategories, deletedTemplateIds } = await req.json();
 
     const promises = [];
-    if (favorites !== undefined) promises.push(kv.set(`favorites:${userId}`, favorites));
-    if (userTemplates !== undefined) promises.push(kv.set(`templates:${userId}`, userTemplates));
-    if (customCategories !== undefined) promises.push(kv.set(`categories:${userId}`, customCategories));
-    if (deletedTemplateIds !== undefined) promises.push(kv.set(`deleted:${userId}`, deletedTemplateIds));
+    if (favorites !== undefined) promises.push(kvSet(`favorites:${userId}`, favorites));
+    if (userTemplates !== undefined) promises.push(kvSet(`templates:${userId}`, userTemplates));
+    if (customCategories !== undefined) promises.push(kvSet(`categories:${userId}`, customCategories));
+    if (deletedTemplateIds !== undefined) promises.push(kvSet(`deleted:${userId}`, deletedTemplateIds));
 
     await Promise.all(promises);
     return NextResponse.json({ success: true });

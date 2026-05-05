@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import GitHubProvider from 'next-auth/providers/github';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import { kv } from '@vercel/kv';
+import { kvGet } from '@/lib/redis';
 import { createHash } from 'crypto';
 
 function hashPasscode(passcode: string): string {
@@ -34,7 +34,7 @@ const handler = NextAuth({
 
         const normalizedEmail = credentials.email.toLowerCase().trim();
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const stored: any = await kv.get(`user:${normalizedEmail}`);
+        const stored: any = await kvGet(`user:${normalizedEmail}`);
         if (!stored || !stored.hashedPasscode) return null;
 
         const inputHash = hashPasscode(credentials.password);

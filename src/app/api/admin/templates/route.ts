@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { kv } from '@vercel/kv';
+import { kvGet, kvSet } from '@/lib/redis';
 
 function checkIsAdmin(email?: string | null, githubLogin?: string | null): boolean {
   const adminEmails = (process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    const templates: SharedTemplate[] = (await kv.get(KV_TEMPLATES_KEY)) || [];
+    const templates: SharedTemplate[] = (await kvGet(KV_TEMPLATES_KEY)) || [];
     const now = new Date().toISOString();
     const id = 'shared-' + validation.template!.kind + '-' + validation.template!.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
     };
 
     templates.push(newTemplate);
-    await kv.set(KV_TEMPLATES_KEY, templates);
+    await kvSet(KV_TEMPLATES_KEY, templates);
 
     return NextResponse.json({ success: true, template: newTemplate }, { status: 201 });
   } catch {
@@ -117,7 +117,7 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: validation.error }, { status: 400 });
     }
 
-    const templates: SharedTemplate[] = (await kv.get(KV_TEMPLATES_KEY)) || [];
+    const templates: SharedTemplate[] = (await kvGet(KV_TEMPLATES_KEY)) || [];
     const idx = templates.findIndex(t => t.id === id);
     if (idx === -1) {
       return NextResponse.json({ error: 'Template not found' }, { status: 404 });
@@ -128,7 +128,7 @@ export async function PUT(req: NextRequest) {
       ...validation.template!,
       updatedAt: new Date().toISOString(),
     };
-    await kv.set(KV_TEMPLATES_KEY, templates);
+    await kvSet(KV_TEMPLATES_KEY, templates);
 
     return NextResponse.json({ success: true, template: templates[idx] });
   } catch {
@@ -147,13 +147,13 @@ export async function DELETE(req: NextRequest) {
       return NextResponse.json({ error: 'Template id is required' }, { status: 400 });
     }
 
-    const templates: SharedTemplate[] = (await kv.get(KV_TEMPLATES_KEY)) || [];
+    const templates: SharedTemplate[] = (await kvGet(KV_TEMPLATES_KEY)) || [];
     const filtered = templates.filter(t => t.id !== id);
     if (filtered.length === templates.length) {
       return NextResponse.json({ error: 'Template not found' }, { status: 404 });
     }
 
-    await kv.set(KV_TEMPLATES_KEY, filtered);
+    await kvSet(KV_TEMPLATES_KEY, filtered);
     return NextResponse.json({ success: true });
   } catch {
     return NextResponse.json({ error: 'Failed to delete template' }, { status: 500 });

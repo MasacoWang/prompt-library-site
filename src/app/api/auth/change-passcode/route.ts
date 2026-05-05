@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
-import { kv } from '@vercel/kv';
+import { kvGet, kvSet } from '@/lib/redis';
 import { createHash } from 'crypto';
 
 function hashPasscode(passcode: string): string {
@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
 
     const normalizedEmail = session.user.email.toLowerCase().trim();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const stored: any = await kv.get(`user:${normalizedEmail}`);
+    const stored: any = await kvGet(`user:${normalizedEmail}`);
     if (!stored || !stored.hashedPasscode) {
       return NextResponse.json({ error: 'Account not found' }, { status: 404 });
     }
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
 
     // Update to new passcode
     const newHash = hashPasscode(newPasscode);
-    await kv.set(`user:${normalizedEmail}`, { ...stored, hashedPasscode: newHash });
+    await kvSet(`user:${normalizedEmail}`, { ...stored, hashedPasscode: newHash });
 
     return NextResponse.json({ success: true });
   } catch {

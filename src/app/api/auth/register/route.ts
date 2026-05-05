@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { kv } from '@vercel/kv';
+import { kvGet, kvSet } from '@/lib/redis';
 import { createHash } from 'crypto';
 
 function hashPasscode(passcode: string): string {
@@ -18,14 +18,14 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedEmail = email.toLowerCase().trim();
-    const existing = await kv.get(`user:${normalizedEmail}`);
+    const existing = await kvGet(`user:${normalizedEmail}`);
 
     if (existing && !reset) {
       return NextResponse.json({ error: 'This email is already registered. Please sign in or reset your passcode.' }, { status: 409 });
     }
 
     const hashed = hashPasscode(passcode);
-    await kv.set(`user:${normalizedEmail}`, { hashedPasscode: hashed, createdAt: Date.now() });
+    await kvSet(`user:${normalizedEmail}`, { hashedPasscode: hashed, createdAt: Date.now() });
 
     return NextResponse.json({ success: true, isReset: !!existing });
   } catch {
