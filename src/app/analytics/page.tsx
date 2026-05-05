@@ -11,6 +11,7 @@ export default function AnalyticsPage() {
   const { allStarters } = useAllStarters();
   const [authenticated, setAuthenticated] = useState(false);
   const [code, setCode] = useState('');
+  const [error, setError] = useState('');
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [templates, setTemplates] = useState<typeof STARTER_TEMPLATES>([]);
 
@@ -21,6 +22,15 @@ export default function AnalyticsPage() {
     }
   }, [authenticated, allStarters]);
 
+  const handleSubmit = () => {
+    if (code === PASSCODE) {
+      setAuthenticated(true);
+      setError('');
+    } else {
+      setError('Incorrect passcode. Please try again.');
+    }
+  };
+
   if (!authenticated) {
     return (
       <div className="max-w-md mx-auto px-4 py-20 text-center">
@@ -30,13 +40,14 @@ export default function AnalyticsPage() {
           <input
             type="password"
             value={code}
-            onChange={(e) => setCode(e.target.value)}
-            onKeyDown={(e) => { if (e.key === 'Enter' && code === PASSCODE) setAuthenticated(true); }}
+            onChange={(e) => { setCode(e.target.value); setError(''); }}
+            onKeyDown={(e) => { if (e.key === 'Enter') handleSubmit(); }}
             placeholder="Passcode"
-            className="input-field mb-4"
+            className="input-field mb-2"
           />
+          {error && <p className="text-xs text-red-500 mb-3">{error}</p>}
           <button
-            onClick={() => { if (code === PASSCODE) setAuthenticated(true); }}
+            onClick={handleSubmit}
             className="btn-primary w-full py-2.5 text-sm font-semibold"
           >
             Enter
