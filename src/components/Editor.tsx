@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Template, Tone, EditorMode } from '@/lib/types';
+import { SCENARIOS, PHASES } from '@/lib/types';
 import { extractVariables, getAllCategories } from '@/lib/utils';
 
 interface EditorProps {
@@ -170,6 +171,60 @@ export default function Editor({
                     <option value="template">✉️ Email Template</option>
                     <option value="copywriting">📝 Job Post Template</option>
                   </select>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className={labelClass}>Use Case</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {SCENARIOS.map((s) => {
+                      const selected = editDraft.scenario?.includes(s.key) || false;
+                      return (
+                        <button
+                          key={s.key}
+                          type="button"
+                          onClick={() => {
+                            const current = editDraft.scenario || [];
+                            const updated = selected ? current.filter((k) => k !== s.key) : [...current, s.key];
+                            onDraftChange({ ...editDraft, scenario: updated });
+                          }}
+                          className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
+                            selected
+                              ? 'bg-primary text-white'
+                              : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/40'
+                          }`}
+                        >
+                          {s.icon} {s.label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+                <div>
+                  <label className={labelClass}>Recruiting Phase</label>
+                  <div className="flex flex-wrap gap-1.5">
+                    {PHASES.map((p) => {
+                      const selected = editDraft.phase?.includes(p.key) || false;
+                      return (
+                        <button
+                          key={p.key}
+                          type="button"
+                          onClick={() => {
+                            const current = editDraft.phase || [];
+                            const updated = selected ? current.filter((k) => k !== p.key) : [...current, p.key];
+                            onDraftChange({ ...editDraft, phase: updated });
+                          }}
+                          className={`px-2 py-1 rounded-md text-[10px] font-medium transition-all ${
+                            selected
+                              ? 'bg-primary text-white'
+                              : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/40'
+                          }`}
+                        >
+                          {p.icon} {p.label}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
               <div>

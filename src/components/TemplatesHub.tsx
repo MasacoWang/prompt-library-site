@@ -156,7 +156,7 @@ export default function TemplatesHub() {
           casualBody: editDraft.casualBody || '',
           pinned: false,
           scenario: editDraft.scenario || [],
-          phase: [(editDraft.category || 'Strategy').toLowerCase()],
+          phase: editDraft.phase || [(editDraft.category || 'Strategy').toLowerCase()],
         });
         if (!result.success) {
           showToastMsg(result.error || 'Failed to save');
@@ -175,7 +175,7 @@ export default function TemplatesHub() {
         kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
-        phase: [(editDraft.category || 'Strategy').toLowerCase()],
+        phase: editDraft.phase || [(editDraft.category || 'Strategy').toLowerCase()],
         scenario: editDraft.scenario || [],
       };
       setTemplates((prev) => [...prev, newT]);
@@ -355,7 +355,7 @@ export default function TemplatesHub() {
               className="px-2.5 py-1 rounded-lg border border-border text-xs bg-white focus:outline-none focus:ring-2 focus:ring-primary/30"
             >
               {PHASE_OPTIONS.map((opt) => (
-                <option key={opt.key} value={opt.key}>{opt.key === 'all' ? 'Phase: All' : opt.label}</option>
+                <option key={opt.key} value={opt.key}>{opt.key === 'all' ? 'Recruiting Phase: All' : opt.label}</option>
               ))}
             </select>
 
@@ -502,7 +502,7 @@ export default function TemplatesHub() {
 
               {/* Phase */}
               <div>
-                <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-2 block">Phase</label>
+                <label className="text-xs font-medium text-text-muted uppercase tracking-wider mb-2 block">Recruiting Phase</label>
                 <div className="flex flex-wrap gap-2">
                   {PHASE_OPTIONS.map((opt) => (
                     <button
