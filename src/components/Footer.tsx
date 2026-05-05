@@ -61,9 +61,17 @@ export default function Footer() {
             </p>
             <SiteVisitorCount />
           </div>
-          <p className="text-[11px] text-text-muted">
-            Copyright © 2026 Clarice Wang. All rights reserved.
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-[11px] text-text-muted">
+              Copyright © 2026 Clarice Wang. All rights reserved.
+            </p>
+            <a
+              href="mailto:masacloud@hotmail.com?subject=AI%20Recruiter%20Toolkit%20-%20Bug%20Report%20%2F%20Feedback"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-text-secondary border border-border hover:border-primary/40 hover:text-primary transition-all"
+            >
+              🐛 Report a Bug / Feedback
+            </a>
+          </div>
         </div>
       </div>
     </footer>
