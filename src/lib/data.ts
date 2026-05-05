@@ -27,7 +27,7 @@ export const STARTER_TEMPLATES: Template[] = [
 `Draft a concise outreach message.
 
 Context:
-- Company: Microsoft
+- Company: [Company]
 - Role: [Job Title]
 - Candidate skill: [Key Skill]
 
@@ -450,7 +450,7 @@ The team appreciated [Experience Highlight] during the interview discussions.
 
 For this particular role, after careful consideration, we have decided to move forward with candidates whose experience more closely aligns with the current needs of the role.
 
-We sincerely appreciate the time and preparation you invested throughout the interview process. Thank you again for your interest in Microsoft and for connecting with our team. We wish you continued success in your career journey.
+We sincerely appreciate the time and preparation you invested throughout the interview process. Thank you again for your interest and for connecting with our team. We wish you continued success in your career journey.
 
 Best regards,
 [Recruiter Name]`,
@@ -556,22 +556,22 @@ Best regards,
 [Recruiter Name]`),
 
   t('Offer Letter Ready for Signature', 'Offer', 'template',
-`Subject: Your Microsoft Offer Letter is Ready for Signature
+`Subject: Your Offer Letter is Ready for Signature
 
 Dear [Candidate Name],
 
-Congratulations! We are pleased to inform you that your official offer letter from Microsoft has been issued and is now ready for your review and signature.
+Congratulations! We are pleased to inform you that your official offer letter has been issued and is now ready for your review and signature.
 
 Next Steps — Please complete the following:
 
-1. Log in to the Microsoft Careers website and navigate to the Action Center to access your offer letter: 👉 https://careers.microsoft.com/ (Action Center)
+1. Log in to the company careers portal and navigate to the Action Center to access your offer letter.
 2. Review the offer letter carefully, including your role, compensation, start date, and other terms.
 3. Sign the offer letter using your official full legal name (as it appears on your government-issued ID).
-4. Provide your National ID number (身分證字號 / National Identification Number) in the designated field. This is required for employment registration and payroll setup in Taiwan.
+4. Provide your National ID number in the designated field (if required for your country).
 
-If you have any questions or experience any issues accessing the Action Center, please don't hesitate to reach out to me directly.
+If you have any questions or experience any issues accessing the portal, please don't hesitate to reach out to me directly.
 
-We are very excited to welcome you to the Microsoft team and look forward to your acceptance!
+We are very excited to welcome you to the team and look forward to your acceptance!
 
 [Sender Name]
 [Sender Position Title]`, undefined, false, ['outreach']),
@@ -846,7 +846,7 @@ undefined, false, ['hm-communication']),
 
   // ── RECRUITING 文案 (Job Posting Copywriting) ──────────────────────────────────
   t('Software Engineer — LinkedIn Post', 'Sourcing', 'prompt',
-`🚀 We're Hiring: Software Engineer @ Microsoft
+`🚀 We're Hiring: Software Engineer @ [Company]
 
 Are you passionate about building products that empower millions of people worldwide?
 
@@ -862,7 +862,7 @@ What we're looking for:
 • Experience with [Tech Stack, e.g., C#, TypeScript, Python, Azure]
 • A growth mindset and passion for learning
 
-Why Microsoft?
+Why [Company]?
 ✅ Inclusive culture where you can be yourself
 ✅ Competitive compensation & benefits
 ✅ Hybrid flexibility & work-life balance
@@ -870,15 +870,15 @@ Why Microsoft?
 
 📩 Interested? Drop me a DM or apply here: [Link]
 
-#Hiring #SoftwareEngineer #Microsoft #TechJobs #Careers`,
+#Hiring #SoftwareEngineer #TechJobs #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
   t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'prompt',
-`🎓 Internship Alert: Microsoft [Year] Summer Internship
+`🎓 Internship Alert: [Company] [Year] Summer Internship
 
 Calling all students! 🙋‍♀️🙋‍♂️
 
-Microsoft is looking for curious, driven interns to join us this summer in [Location]. This is your chance to work on real projects, learn from world-class engineers, and kick-start your tech career.
+[Company] is looking for curious, driven interns to join us this summer in [Location]. This is your chance to work on real projects, learn from world-class engineers, and kick-start your tech career.
 
 What to expect:
 • A meaningful project with real business impact
@@ -898,11 +898,11 @@ We welcome students from all backgrounds — diversity makes us stronger 🌈
 
 Know someone who'd be a great fit? Tag them below! 👇
 
-#MicrosoftIntern #Internship #TechInternship #Students #Hiring`,
+#Internship #TechInternship #Students #Hiring`,
 undefined, false, ['outreach', 'job-post']),
 
   t('General Role Posting — LinkedIn Post', 'Sourcing', 'prompt',
-`📢 Open Role: [Job Title] @ Microsoft
+`📢 Open Role: [Job Title] @ [Company]
 
 I'm excited to share that my team is hiring a [Job Title]!
 
@@ -930,7 +930,7 @@ What makes this team special:
 If this sounds like you (or someone you know), let's connect!
 Apply here: [Link]
 
-#OpenToWork #Hiring #[JobTitle] #Microsoft #Careers`,
+#OpenToWork #Hiring #[JobTitle] #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
   t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'prompt',
@@ -938,7 +938,7 @@ undefined, false, ['outreach', 'job-post']),
 
 Hey [University Name] students! 👋
 
-Microsoft will be on campus [Date] for [Event: Career Fair / Info Session / Tech Talk].
+[Company] will be on campus [Date] for [Event: Career Fair / Info Session / Tech Talk].
 
 Come meet our team, learn about full-time & internship opportunities, and see what it's like to build technology that changes the world.
 
@@ -959,13 +959,13 @@ Can't make it? You can still apply online: [Link]
 
 See you there! 👀
 
-#CampusRecruiting #Microsoft #[UniversityName] #TechCareers #NewGrad`,
+#CampusRecruiting #[UniversityName] #TechCareers #NewGrad`,
 undefined, false, ['outreach', 'job-post']),
 
   t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'prompt',
 `🌍 Diversity in Tech Starts with Intentional Hiring
 
-At Microsoft, we believe diverse teams build better products. That's why we're committed to creating opportunities for underrepresented talent in tech.
+At [Company], we believe diverse teams build better products. That's why we're committed to creating opportunities for underrepresented talent in tech.
 
 We're actively hiring for multiple roles across engineering, design, and product — and we want to hear from YOU.
 
@@ -991,6 +991,6 @@ Our commitment to you:
 
 Let's build a future that represents everyone. 🤝
 
-#DiversityInTech #InclusiveHiring #Microsoft #TechForAll #Hiring`,
+#DiversityInTech #InclusiveHiring #TechForAll #Hiring`,
 undefined, false, ['outreach', 'job-post']),
 ];
