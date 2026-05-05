@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { kvGet, kvSet } from '@/lib/redis';
+import { authOptions } from '@/lib/auth';
 
 function checkIsAdmin(email?: string | null, githubLogin?: string | null): boolean {
   const adminEmails = (process.env.ADMIN_EMAILS || '').toLowerCase().split(',').map(e => e.trim()).filter(Boolean);
@@ -12,11 +13,11 @@ function checkIsAdmin(email?: string | null, githubLogin?: string | null): boole
 
 async function verifyAdmin(): Promise<{ isAdmin: boolean; error?: NextResponse }> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const session: any = await getServerSession();
+  const session: any = await getServerSession(authOptions);
   if (!session?.user) {
     return { isAdmin: false, error: NextResponse.json({ error: 'Not authenticated' }, { status: 401 }) };
   }
-  if (!checkIsAdmin(session.user.email)) {
+  if (!session.user.isAdmin && !checkIsAdmin(session.user.email)) {
     return { isAdmin: false, error: NextResponse.json({ error: 'Not authorized' }, { status: 403 }) };
   }
   return { isAdmin: true };

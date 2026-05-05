@@ -1,45 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { kvGet, kvSet } from '@/lib/redis';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function getAuthOptions(): any {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const GitHubProvider = require('next-auth/providers/github').default;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const CredentialsProvider = require('next-auth/providers/credentials').default;
-  return {
-    providers: [
-      GitHubProvider({
-        clientId: process.env.GITHUB_CLIENT_ID!,
-        clientSecret: process.env.GITHUB_CLIENT_SECRET!,
-      }),
-      CredentialsProvider({
-        name: 'Email',
-        credentials: {
-          email: { label: 'Email', type: 'email' },
-          password: { label: 'Passcode', type: 'password' },
-        },
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        async authorize(credentials: any) {
-          if (!credentials?.email || !credentials?.password) return null;
-          return { id: credentials.email, email: credentials.email, name: credentials.email.split('@')[0] };
-        },
-      }),
-    ],
-    secret: process.env.NEXTAUTH_SECRET,
-    session: { strategy: 'jwt' },
-    callbacks: {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      async session({ session, token }: any) {
-        if (session.user) {
-          session.user.id = token.sub;
-        }
-        return session;
-      },
-    },
-  };
-}
+import { authOptions } from '@/lib/auth';
 
 function getUserId(session: { user?: { id?: string; email?: string } }): string | null {
   return session?.user?.id || session?.user?.email || null;
@@ -49,7 +11,7 @@ function getUserId(session: { user?: { id?: string; email?: string } }): string 
 export async function GET() {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session: any = await getServerSession(getAuthOptions());
+    const session: any = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
@@ -77,7 +39,7 @@ export async function GET() {
 export async function POST(req: NextRequest) {
   try {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const session: any = await getServerSession(getAuthOptions());
+    const session: any = await getServerSession(authOptions);
     if (!session?.user) {
       return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
     }
