@@ -1,9 +1,15 @@
 export function extractVariables(body: string): string[] {
-  const regex = /\[([^\]]+)\]/g;
   const vars = new Set<string>();
   let match;
-  while ((match = regex.exec(body)) !== null) {
+  // Match [Variable Name] pattern
+  const bracketRegex = /\[([^\]]+)\]/g;
+  while ((match = bracketRegex.exec(body)) !== null) {
     vars.add(match[1]);
+  }
+  // Match {{Variable Name}} pattern
+  const curlyRegex = /\{\{([^}]+)\}\}/g;
+  while ((match = curlyRegex.exec(body)) !== null) {
+    vars.add(match[1].trim());
   }
   return Array.from(vars);
 }
@@ -11,7 +17,12 @@ export function extractVariables(body: string): string[] {
 export function substituteVariables(body: string, values: Record<string, string>): string {
   let result = body;
   for (const [key, value] of Object.entries(values)) {
-    if (value) result = result.replaceAll(`[${key}]`, value);
+    if (value) {
+      result = result.replaceAll(`[${key}]`, value);
+      result = result.replaceAll(`{{${key}}}`, value);
+      // Also handle {{key}} with extra spaces
+      result = result.replaceAll(`{{ ${key} }}`, value);
+    }
   }
   return result;
 }
@@ -30,7 +41,17 @@ export async function copyToClipboard(text: string): Promise<void> {
 }
 
 export function openInOutlook(subject: string, body: string): void {
-  const mailto = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  let emailSubject = subject;
+  let emailBody = body;
+
+  // Extract "Subject: ..." from the first line of the body if present
+  const subjectMatch = body.match(/^Subject:\s*(.+)/i);
+  if (subjectMatch) {
+    emailSubject = subjectMatch[1].trim();
+    emailBody = body.replace(/^Subject:\s*.+\n?\n?/i, '').trim();
+  }
+
+  const mailto = `mailto:?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
   window.open(mailto, '_blank');
 }
 
