@@ -3,6 +3,84 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
+function FeedbackButton() {
+  const [open, setOpen] = useState(false);
+  const [message, setMessage] = useState('');
+  const [type, setType] = useState('bug');
+  const [status, setStatus] = useState<'idle' | 'sending' | 'sent' | 'error'>('idle');
+
+  const handleSubmit = async () => {
+    if (!message.trim()) return;
+    setStatus('sending');
+    try {
+      const res = await fetch('/api/feedback', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message, type }),
+      });
+      if (res.ok) {
+        setStatus('sent');
+        setMessage('');
+        setTimeout(() => { setOpen(false); setStatus('idle'); }, 2000);
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  return (
+    <>
+      <button
+        onClick={() => setOpen(true)}
+        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-text-secondary border border-border hover:border-primary/40 hover:text-primary transition-all"
+      >
+        🐛 Report a Bug / Feedback
+      </button>
+
+      {open && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={() => setOpen(false)}>
+          <div className="absolute inset-0 bg-black/40" />
+          <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-5 space-y-4" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-bold text-text-primary">🐛 Send Feedback</h3>
+              <button onClick={() => setOpen(false)} className="text-text-muted hover:text-text-primary text-lg">✕</button>
+            </div>
+            <div className="flex gap-2">
+              {(['bug', 'suggestion', 'other'] as const).map((t) => (
+                <button
+                  key={t}
+                  onClick={() => setType(t)}
+                  className={`px-3 py-1 rounded-lg text-xs font-medium transition-all ${
+                    type === t ? 'bg-primary text-white' : 'bg-surface-alt text-text-secondary border border-border'
+                  }`}
+                >
+                  {t === 'bug' ? '🐛 Bug' : t === 'suggestion' ? '💡 Suggestion' : '💬 Other'}
+                </button>
+              ))}
+            </div>
+            <textarea
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Describe the issue or share your idea…"
+              rows={4}
+              className="w-full px-3 py-2 rounded-lg border border-border text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 resize-none"
+            />
+            <button
+              onClick={handleSubmit}
+              disabled={!message.trim() || status === 'sending'}
+              className="btn-primary w-full py-2.5 text-sm font-semibold disabled:opacity-50"
+            >
+              {status === 'sending' ? 'Sending…' : status === 'sent' ? '✓ Sent! Thank you' : status === 'error' ? 'Failed — try again' : 'Submit Feedback'}
+            </button>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 function SiteVisitorCount() {
   const [count, setCount] = useState<number | null>(null);
 
@@ -65,12 +143,7 @@ export default function Footer() {
             <p className="text-[11px] text-text-muted">
               Copyright © 2026 Clarice Wang. All rights reserved.
             </p>
-            <a
-              href="mailto:masacloud@hotmail.com?subject=AI%20Recruiter%20Toolkit%20-%20Bug%20Report%20%2F%20Feedback"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-medium text-text-secondary border border-border hover:border-primary/40 hover:text-primary transition-all"
-            >
-              🐛 Report a Bug / Feedback
-            </a>
+            <FeedbackButton />
           </div>
         </div>
       </div>
