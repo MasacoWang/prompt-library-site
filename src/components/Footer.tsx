@@ -155,10 +155,16 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-border pt-4 space-y-2">
+          {/* Privacy statement */}
+          <div className="flex items-start gap-2 p-2.5 rounded-lg bg-green-50/50 border border-green-100">
+            <span className="text-sm mt-0.5">🔒</span>
+            <p className="text-[11px] text-green-700 leading-relaxed">
+              <span className="font-semibold">Your data stays on your device.</span> We do not store candidate CVs, JDs, or any personal information on our servers. All template inputs and AI conversations are processed in-browser and never saved.
+            </p>
+          </div>
           <div className="flex items-center justify-between">
             <p className="text-[11px] text-text-muted leading-relaxed">
               ⚠️ Templates are for general guidance only. Please tailor wording to your company policy and local regulations.
-              Do not paste sensitive personal data or candidate PII on this public site.
             </p>
             <SiteVisitorCount />
           </div>
