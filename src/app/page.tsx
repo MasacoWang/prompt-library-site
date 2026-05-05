@@ -91,6 +91,27 @@ export default function Home() {
       <section className="px-4 sm:px-6 py-10 sm:py-14">
         <WorkflowDiagram />
       </section>
+
+      {/* ── SIGN IN CTA ── */}
+      <section className="px-4 sm:px-6 pb-10 sm:pb-14">
+        <div className="max-w-2xl mx-auto">
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-[#0078d4]/[0.04] to-[#107c10]/[0.04] border border-[#0078d4]/15 p-6 sm:p-8 text-center">
+            <div className="w-12 h-12 rounded-full bg-[#0078d4]/10 flex items-center justify-center mx-auto mb-3">
+              <span className="text-xl">🔐</span>
+            </div>
+            <h3 className="text-sm sm:text-base font-bold text-text-primary mb-1.5">Sign in to save your progress</h3>
+            <p className="text-xs sm:text-sm text-text-secondary mb-4 max-w-md mx-auto">
+              Your favorites, custom templates, and usage history are saved when you sign in — accessible from any device.
+            </p>
+            <Link
+              href="/auth/signin"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-primary text-white text-sm font-semibold hover:bg-primary/90 transition shadow-sm"
+            >
+              Sign In →
+            </Link>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
