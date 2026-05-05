@@ -30,6 +30,7 @@ export const SCENARIOS = [
   { key: 'interview-prep', label: 'Interview Preparation', icon: '🎯', desc: 'Scheduling, prep notes, and question banks' },
   { key: 'candidate-eval', label: 'Candidate Evaluation', icon: '📊', desc: 'Profile summaries, JD matching, and fit scoring' },
   { key: 'hm-communication', label: 'Hiring Manager Communication', icon: '📋', desc: 'Status reports, updates, and pipeline summaries' },
+  { key: 'job-post', label: 'Create a Job Post', icon: '📝', desc: 'Job posting templates and prompts for any role' },
 ] as const;
 
 export const PHASES = [

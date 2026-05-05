@@ -871,7 +871,7 @@ Why Microsoft?
 📩 Interested? Drop me a DM or apply here: [Link]
 
 #Hiring #SoftwareEngineer #Microsoft #TechJobs #Careers`,
-undefined, false, ['outreach']),
+undefined, false, ['outreach', 'job-post']),
 
   t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'copywriting',
 `🎓 Internship Alert: Microsoft [Year] Summer Internship
@@ -899,7 +899,7 @@ We welcome students from all backgrounds — diversity makes us stronger 🌈
 Know someone who'd be a great fit? Tag them below! 👇
 
 #MicrosoftIntern #Internship #TechInternship #Students #Hiring`,
-undefined, false, ['outreach']),
+undefined, false, ['outreach', 'job-post']),
 
   t('General Role Posting — LinkedIn Post', 'Sourcing', 'copywriting',
 `📢 Open Role: [Job Title] @ Microsoft
@@ -931,7 +931,7 @@ If this sounds like you (or someone you know), let's connect!
 Apply here: [Link]
 
 #OpenToWork #Hiring #[JobTitle] #Microsoft #Careers`,
-undefined, false, ['outreach']),
+undefined, false, ['outreach', 'job-post']),
 
   t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'copywriting',
 `🏫 Campus Recruiting Season is Here!
@@ -960,7 +960,7 @@ Can't make it? You can still apply online: [Link]
 See you there! 👀
 
 #CampusRecruiting #Microsoft #[UniversityName] #TechCareers #NewGrad`,
-undefined, false, ['outreach']),
+undefined, false, ['outreach', 'job-post']),
 
   t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'copywriting',
 `🌍 Diversity in Tech Starts with Intentional Hiring
@@ -992,5 +992,5 @@ Our commitment to you:
 Let's build a future that represents everyone. 🤝
 
 #DiversityInTech #InclusiveHiring #Microsoft #TechForAll #Hiring`,
-undefined, false, ['outreach']),
+undefined, false, ['outreach', 'job-post']),
 ];
