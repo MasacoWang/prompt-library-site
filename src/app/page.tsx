@@ -40,41 +40,41 @@ export default function Home() {
             <p className="text-sm text-text-secondary">Choose what you need to get started</p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
             {/* Blue - Email Templates */}
-            <Link href="/templates?kind=template" className="p-5 text-center rounded-xl border border-[#0078d4]/15 bg-[#0078d4]/[0.03] hover:bg-[#0078d4]/[0.06] hover:border-[#0078d4]/30 hover:shadow-sm transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#0078d4]/[0.07] flex items-center justify-center mx-auto mb-3">
-                <span className="text-xl">✉️</span>
+            <Link href="/templates?kind=template" className="p-3 sm:p-5 text-center rounded-xl border border-[#0078d4]/15 bg-[#0078d4]/[0.03] hover:bg-[#0078d4]/[0.06] hover:border-[#0078d4]/30 hover:shadow-sm transition-all group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#0078d4]/[0.07] flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                <span className="text-base sm:text-xl">✉️</span>
               </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-[#0078d4] transition-colors mb-1">Email Templates</p>
-              <p className="text-xs text-text-muted">Ready‑to‑send recruiting emails</p>
+              <p className="text-xs sm:text-sm font-semibold text-text-primary group-hover:text-[#0078d4] transition-colors mb-0.5 sm:mb-1">Email Templates</p>
+              <p className="text-[10px] sm:text-xs text-text-muted hidden sm:block">Ready‑to‑send recruiting emails</p>
             </Link>
 
             {/* Green - Prompt Library */}
-            <Link href="/templates?kind=prompt" className="p-5 text-center rounded-xl border border-[#107c10]/15 bg-[#107c10]/[0.03] hover:bg-[#107c10]/[0.06] hover:border-[#107c10]/30 hover:shadow-sm transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#107c10]/[0.07] flex items-center justify-center mx-auto mb-3">
-                <span className="text-xl">💡</span>
+            <Link href="/templates?kind=prompt" className="p-3 sm:p-5 text-center rounded-xl border border-[#107c10]/15 bg-[#107c10]/[0.03] hover:bg-[#107c10]/[0.06] hover:border-[#107c10]/30 hover:shadow-sm transition-all group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#107c10]/[0.07] flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                <span className="text-base sm:text-xl">💡</span>
               </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-[#107c10] transition-colors mb-1">Prompt Library</p>
-              <p className="text-xs text-text-muted">Generate recruiter insights instantly</p>
+              <p className="text-xs sm:text-sm font-semibold text-text-primary group-hover:text-[#107c10] transition-colors mb-0.5 sm:mb-1">Prompt Library</p>
+              <p className="text-[10px] sm:text-xs text-text-muted hidden sm:block">Generate recruiter insights instantly</p>
             </Link>
 
             {/* Yellow - Create a Job Post */}
-            <Link href="/templates?scenario=job-post" className="p-5 text-center rounded-xl border border-[#ffb900]/15 bg-[#ffb900]/[0.03] hover:bg-[#ffb900]/[0.06] hover:border-[#ffb900]/30 hover:shadow-sm transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#ffb900]/[0.07] flex items-center justify-center mx-auto mb-3">
-                <span className="text-xl">📝</span>
+            <Link href="/templates?scenario=job-post" className="p-3 sm:p-5 text-center rounded-xl border border-[#ffb900]/15 bg-[#ffb900]/[0.03] hover:bg-[#ffb900]/[0.06] hover:border-[#ffb900]/30 hover:shadow-sm transition-all group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#ffb900]/[0.07] flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                <span className="text-base sm:text-xl">📝</span>
               </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">Create a Job Post</p>
-              <p className="text-xs text-text-muted">Create high‑impact job posts</p>
+              <p className="text-xs sm:text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-0.5 sm:mb-1">Create a Job Post</p>
+              <p className="text-[10px] sm:text-xs text-text-muted hidden sm:block">Create high‑impact job posts</p>
             </Link>
 
             {/* Red - AI Assistant */}
-            <Link href="/ai-assistant" className="p-5 text-center rounded-xl border border-[#d83b01]/15 bg-[#d83b01]/[0.03] hover:bg-[#d83b01]/[0.06] hover:border-[#d83b01]/30 hover:shadow-sm transition-all group">
-              <div className="w-10 h-10 rounded-lg bg-[#d83b01]/[0.07] flex items-center justify-center mx-auto mb-3">
-                <span className="text-xl">🤖</span>
+            <Link href="/ai-assistant" className="p-3 sm:p-5 text-center rounded-xl border border-[#d83b01]/15 bg-[#d83b01]/[0.03] hover:bg-[#d83b01]/[0.06] hover:border-[#d83b01]/30 hover:shadow-sm transition-all group">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-[#d83b01]/[0.07] flex items-center justify-center mx-auto mb-2 sm:mb-3">
+                <span className="text-base sm:text-xl">🤖</span>
               </div>
-              <p className="text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-1">AI Assistant</p>
-              <p className="text-xs text-text-muted">Generate emails, job posts & summaries with AI</p>
+              <p className="text-xs sm:text-sm font-semibold text-text-primary group-hover:text-[#d83b01] transition-colors mb-0.5 sm:mb-1">AI Assistant</p>
+              <p className="text-[10px] sm:text-xs text-text-muted hidden sm:block">Generate emails, job posts & summaries with AI</p>
             </Link>
           </div>
 
