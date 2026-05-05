@@ -322,6 +322,18 @@ export default function Editor({
 
         {/* Right Pane — Live Preview */}
         <div className="w-full md:w-1/2 md:overflow-auto p-3 sm:p-4 bg-surface-alt">
+          <div className="flex items-center justify-between mb-2">
+            <h4 className="text-xs font-semibold text-text-primary uppercase tracking-wider">📄 Preview Before Sending</h4>
+            {variables.length > 0 && (
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
+                variables.every((v) => variableValues[v]?.trim())
+                  ? 'bg-green-50 text-green-600 border border-green-200'
+                  : 'bg-amber-50 text-amber-600 border border-amber-200'
+              }`}>
+                {variables.every((v) => variableValues[v]?.trim()) ? '✓ Ready to send' : `${variables.filter((v) => !variableValues[v]?.trim()).length} field${variables.filter((v) => !variableValues[v]?.trim()).length > 1 ? 's' : ''} remaining`}
+              </span>
+            )}
+          </div>
           <div className="bg-white rounded-xl paper-shadow p-4 sm:p-5 max-w-[620px] mx-auto min-h-[250px]">
             <div className="border-b border-border pb-2 mb-3">
               <h3 className="text-sm font-semibold text-text-primary leading-snug">{displayTitle}</h3>

@@ -24,7 +24,6 @@ const KIND_OPTIONS = [
   { key: 'all', label: 'All', icon: '📁' },
   { key: 'template', label: 'Email Templates', icon: '✉️' },
   { key: 'prompt', label: 'Prompt Library', icon: '💡' },
-
 ] as const;
 
 const USECASE_OPTIONS = [
@@ -265,6 +264,13 @@ export default function TemplatesHub() {
     return true;
   });
 
+  // ─── Count badges ───
+  const kindCounts = useMemo(() => {
+    const counts: Record<string, number> = { all: templates.length };
+    templates.forEach((t) => { counts[t.kind] = (counts[t.kind] || 0) + 1; });
+    return counts;
+  }, [templates]);
+
   // ─── Keyboard shortcuts ───
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -292,10 +298,18 @@ export default function TemplatesHub() {
                 type="text"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search templates…"
-                className="w-full pl-8 pr-3 py-2 rounded-lg border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
+                placeholder="Search by title, content, or category…"
+                className="w-full pl-8 pr-8 py-2 rounded-lg border border-border bg-white text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary"
               />
               <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-muted text-xs">🔍</span>
+              {search && (
+                <button
+                  onClick={() => setSearch('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-text-muted text-xs hover:text-text-primary"
+                >
+                  ✕
+                </button>
+              )}
             </div>
 
             {/* Mobile: filter button */}
@@ -333,7 +347,7 @@ export default function TemplatesHub() {
                       : 'text-text-secondary hover:bg-surface-hover border border-transparent hover:border-border'
                   }`}
                 >
-                  {opt.icon} {opt.label}
+                  {opt.icon} {opt.label} <span className="ml-0.5 opacity-70">({kindCounts[opt.key] || 0})</span>
                 </button>
               ))}
             </div>

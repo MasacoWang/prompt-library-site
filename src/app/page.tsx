@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import WorkflowDiagram from '@/components/WorkflowDiagram';
 
 export default function Home() {
   return (
@@ -84,6 +85,11 @@ export default function Home() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* ── HOW IT WORKS ── */}
+      <section className="px-4 sm:px-6 py-10 sm:py-14">
+        <WorkflowDiagram />
       </section>
     </div>
   );
