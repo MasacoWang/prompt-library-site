@@ -15,7 +15,6 @@ const NAV_ITEMS = [
 const BROWSE_ITEMS = [
   { label: '✉️ Email Templates', href: '/templates?kind=template' },
   { label: '💡 Prompt Library', href: '/templates?kind=prompt' },
-  { label: '📝 Create a Job Post', href: '/templates?kind=copywriting' },
   { label: '🤖 AI Assistant', href: '/ai-assistant' },
 ];
 

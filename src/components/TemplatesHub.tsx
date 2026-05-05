@@ -24,7 +24,7 @@ const KIND_OPTIONS = [
   { key: 'all', label: 'All', icon: '📁' },
   { key: 'template', label: 'Email Templates', icon: '✉️' },
   { key: 'prompt', label: 'Prompt Library', icon: '💡' },
-  { key: 'copywriting', label: 'Create a Job Post', icon: '📝' },
+
 ] as const;
 
 const USECASE_OPTIONS = [
@@ -89,7 +89,7 @@ export default function TemplatesHub() {
     const kind = searchParams.get('kind');
     const scenario = searchParams.get('scenario');
     const phase = searchParams.get('phase');
-    if (kind && ['template', 'prompt', 'copywriting'].includes(kind)) setKindFilter(kind);
+    if (kind && ['template', 'prompt'].includes(kind)) setKindFilter(kind);
     if (scenario) setUsecaseFilter(scenario);
     if (phase) setPhaseFilter(phase);
   }, [searchParams, sharedTemplates]);
@@ -152,7 +152,7 @@ export default function TemplatesHub() {
         const result = await addSharedTemplate({
           title: editDraft.title!,
           category: editDraft.category || 'Strategy',
-          kind: (kinds[0] as 'prompt' | 'template' | 'copywriting') || 'prompt',
+          kind: (kinds[0] as 'prompt' | 'template') || 'prompt',
           kinds,
           body: editDraft.body!,
           casualBody: editDraft.casualBody || '',
@@ -174,7 +174,7 @@ export default function TemplatesHub() {
       const newId = generateId();
       const newT: Template = {
         id: newId, title: editDraft.title!, category: editDraft.category || 'Strategy',
-        kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || 'prompt',
+        kind: (editDraft.kind as 'prompt' | 'template') || 'prompt',
         kinds: editDraft.kinds || [editDraft.kind || 'prompt'],
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
@@ -611,11 +611,9 @@ function TemplateCard({
           <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
             t.kind === 'prompt'
               ? 'bg-purple-50 text-purple-600 border border-purple-200'
-              : t.kind === 'copywriting'
-              ? 'bg-green-50 text-green-600 border border-green-200'
               : 'bg-amber-50 text-amber-600 border border-amber-200'
           }`}>
-            {t.kind === 'prompt' ? '💡 Prompt' : t.kind === 'copywriting' ? '📝 Job Post' : '✉️ Template'}
+            {t.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
           </span>
         </div>
       </div>

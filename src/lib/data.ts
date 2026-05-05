@@ -7,7 +7,7 @@ function stableId(title: string, kind: string): string {
 function t(
   title: string,
   category: string,
-  kind: 'prompt' | 'template' | 'copywriting',
+  kind: 'prompt' | 'template',
   body: string,
   casualBody?: string,
   pinned = false,
@@ -845,7 +845,7 @@ Thank you!
 undefined, false, ['hm-communication']),
 
   // ── RECRUITING 文案 (Job Posting Copywriting) ──────────────────────────────────
-  t('Software Engineer — LinkedIn Post', 'Sourcing', 'copywriting',
+  t('Software Engineer — LinkedIn Post', 'Sourcing', 'prompt',
 `🚀 We're Hiring: Software Engineer @ Microsoft
 
 Are you passionate about building products that empower millions of people worldwide?
@@ -873,7 +873,7 @@ Why Microsoft?
 #Hiring #SoftwareEngineer #Microsoft #TechJobs #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'copywriting',
+  t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'prompt',
 `🎓 Internship Alert: Microsoft [Year] Summer Internship
 
 Calling all students! 🙋‍♀️🙋‍♂️
@@ -901,7 +901,7 @@ Know someone who'd be a great fit? Tag them below! 👇
 #MicrosoftIntern #Internship #TechInternship #Students #Hiring`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('General Role Posting — LinkedIn Post', 'Sourcing', 'copywriting',
+  t('General Role Posting — LinkedIn Post', 'Sourcing', 'prompt',
 `📢 Open Role: [Job Title] @ Microsoft
 
 I'm excited to share that my team is hiring a [Job Title]!
@@ -933,7 +933,7 @@ Apply here: [Link]
 #OpenToWork #Hiring #[JobTitle] #Microsoft #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'copywriting',
+  t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'prompt',
 `🏫 Campus Recruiting Season is Here!
 
 Hey [University Name] students! 👋
@@ -962,7 +962,7 @@ See you there! 👀
 #CampusRecruiting #Microsoft #[UniversityName] #TechCareers #NewGrad`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'copywriting',
+  t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'prompt',
 `🌍 Diversity in Tech Starts with Intentional Hiring
 
 At Microsoft, we believe diverse teams build better products. That's why we're committed to creating opportunities for underrepresented talent in tech.

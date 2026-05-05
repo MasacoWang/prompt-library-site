@@ -2,7 +2,7 @@ export interface Template {
   id: string;
   title: string;
   category: string;
-  kind: 'prompt' | 'template' | 'copywriting';
+  kind: 'prompt' | 'template';
   kinds?: string[];
   body: string;
   casualBody?: string;

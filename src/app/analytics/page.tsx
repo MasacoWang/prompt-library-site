@@ -147,7 +147,7 @@ export default function AnalyticsPage() {
                 .map(([kind, stats]) => (
                   <div key={kind} className="flex items-center justify-between py-1.5">
                     <span className="text-sm text-text-primary">
-                      {kind === 'prompt' ? '💡 Prompts' : kind === 'copywriting' ? '📝 Job Posts' : '✉️ Email Templates'}
+                      {kind === 'prompt' ? '💡 Prompts' : '✉️ Email Templates'}
                     </span>
                     <div className="flex items-center gap-3">
                       <span className="text-xs text-text-muted">{stats.count} items</span>

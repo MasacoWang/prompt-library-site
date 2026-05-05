@@ -154,7 +154,7 @@ export default function Editor({
                   {([
                     { key: 'prompt', label: '💡 Prompt' },
                     { key: 'template', label: '✉️ Email Template' },
-                    { key: 'copywriting', label: '📝 Create a Job Post' },
+
                   ] as const).map((opt) => {
                     const currentKinds = editDraft.kinds || (editDraft.kind ? [editDraft.kind] : ['prompt']);
                     const selected = currentKinds.includes(opt.key);
@@ -167,7 +167,7 @@ export default function Editor({
                             ? currentKinds.filter((k) => k !== opt.key)
                             : [...currentKinds, opt.key];
                           if (updated.length === 0) return;
-                          onDraftChange({ ...editDraft, kinds: updated, kind: updated[0] as 'prompt' | 'template' | 'copywriting' });
+                          onDraftChange({ ...editDraft, kinds: updated, kind: updated[0] as 'prompt' | 'template' });
                         }}
                         className={`px-2.5 py-1 rounded-md text-[10px] font-medium transition-all ${
                           selected
@@ -328,7 +328,7 @@ export default function Editor({
               <div className="flex items-center gap-2 mt-1">
                 <span className="text-[10px] text-text-muted">{displayCategory}</span>
                 <span className="text-[10px] text-border">•</span>
-                <span className="text-[10px] text-text-muted">{displayKind === 'prompt' ? '💡 Prompt' : displayKind === 'copywriting' ? '📝 Job Post' : '✉️ Email Template'}</span>
+                <span className="text-[10px] text-text-muted">{displayKind === 'prompt' ? '💡 Prompt' : '✉️ Email Template'}</span>
               </div>
             </div>
             <div className="whitespace-pre-wrap text-xs leading-[1.7] text-text-secondary">

@@ -19,7 +19,7 @@ import ActionGuide from '@/components/ActionGuide';
 import Swal from 'sweetalert2';
 
 interface LibraryPageProps {
-  kindFilter: 'template' | 'prompt' | 'copywriting' | null;
+  kindFilter: 'template' | 'prompt' | null;
   pageTitle: string;
   pageDescription: string;
   filterMode?: 'scenario' | 'phase';
@@ -119,7 +119,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
       const newId = generateId();
       const newT: Template = {
         id: newId, title: editDraft.title!, category: editDraft.category || 'Strategy',
-        kind: (editDraft.kind as 'prompt' | 'template' | 'copywriting') || (kindFilter || 'prompt'),
+        kind: (editDraft.kind as 'prompt' | 'template') || (kindFilter || 'prompt'),
         body: editDraft.body!, casualBody: editDraft.casualBody || '',
         pinned: false, createdAt: now, updatedAt: now,
         phase: [(editDraft.category || 'Strategy').toLowerCase()],
@@ -338,11 +338,9 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
                   <span className={`text-[10px] px-1.5 py-0.5 rounded-full font-medium ${
                     t.kind === 'prompt'
                       ? 'bg-purple-50 text-purple-600 border border-purple-200'
-                      : t.kind === 'copywriting'
-                      ? 'bg-green-50 text-green-600 border border-green-200'
                       : 'bg-amber-50 text-amber-600 border border-amber-200'
                   }`}>
-                    {t.kind === 'prompt' ? '💡 Prompt' : t.kind === 'copywriting' ? '📝 Job Post' : '✉️ Template'}
+                    {t.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
                   </span>
                 </div>
               </div>

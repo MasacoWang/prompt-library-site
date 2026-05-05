@@ -32,12 +32,10 @@ function ItemCard({ item, onToast, viewCount, favCount, isFavorite, onToggleFavo
             className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${
               item.kind === 'prompt'
                 ? 'bg-purple-50 text-purple-600 border border-purple-200'
-                : item.kind === 'copywriting'
-                ? 'bg-green-50 text-green-600 border border-green-200'
                 : 'bg-amber-50 text-amber-600 border border-amber-200'
             }`}
           >
-            {item.kind === 'prompt' ? '💡 Prompt' : item.kind === 'copywriting' ? '📝 Job Post' : '✉️ Template'}
+            {item.kind === 'prompt' ? '💡 Prompt' : '✉️ Template'}
           </span>
         </div>
       </div>
@@ -98,7 +96,7 @@ export default function HomeTabs() {
   const [viewCounts, setViewCounts] = useState<Record<string, number>>({});
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [items, setItems] = useState<Template[]>([]);
-  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template' | 'copywriting', scenario: [] as string[] });
+  const [newDraft, setNewDraft] = useState({ title: '', body: '', category: 'Strategy', kind: 'prompt' as 'prompt' | 'template', scenario: [] as string[] });
   const [categories, setCategories] = useState<string[]>([]);
   const [showNewCategory, setShowNewCategory] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState('');
@@ -176,7 +174,7 @@ export default function HomeTabs() {
 
   const emailTemplates = items.filter((t) => t.kind === 'template' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
   const prompts = items.filter((t) => t.kind === 'prompt' && (homeCategoryFilter === 'All' || t.category === homeCategoryFilter));
-  const copywritingItems = items.filter((t) => t.kind === 'copywriting');
+  const copywritingItems = items.filter((t) => t.scenario?.includes('job-post'));
   const favoriteItems = items.filter((t) => favorites.has(t.id));
   const scenarioItems = items.filter((t) => {
     if (homeScenarioFilter === 'All') return t.scenario && t.scenario.length > 0;
@@ -293,12 +291,6 @@ export default function HomeTabs() {
                 className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'template' ? 'bg-amber-100 text-amber-700 border-2 border-amber-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
               >
                 ✉️ Email Template
-              </button>
-              <button
-                onClick={() => setNewDraft((d) => ({ ...d, kind: 'copywriting' }))}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all ${newDraft.kind === 'copywriting' ? 'bg-green-100 text-green-700 border-2 border-green-300' : 'bg-surface-alt text-text-secondary border border-border hover:border-primary/30'}`}
-              >
-                📝 Create a Job Post
               </button>
             </div>
             <div>
