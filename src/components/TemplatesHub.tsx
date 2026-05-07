@@ -470,6 +470,7 @@ export default function TemplatesHub() {
               onCopyToCopilot={async () => { await handleCopilot(previewText); }}
               onCopyPlain={async () => { await handleCopy(previewText); }}
               onOpenOutlook={() => { if (selectedTemplate) handleOutlook(selectedTemplate.title, previewText); }}
+              onOpenLinkedIn={async () => { await copyToClipboard(previewText); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
               onToggleFavorite={() => { if (selectedTemplate) handleFavoriteToggle(selectedTemplate.id); }}
               onDelete={async () => { if (selectedTemplate) handleDelete(selectedTemplate.id); }}
             />
