@@ -105,13 +105,20 @@ export function loadTemplates(starters: Template[]): Template[] {
     try {
       const parsed = JSON.parse(stored);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        // Merge: always keep starter templates up-to-date, preserve user additions
         const starterIds = new Set(starters.map((s) => s.id));
-        const starterTitles = new Set(starters.map((s) => s.title.toLowerCase()));
-        // Filter out old stored copies of starters (by id OR title match)
-        const userAdded = parsed.filter((t: Template) =>
-          !starterIds.has(t.id) && !starterTitles.has(t.title.toLowerCase())
-        );
+        const storedById = new Map(parsed.map((t: Template) => [t.id, t]));
+
+        // For starters: use stored version if user modified it, else use fresh starter
+        const mergedStarters = starters.map((s) => {
+          const storedVersion = storedById.get(s.id);
+          if (storedVersion && storedVersion.updatedAt && storedVersion.updatedAt !== s.updatedAt) {
+            return storedVersion; // user edited this starter — keep their version
+          }
+          return s;
+        });
+
+        // User-added templates: not in starters by id
+        const userAdded = parsed.filter((t: Template) => !starterIds.has(t.id));
         // Deduplicate user-added by title
         const seenTitles = new Set(starters.map((s) => s.title.toLowerCase()));
         const uniqueUserAdded = userAdded.filter((t: Template) => {
@@ -120,7 +127,8 @@ export function loadTemplates(starters: Template[]): Template[] {
           seenTitles.add(key);
           return true;
         });
-        const merged = [...starters, ...uniqueUserAdded];
+
+        const merged = [...mergedStarters, ...uniqueUserAdded];
         saveTemplates(merged);
         return merged;
       }
