@@ -712,18 +712,18 @@ function TemplateCard({
             <span className="text-base">🤖</span>
             <span>{copiedLabel === 'copilot' ? '✓ Copied!' : 'Copilot'}</span>
           </button>
-          <button onClick={handleCopyClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
+          <button onClick={handleCopyClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center" title="Copy text to clipboard">
             <span className="text-base">📋</span>
             <span>{copiedLabel === 'copy' ? '✓ Copied!' : 'Copy'}</span>
           </button>
           {t.kind === 'template' && (
-            <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
+            <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center" title="Opens Outlook with content ready to send">
               <span className="text-base">✉️</span>
               <span>Outlook</span>
             </button>
           )}
           {(t.kind === 'template' || t.scenario?.includes('job-post')) && (
-            <button onClick={handleLinkedInClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition flex flex-col items-center relative">
+            <button onClick={handleLinkedInClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition flex flex-col items-center relative" title="Copies text & opens LinkedIn — just Ctrl+V to paste">
               <span className="text-base">💼</span>
               <span>{copiedLabel === 'linkedin' ? '✓ Copied!' : 'LinkedIn'}</span>
             </button>
