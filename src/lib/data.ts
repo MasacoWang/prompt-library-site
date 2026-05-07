@@ -845,7 +845,7 @@ Thank you!
 undefined, false, ['hm-communication']),
 
   // ── RECRUITING 文案 (Job Posting Copywriting) ──────────────────────────────────
-  t('Software Engineer — LinkedIn Post', 'Sourcing', 'prompt',
+  t('Software Engineer — LinkedIn Post', 'Sourcing', 'template',
 `🚀 We're Hiring: Software Engineer @ [Company]
 
 Are you passionate about building products that empower millions of people worldwide?
@@ -873,7 +873,7 @@ Why [Company]?
 #Hiring #SoftwareEngineer #TechJobs #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'prompt',
+  t('Internship Opportunity — LinkedIn Post', 'Sourcing', 'template',
 `🎓 Internship Alert: [Company] [Year] Summer Internship
 
 Calling all students! 🙋‍♀️🙋‍♂️
@@ -901,7 +901,7 @@ Know someone who'd be a great fit? Tag them below! 👇
 #Internship #TechInternship #Students #Hiring`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('General Role Posting — LinkedIn Post', 'Sourcing', 'prompt',
+  t('General Role Posting — LinkedIn Post', 'Sourcing', 'template',
 `📢 Open Role: [Job Title] @ [Company]
 
 I'm excited to share that my team is hiring a [Job Title]!
@@ -933,7 +933,7 @@ Apply here: [Link]
 #OpenToWork #Hiring #[JobTitle] #Careers`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'prompt',
+  t('Campus Recruiting — LinkedIn Post', 'Sourcing', 'template',
 `🏫 Campus Recruiting Season is Here!
 
 Hey [University Name] students! 👋
@@ -962,7 +962,7 @@ See you there! 👀
 #CampusRecruiting #[UniversityName] #TechCareers #NewGrad`,
 undefined, false, ['outreach', 'job-post']),
 
-  t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'prompt',
+  t('Diversity Hiring Initiative — LinkedIn Post', 'Sourcing', 'template',
 `🌍 Diversity in Tech Starts with Intentional Hiring
 
 At [Company], we believe diverse teams build better products. That's why we're committed to creating opportunities for underrepresented talent in tech.
