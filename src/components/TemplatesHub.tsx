@@ -688,20 +688,24 @@ function TemplateCard({
       {/* Primary actions (always visible) */}
       <div className="pt-2 border-t border-border" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-1">
-          <button onClick={onCopilot} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition" title="Auto-copies text — just paste in Copilot">
-            🤖 Copilot
+          <button onClick={onCopilot} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center" title="Auto-copies text — just paste in Copilot">
+            <span className="text-base">🤖</span>
+            <span>Copilot</span>
           </button>
-          <button onClick={onCopy} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition">
-            📋 Copy
+          <button onClick={onCopy} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
+            <span className="text-base">📋</span>
+            <span>Copy</span>
           </button>
           {t.kind === 'template' && (
-            <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition">
-              ✉️ Outlook
+            <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
+              <span className="text-base">✉️</span>
+              <span>Outlook</span>
             </button>
           )}
           {(t.kind === 'template' || t.scenario?.includes('job-post')) && (
-            <button onClick={onLinkedIn} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition">
-              💼 LinkedIn
+            <button onClick={onLinkedIn} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition flex flex-col items-center">
+              <span className="text-base">💼</span>
+              <span>LinkedIn</span>
             </button>
           )}
         </div>
