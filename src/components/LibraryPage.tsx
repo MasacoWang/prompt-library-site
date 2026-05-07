@@ -11,7 +11,7 @@ import {
   openInOutlook, generateId,
   loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
   getAllCategories, deleteCustomCategory, isCustomCategory,
-  loadSharedFavCounts,
+  loadSharedFavCounts, loadDeletedIds, saveDeletedIds,
 } from '@/lib/utils';
 import { useFavoritesSync } from '@/lib/useFavoritesSync';
 import Editor from '@/components/Editor';
@@ -43,7 +43,10 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
   const [allCategories, setAllCategories] = useState<string[]>([]);
-  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
+  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    return [...loadDeletedIds()];
+  });
 
   const starterIds = useMemo(() => new Set(allStarters.map((t) => t.id)), [allStarters]);
 
@@ -70,6 +73,10 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
   useEffect(() => {
     if (mounted && templates.length > 0) saveTemplates(templates);
   }, [templates, mounted]);
+
+  useEffect(() => {
+    if (mounted) saveDeletedIds(deletedTemplateIds);
+  }, [deletedTemplateIds, mounted]);
 
   const selectedTemplate = templates.find((t) => t.id === selectedId) || null;
   const activeBody = selectedTemplate

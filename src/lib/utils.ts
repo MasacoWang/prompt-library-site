@@ -63,6 +63,7 @@ import type { Template } from './types';
 import { CATEGORIES } from './types';
 
 const STORAGE_KEY = 'recruiter-vault-templates';
+const DELETED_KEY = 'recruiter-vault-deleted';
 const CUSTOM_CATEGORIES_KEY = 'recruiter-vault-custom-categories';
 
 export function loadCustomCategories(): string[] {
@@ -100,6 +101,7 @@ export function isCustomCategory(name: string): boolean {
 
 export function loadTemplates(starters: Template[]): Template[] {
   if (typeof window === 'undefined') return [];
+  const deletedIds = loadDeletedIds();
   const stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
     try {
@@ -108,17 +110,19 @@ export function loadTemplates(starters: Template[]): Template[] {
         const starterIds = new Set(starters.map((s) => s.id));
         const storedById = new Map(parsed.map((t: Template) => [t.id, t]));
 
-        // For starters: use stored version if user modified it, else use fresh starter
-        const mergedStarters = starters.map((s) => {
-          const storedVersion = storedById.get(s.id);
-          if (storedVersion && storedVersion.updatedAt && storedVersion.updatedAt !== s.updatedAt) {
-            return storedVersion; // user edited this starter — keep their version
-          }
-          return s;
-        });
+        // For starters: use stored version if user modified it, skip if deleted
+        const mergedStarters = starters
+          .filter((s) => !deletedIds.has(s.id))
+          .map((s) => {
+            const storedVersion = storedById.get(s.id);
+            if (storedVersion && storedVersion.updatedAt && storedVersion.updatedAt !== s.updatedAt) {
+              return storedVersion;
+            }
+            return s;
+          });
 
-        // User-added templates: not in starters by id
-        const userAdded = parsed.filter((t: Template) => !starterIds.has(t.id));
+        // User-added templates: not in starters by id, not deleted
+        const userAdded = parsed.filter((t: Template) => !starterIds.has(t.id) && !deletedIds.has(t.id));
         // Deduplicate user-added by title
         const seenTitles = new Set(starters.map((s) => s.title.toLowerCase()));
         const uniqueUserAdded = userAdded.filter((t: Template) => {
@@ -134,12 +138,26 @@ export function loadTemplates(starters: Template[]): Template[] {
       }
     } catch { /* fall through */ }
   }
-  saveTemplates(starters);
-  return starters;
+  const filtered = starters.filter((s) => !deletedIds.has(s.id));
+  saveTemplates(filtered);
+  return filtered;
 }
 
 export function saveTemplates(templates: Template[]): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(templates));
+}
+
+export function loadDeletedIds(): Set<string> {
+  if (typeof window === 'undefined') return new Set();
+  try {
+    const stored = localStorage.getItem(DELETED_KEY);
+    if (stored) return new Set(JSON.parse(stored));
+  } catch { /* ignore */ }
+  return new Set();
+}
+
+export function saveDeletedIds(ids: string[]): void {
+  localStorage.setItem(DELETED_KEY, JSON.stringify(ids));
 }
 
 export async function exportTemplates(templates: Template[]): Promise<void> {

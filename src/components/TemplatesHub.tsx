@@ -13,7 +13,7 @@ import {
   openInOutlook, generateId,
   loadFavorites, toggleFavorite, loadViewCounts, incrementViewCount,
   getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory,
-  loadSharedFavCounts,
+  loadSharedFavCounts, loadDeletedIds, saveDeletedIds,
 } from '@/lib/utils';
 import { useFavoritesSync } from '@/lib/useFavoritesSync';
 import Editor from '@/components/Editor';
@@ -62,7 +62,10 @@ export default function TemplatesHub() {
   const [sharedFavCounts, setSharedFavCounts] = useState<Record<string, number>>({});
   const [showMobileFilters, setShowMobileFilters] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
-  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>([]);
+  const [deletedTemplateIds, setDeletedTemplateIds] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    return [...loadDeletedIds()];
+  });
 
   const starterIds = new Set(STARTER_TEMPLATES.map((t) => t.id));
   const sharedIds = useMemo(() => new Set(sharedTemplates.map((t) => t.id)), [sharedTemplates]);
@@ -97,6 +100,11 @@ export default function TemplatesHub() {
   useEffect(() => {
     if (mounted && templates.length > 0) saveTemplates(templates);
   }, [templates, mounted]);
+
+  // ─── Persist deleted IDs ───
+  useEffect(() => {
+    if (mounted) saveDeletedIds(deletedTemplateIds);
+  }, [deletedTemplateIds, mounted]);
 
   // ─── Computed ───
   const selectedTemplate = templates.find((t) => t.id === selectedId) || null;
