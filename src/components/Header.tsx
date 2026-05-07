@@ -176,7 +176,7 @@ export default function Header() {
                 <div className="h-px bg-border mx-3 my-1" />
                 <Link href="/templates?kind=template" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">✉️ Email Templates</Link>
                 <Link href="/templates?kind=prompt" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">💡 Prompt Library</Link>
-                <Link href="/templates?kind=copywriting" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">📝 Create a Job Post</Link>
+                <Link href="/templates?scenario=job-post" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">📝 Create a Job Post</Link>
                 <Link href="/ai-assistant" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">🤖 AI Assistant</Link>
                 <div className="h-px bg-border mx-3 my-1" />
                 <Link href="/analytics" onClick={() => setGuideOpen(false)} className="block px-4 py-2.5 text-[13px] font-medium text-text-secondary hover:text-text-primary hover:bg-surface-hover transition">📊 Analytics</Link>

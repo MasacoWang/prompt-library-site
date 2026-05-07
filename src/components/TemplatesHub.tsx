@@ -352,9 +352,19 @@ export default function TemplatesHub() {
               ))}
             </div>
 
-            <span className="w-px h-5 bg-border" />
+            {/* Job Post shortcut */}
+            <button
+              onClick={() => setUsecaseFilter(usecaseFilter === 'job-post' ? 'all' : 'job-post')}
+              className={`px-2.5 py-1 rounded-lg text-xs font-medium transition-all ${
+                usecaseFilter === 'job-post'
+                  ? 'bg-[#ffb900] text-white shadow-sm'
+                  : 'text-text-secondary hover:bg-surface-hover border border-transparent hover:border-border'
+              }`}
+            >
+              📝 Job Posts
+            </button>
 
-            {/* Use case */}
+            <span className="w-px h-5 bg-border" />
             <select
               value={usecaseFilter}
               onChange={(e) => setUsecaseFilter(e.target.value)}

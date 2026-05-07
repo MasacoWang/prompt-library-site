@@ -215,7 +215,7 @@ export default function HomeTabs() {
           const hrefMap: Record<string, string> = {
             templates: '/templates?kind=template',
             prompts: '/templates?kind=prompt',
-            copywriting: '/templates?kind=copywriting',
+            copywriting: '/templates?scenario=job-post',
             scenarios: '/templates',
             phases: '/templates',
           };
