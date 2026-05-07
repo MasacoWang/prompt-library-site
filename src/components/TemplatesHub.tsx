@@ -437,6 +437,7 @@ export default function TemplatesHub() {
                   onCopilot={(e) => handleCopilot(t.body, e)}
                   onCopy={(e) => handleCopy(t.body, e)}
                   onOutlook={(e) => handleOutlook(t.title, t.body, e)}
+                  onLinkedIn={async (e) => { e.stopPropagation(); await copyToClipboard(t.body); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
                   onEdit={(e) => { e.stopPropagation(); setSelectedId(t.id); setEditDraft({ ...t }); setEditorMode('edit'); setPanelOpen(true); }}
                   onDelete={(e) => handleDelete(t.id, e)}
                 />
@@ -590,7 +591,7 @@ export default function TemplatesHub() {
 // ─── Template Card Component ───
 function TemplateCard({
   template: t, index, isFavorite, viewCount, favCount, isSelected,
-  onSelect, onFavorite, onCopilot, onCopy, onOutlook, onEdit, onDelete,
+  onSelect, onFavorite, onCopilot, onCopy, onOutlook, onLinkedIn, onEdit, onDelete,
 }: {
   template: Template;
   index: number;
@@ -603,6 +604,7 @@ function TemplateCard({
   onCopilot: (e: React.MouseEvent) => void;
   onCopy: (e: React.MouseEvent) => void;
   onOutlook: (e: React.MouseEvent) => void;
+  onLinkedIn: (e: React.MouseEvent) => void;
   onEdit: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
 }) {
@@ -666,6 +668,11 @@ function TemplateCard({
           {t.kind === 'template' && (
             <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition">
               ✉️ Outlook
+            </button>
+          )}
+          {(t.kind === 'template' || t.scenario?.includes('job-post')) && (
+            <button onClick={onLinkedIn} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition">
+              💼 LinkedIn
             </button>
           )}
         </div>
