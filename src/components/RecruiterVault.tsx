@@ -191,6 +191,7 @@ export default function RecruiterVault() {
                 onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
                 onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
                 onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
+                onOpenLinkedIn={async () => { await copyToClipboard(previewText); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
                 onDelete={() => { if (selectedTemplate) handleDelete(selectedTemplate.id); }}
               />
             </div>

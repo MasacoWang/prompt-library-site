@@ -187,6 +187,7 @@ export default function LibraryPage({ kindFilter, pageTitle, pageDescription, fi
             onCopyToCopilot={async () => { await copyToCopilot(previewText); showToast('✅ Copied! Paste (Ctrl+V) in Copilot chat'); }}
             onCopyPlain={async () => { await copyToClipboard(previewText); showToast('Copied ✓'); }}
             onOpenOutlook={() => { if (selectedTemplate) openInOutlook(selectedTemplate.title, previewText); }}
+            onOpenLinkedIn={async () => { await copyToClipboard(previewText); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
             onToggleFavorite={() => { if (selectedTemplate) handleFavoriteToggle(selectedTemplate.id); }}
             onDelete={async () => {
               if (!selectedTemplate) return;

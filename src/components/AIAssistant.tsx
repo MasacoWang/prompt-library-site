@@ -569,7 +569,7 @@ export default function AIAssistant() {
                     className="btn-primary py-3 text-sm font-semibold">🤖 Copilot</button>
                   <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied ✓'); }}
                     className="btn-secondary py-3 text-sm font-semibold">📋 Copy</button>
-                  <button onClick={() => { window.open('https://www.linkedin.com/feed/', '_blank'); copyToClipboard(promptResult); showToast('Copied! Paste on LinkedIn'); }}
+                  <button onClick={async () => { await copyToClipboard(promptResult); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
                     className="btn-secondary py-3 text-sm font-semibold">💼 LinkedIn</button>
                 </div>
                 <div className="flex justify-between items-center mt-5 pt-4 border-t border-border">

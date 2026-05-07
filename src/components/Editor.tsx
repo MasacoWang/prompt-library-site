@@ -25,6 +25,7 @@ interface EditorProps {
   onCopyToCopilot: () => void;
   onCopyPlain: () => void;
   onOpenOutlook: () => void;
+  onOpenLinkedIn: () => void;
   onDelete: () => void;
   onToggleFavorite?: () => void;
 }
@@ -33,7 +34,7 @@ export default function Editor({
   template, editorMode, editDraft, tone, variables, variableValues, previewText,
   isFavorite, viewCount,
   onBack, onEditMode, onSaveEdit, onCancelEdit, onDraftChange, onToneChange,
-  onVariableChange, onCopyToCopilot, onCopyPlain, onOpenOutlook, onDelete,
+  onVariableChange, onCopyToCopilot, onCopyPlain, onOpenOutlook, onOpenLinkedIn, onDelete,
   onToggleFavorite,
 }: EditorProps) {
   const isEditing = editorMode === 'edit';
@@ -313,6 +314,9 @@ export default function Editor({
                 </button>
                 <button onClick={onOpenOutlook} className="btn-secondary px-3 py-1.5 text-xs">
                   ✉️ Outlook
+                </button>
+                <button onClick={onOpenLinkedIn} className="btn-secondary px-3 py-1.5 text-xs">
+                  💼 LinkedIn
                 </button>
               </div>
               <p className="text-[10px] text-text-muted mt-1.5">💡 Clicking "Run in Copilot" auto‑copies the text. Just paste (Ctrl+V) in the Copilot chat.</p>
