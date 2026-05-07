@@ -445,7 +445,7 @@ export default function TemplatesHub() {
                   onCopilot={(e) => handleCopilot(t.body, e)}
                   onCopy={(e) => handleCopy(t.body, e)}
                   onOutlook={(e) => handleOutlook(t.title, t.body, e)}
-                  onLinkedIn={async (e) => { e.stopPropagation(); await copyToClipboard(t.body); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
+                  onLinkedIn={async (e) => { e.stopPropagation(); await copyToClipboard(t.body); showToastMsg('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
                   onEdit={(e) => { e.stopPropagation(); setSelectedId(t.id); setEditDraft({ ...t }); setEditorMode('edit'); setPanelOpen(true); }}
                   onDelete={(e) => handleDelete(t.id, e)}
                 />
@@ -478,7 +478,7 @@ export default function TemplatesHub() {
               onCopyToCopilot={async () => { await handleCopilot(previewText); }}
               onCopyPlain={async () => { await handleCopy(previewText); }}
               onOpenOutlook={() => { if (selectedTemplate) handleOutlook(selectedTemplate.title, previewText); }}
-              onOpenLinkedIn={async () => { await copyToClipboard(previewText); showToast('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
+              onOpenLinkedIn={async () => { await copyToClipboard(previewText); showToastMsg('Copied! Paste on LinkedIn'); window.open('https://www.linkedin.com/feed/', '_blank'); }}
               onToggleFavorite={() => { if (selectedTemplate) handleFavoriteToggle(selectedTemplate.id); }}
               onDelete={async () => { if (selectedTemplate) handleDelete(selectedTemplate.id); }}
             />

@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// PUT — Update an existing shared template
+// PUT — Update an existing shared template (or upsert a starter override)
 export async function PUT(req: NextRequest) {
   const { isAdmin, error } = await verifyAdmin();
   if (!isAdmin) return error!;
@@ -122,18 +122,29 @@ export async function PUT(req: NextRequest) {
 
     const templates: SharedTemplate[] = (await kvGet(KV_TEMPLATES_KEY)) || [];
     const idx = templates.findIndex(t => t.id === id);
+    const now = new Date().toISOString();
+
     if (idx === -1) {
-      return NextResponse.json({ error: 'Template not found' }, { status: 404 });
+      // Upsert: starter template override — add it to KV
+      const newTemplate: SharedTemplate = {
+        id,
+        ...validation.template!,
+        createdAt: now,
+        updatedAt: now,
+      };
+      templates.push(newTemplate);
+    } else {
+      templates[idx] = {
+        ...templates[idx],
+        ...validation.template!,
+        updatedAt: now,
+      };
     }
 
-    templates[idx] = {
-      ...templates[idx],
-      ...validation.template!,
-      updatedAt: new Date().toISOString(),
-    };
     await kvSet(KV_TEMPLATES_KEY, templates);
 
-    return NextResponse.json({ success: true, template: templates[idx] });
+    const saved = idx === -1 ? templates[templates.length - 1] : templates[idx];
+    return NextResponse.json({ success: true, template: saved });
   } catch {
     return NextResponse.json({ error: 'Failed to update template' }, { status: 500 });
   }
