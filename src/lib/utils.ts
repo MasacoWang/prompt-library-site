@@ -110,13 +110,16 @@ export function loadTemplates(starters: Template[]): Template[] {
         const starterIds = new Set(starters.map((s) => s.id));
         const storedById = new Map(parsed.map((t: Template) => [t.id, t]));
 
-        // For starters: use stored version if user modified it, skip if deleted
+        // For starters: use stored version only if user modified it MORE RECENTLY than starter, skip if deleted
         const mergedStarters = starters
           .filter((s) => !deletedIds.has(s.id))
           .map((s) => {
             const storedVersion = storedById.get(s.id);
-            if (storedVersion && storedVersion.updatedAt && storedVersion.updatedAt !== s.updatedAt) {
-              return storedVersion;
+            if (storedVersion && storedVersion.updatedAt && s.updatedAt) {
+              // Use stored version only if it's newer than the starter/shared version
+              if (new Date(storedVersion.updatedAt) > new Date(s.updatedAt)) {
+                return storedVersion;
+              }
             }
             return s;
           });
