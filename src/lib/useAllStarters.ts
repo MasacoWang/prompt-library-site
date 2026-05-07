@@ -14,8 +14,10 @@ export function useAllStarters() {
   const starterIds = useMemo(() => new Set(STARTER_TEMPLATES.map(t => t.id)), []);
 
   const allStarters: Template[] = useMemo(() => {
-    const shared = sharedTemplates.filter(st => !starterIds.has(st.id));
-    return [...STARTER_TEMPLATES, ...shared];
+    const sharedById = new Map(sharedTemplates.map(st => [st.id, st]));
+    const merged = STARTER_TEMPLATES.map(s => sharedById.has(s.id) ? sharedById.get(s.id)! : s);
+    const added = sharedTemplates.filter(st => !starterIds.has(st.id));
+    return [...merged, ...added];
   }, [sharedTemplates, starterIds]);
 
   return { allStarters, sharedTemplates, loading, fetchShared, addSharedTemplate, deleteSharedTemplate };

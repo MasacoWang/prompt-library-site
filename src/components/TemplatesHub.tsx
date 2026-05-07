@@ -80,7 +80,11 @@ export default function TemplatesHub() {
 
   // ─── Init from URL params ───
   useEffect(() => {
-    const allStarters = [...STARTER_TEMPLATES, ...sharedTemplates.filter(st => !starterIds.has(st.id))];
+    const sharedById = new Map(sharedTemplates.map(st => [st.id, st]));
+    const allStarters = [
+      ...STARTER_TEMPLATES.map(s => sharedById.has(s.id) ? sharedById.get(s.id)! : s),
+      ...sharedTemplates.filter(st => !starterIds.has(st.id)),
+    ];
     setTemplates(loadTemplates(allStarters));
     setFavorites(loadFavorites());
     setViewCounts(loadViewCounts());
