@@ -637,6 +637,22 @@ function TemplateCard({
   onEdit: (e: React.MouseEvent) => void;
   onDelete: (e: React.MouseEvent) => void;
 }) {
+  const [copiedLabel, setCopiedLabel] = useState<string | null>(null);
+  const handleCopilotClick = (e: React.MouseEvent) => {
+    onCopilot(e);
+    setCopiedLabel('copilot');
+    setTimeout(() => setCopiedLabel(null), 1500);
+  };
+  const handleCopyClick = (e: React.MouseEvent) => {
+    onCopy(e);
+    setCopiedLabel('copy');
+    setTimeout(() => setCopiedLabel(null), 1500);
+  };
+  const handleLinkedInClick = (e: React.MouseEvent) => {
+    onLinkedIn(e);
+    setCopiedLabel('linkedin');
+    setTimeout(() => setCopiedLabel(null), 1500);
+  };
   return (
     <div
       onClick={onSelect}
@@ -688,13 +704,13 @@ function TemplateCard({
       {/* Primary actions (always visible) */}
       <div className="pt-2 border-t border-border" onClick={(e) => e.stopPropagation()}>
         <div className="flex items-center gap-1">
-          <button onClick={onCopilot} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center" title="Auto-copies text — just paste in Copilot">
+          <button onClick={handleCopilotClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center relative" title="Auto-copies text — just paste in Copilot">
             <span className="text-base">🤖</span>
-            <span>Copilot</span>
+            <span>{copiedLabel === 'copilot' ? '✓ Copied!' : 'Copilot'}</span>
           </button>
-          <button onClick={onCopy} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
+          <button onClick={handleCopyClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
             <span className="text-base">📋</span>
-            <span>Copy</span>
+            <span>{copiedLabel === 'copy' ? '✓ Copied!' : 'Copy'}</span>
           </button>
           {t.kind === 'template' && (
             <button onClick={onOutlook} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-primary/5 hover:text-primary rounded-lg transition flex flex-col items-center">
@@ -703,14 +719,14 @@ function TemplateCard({
             </button>
           )}
           {(t.kind === 'template' || t.scenario?.includes('job-post')) && (
-            <button onClick={onLinkedIn} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition flex flex-col items-center">
+            <button onClick={handleLinkedInClick} className="flex-1 btn-ghost px-2 py-1.5 text-[11px] font-medium hover:bg-[#0a66c2]/5 hover:text-[#0a66c2] rounded-lg transition flex flex-col items-center relative">
               <span className="text-base">💼</span>
-              <span>LinkedIn</span>
+              <span>{copiedLabel === 'linkedin' ? '✓ Copied!' : 'LinkedIn'}</span>
             </button>
           )}
         </div>
         <p className="text-[9px] text-text-muted text-center mt-1 opacity-70">
-          💡 Copilot: auto-copies text → just paste (Ctrl+V) in chat
+          💡 Copilot & LinkedIn auto-copy text → just paste (Ctrl+V)
         </p>
       </div>
     </div>
