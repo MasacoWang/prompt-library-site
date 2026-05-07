@@ -55,5 +55,21 @@ export function useSharedTemplates() {
     }
   };
 
-  return { sharedTemplates, loading, fetchShared, addSharedTemplate, deleteSharedTemplate };
+  const updateSharedTemplate = async (template: Partial<Template> & { id: string }): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/admin/templates', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(template),
+      });
+      const data = await res.json();
+      if (!res.ok) return { success: false, error: data.error };
+      await fetchShared();
+      return { success: true };
+    } catch {
+      return { success: false, error: 'Failed to update template' };
+    }
+  };
+
+  return { sharedTemplates, loading, fetchShared, addSharedTemplate, updateSharedTemplate, deleteSharedTemplate };
 }

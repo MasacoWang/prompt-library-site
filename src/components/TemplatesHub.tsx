@@ -41,7 +41,7 @@ export default function TemplatesHub() {
   const { data: session } = useSession();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const isAdmin = !!(session?.user as any)?.isAdmin;
-  const { sharedTemplates, addSharedTemplate, deleteSharedTemplate, fetchShared } = useSharedTemplates();
+  const { sharedTemplates, addSharedTemplate, updateSharedTemplate, deleteSharedTemplate, fetchShared } = useSharedTemplates();
 
   // ─── State ───
   const [templates, setTemplates] = useState<Template[]>([]);
@@ -150,6 +150,26 @@ export default function TemplatesHub() {
   const handleSaveEdit = useCallback(async () => {
     if (!editDraft.title || !editDraft.body) { showToastMsg('Title and body required'); return; }
     if (editDraft.id && editDraft.id !== '__new__') {
+      // Editing existing template
+      if (isAdmin) {
+        const result = await updateSharedTemplate({
+          id: editDraft.id,
+          title: editDraft.title!,
+          category: editDraft.category || 'Strategy',
+          kind: (editDraft.kind as 'prompt' | 'template') || 'prompt',
+          kinds: editDraft.kinds || [editDraft.kind || 'prompt'],
+          body: editDraft.body!,
+          casualBody: editDraft.casualBody || '',
+          pinned: editDraft.pinned || false,
+          scenario: editDraft.scenario || [],
+          phase: editDraft.phase || [(editDraft.category || 'Strategy').toLowerCase()],
+        });
+        if (!result.success) {
+          showToastMsg(result.error || 'Failed to save globally');
+          return;
+        }
+        showToastMsg('Saved globally for all users ✓');
+      }
       setTemplates((prev) => prev.map((t) => t.id === editDraft.id ? { ...t, ...editDraft, updatedAt: new Date().toISOString() } as Template : t));
       setSelectedId(editDraft.id);
     } else {
@@ -193,7 +213,7 @@ export default function TemplatesHub() {
     }
     setEditorMode('use');
     showToastMsg('Saved ✓');
-  }, [editDraft, showToastMsg, isAdmin, addSharedTemplate]);
+  }, [editDraft, showToastMsg, isAdmin, addSharedTemplate, updateSharedTemplate]);
 
   const handleDelete = useCallback(async (id: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
