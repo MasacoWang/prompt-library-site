@@ -68,7 +68,7 @@ export default function Editor({
     <div className={`${isFullscreen ? 'fixed inset-0 z-50 bg-white' : 'h-full'} flex flex-col editor-panel overflow-hidden`}>
       {/* ── Toolbar ── */}
       <div className="flex flex-wrap items-center gap-2 sm:gap-3 px-3 sm:px-4 py-2.5 border-b border-border shrink-0">
-        <button onClick={onBack} className="btn-ghost px-2.5 py-1 text-xs">
+        <button onClick={isEditing && template ? onCancelEdit : onBack} className="btn-ghost px-2.5 py-1 text-xs">
           ← Back
         </button>
 
@@ -351,6 +351,27 @@ export default function Editor({
               {renderPreview(editPreviewText)}
             </div>
           </div>
+
+          {/* Action buttons in edit mode */}
+          {isEditing && (
+            <div className="mt-4 max-w-[620px] mx-auto">
+              <div className="flex flex-wrap gap-2">
+                <button onClick={onCopyToCopilot} className="btn-primary px-3 py-1.5 text-xs" title="Auto-copies text — just paste in Copilot">
+                  🤖 Run in Copilot
+                </button>
+                <button onClick={onCopyPlain} className="btn-secondary px-3 py-1.5 text-xs">
+                  📋 Copy
+                </button>
+                <button onClick={onOpenOutlook} className="btn-secondary px-3 py-1.5 text-xs">
+                  ✉️ Outlook
+                </button>
+                <button onClick={onOpenLinkedIn} className="btn-secondary px-3 py-1.5 text-xs">
+                  💼 LinkedIn
+                </button>
+              </div>
+              <p className="text-[10px] text-text-muted mt-1.5">💡 Clicking "Run in Copilot" auto‑copies the text. Just paste (Ctrl+V) in the Copilot chat.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>
