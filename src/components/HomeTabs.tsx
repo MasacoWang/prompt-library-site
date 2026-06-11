@@ -257,7 +257,27 @@ export default function HomeTabs() {
         </div>
       </div>
 
-      {/* ── Favorites tab ── */}
+      {/* ── Most Popular (default home view) ── */}
+      {activeTab !== 'favorites' && activeTab !== 'new' && (
+        <div className="animate-fade-in mb-10">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-text-primary flex items-center gap-2">🔥 Most Used Templates</h3>
+            <Link href="/templates" className="text-xs text-primary font-medium hover:underline">View all →</Link>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {(() => {
+              const sorted = [...items].sort((a, b) => {
+                const aCount = (viewCounts[a.id] || 0) + (sharedFavCounts[a.id] || 0) + (a.pinned ? 5 : 0);
+                const bCount = (viewCounts[b.id] || 0) + (sharedFavCounts[b.id] || 0) + (b.pinned ? 5 : 0);
+                return bCount - aCount;
+              });
+              return sorted.slice(0, 6).map((t) => (
+                <ItemCard key={t.id} item={t} onToast={showToast} viewCount={viewCounts[t.id]} favCount={sharedFavCounts[t.id]} isFavorite={favorites.has(t.id)} onToggleFavorite={() => handleToggleFavorite(t.id)} onOpen={() => handleOpen(t.id)} />
+              ));
+            })()}
+          </div>
+        </div>
+      )}
       {activeTab === 'favorites' && (
         <div className="animate-fade-in">
           {favoriteItems.length > 0 ? (
