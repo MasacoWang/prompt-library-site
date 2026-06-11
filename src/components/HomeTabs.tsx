@@ -9,12 +9,13 @@ import { useAllStarters } from '@/lib/useAllStarters';
 import { copyToCopilot, copyToClipboard, openInOutlook, loadViewCounts, incrementViewCount, loadFavorites, toggleFavorite, loadTemplates, saveTemplates, generateId, getAllCategories, saveCustomCategory, deleteCustomCategory, isCustomCategory, loadSharedFavCounts } from '@/lib/utils';
 import Swal from 'sweetalert2';
 
-type TabKey = 'templates' | 'prompts' | 'copywriting' | 'scenarios' | 'phases' | 'favorites' | 'new';
+type TabKey = 'templates' | 'prompts' | 'copywriting' | 'ai-automation' | 'scenarios' | 'phases' | 'favorites' | 'new';
 
 const TABS: { key: TabKey; label: string; icon: string }[] = [
   { key: 'templates', label: 'Email Templates', icon: '✉️' },
   { key: 'prompts', label: 'Prompt Library', icon: '💡' },
   { key: 'copywriting', label: 'Create a Job Post', icon: '📝' },
+  { key: 'ai-automation', label: 'AI Automation', icon: '🤖' },
   { key: 'scenarios', label: 'Scenarios', icon: '🎯' },
   { key: 'phases', label: 'Recruiting Phases', icon: '📊' },
   { key: 'favorites', label: 'Favorites', icon: '❤️' },
@@ -216,6 +217,7 @@ export default function HomeTabs() {
             templates: '/templates?kind=template',
             prompts: '/templates?kind=prompt',
             copywriting: '/templates?scenario=job-post',
+            'ai-automation': '/templates?scenario=ai-automation',
             scenarios: '/templates',
             phases: '/templates',
           };

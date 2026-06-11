@@ -31,6 +31,7 @@ export const SCENARIOS = [
   { key: 'candidate-eval', label: 'Candidate Evaluation', icon: '📊', desc: 'Profile summaries, JD matching, and fit scoring' },
   { key: 'hm-communication', label: 'Hiring Manager Communication', icon: '📋', desc: 'Status reports, updates, and pipeline summaries' },
   { key: 'job-post', label: 'Create a Job Post', icon: '📝', desc: 'Job posting templates and prompts for any role' },
+  { key: 'ai-automation', label: 'AI Automation', icon: '🤖', desc: 'Automated TA Hub actions — reminders, scheduling, reports, calibration, and dashboards' },
 ] as const;
 
 export const PHASES = [

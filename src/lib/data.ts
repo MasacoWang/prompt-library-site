@@ -993,4 +993,103 @@ Let's build a future that represents everyone. 🤝
 
 #DiversityInTech #InclusiveHiring #TechForAll #Hiring`,
 undefined, false, ['outreach', 'job-post']),
+
+  // ── AI AUTOMATION ──────────────────────────────────
+  t('TA Hub Feedback Dashboard — Layout & Backend Spec', 'Strategy', 'prompt',
+`**TA Hub Feedback Dashboard — Layout & Backend Spec**
+
+**Scope:** 3 reqs (200031686 / 200030713 / 200032105). Stages = Review + Screen + Interview only (exclude GTA Review).
+
+**Backend scrape route (authoritative — do NOT guess from Feedback column icons):**
+For each req → for each stage tab (Review / Screen / Interview):
+1. Click the **stage tab** at the top of the pipeline page.
+2. For each candidate row → click the **candidate name** to open detail drawer.
+3. Click the **Feedback sub-tab** inside the drawer. Verify \`aria-selected="true"\` on the Feedback tab before reading. Wait until innerText length stabilizes for 4+ polls.
+4. Capture for each feedback entry: interviewer name, decision/result, date, comment.
+5. Close drawer, next candidate.
+
+**Stage → column mapping:**
+- Review tab feedback → **Business Review** column
+- Screen tab feedback → **Phone Screen** column
+- Interview tab feedback → **Interview** column
+
+**Feedback Dashboard table columns (exact order):**
+Req ID · Position Title · Req Link · Candidate · Business Review · Phone Screen · Interview · Summary
+
+- **No Quick Note column. No CV Review column.**
+- One row per Req ID + Candidate (consolidate multiple interviewers as bullet points inside the stage cell).
+- Each bullet: interviewer name, decision badge, date, short comment.
+- **Summary cell = latest stage only** (priority Interview > Phone Screen > Business Review). Format: \`Interview: 3 Hire\` or \`Phone Screen: 1 Pending\`. Do NOT aggregate across stages.
+
+**Bulk Feedback Alerts table:** same columns plus "New Feedback Summary" before Business Review, and "Action" at the end. Same one-row-per-candidate rule.
+
+**Dashboard UX:**
+- 5 tabs: Daily Briefing · TA Hub Req Dashboard · Feedback Dashboard · Bulk Feedback Alerts · Automation Backup.
+- Tab switching script must be inside \`DOMContentLoaded\`. No legacy \`normalizeFeedbackTable\` script at the bottom (it reorders cells and breaks the layout).
+- Refresh button reloads the page.
+- Req filter dropdown (All reqs + each req).
+- Mojibake-free CJK text (write UTF-8 with BOM via Node \`fs.writeFileSync\`, not PowerShell \`Out-File\`).
+
+**Delivery:** Save to \`clarice-official-dashboard.html\`. Email + Teams self-chat to claricewang@microsoft.com only.`,
+undefined, true, ['ai-automation']),
+
+  t('AI Automation — Send Missing Feedback Reminders', 'Interview', 'prompt',
+`Go into TA Hub, use recruiter view to check all requisitions under [Recruiter Name], send reminders to all interviewers with missing feedback for candidates in Interview stage, and summarize how many reminders were sent.
+
+Inputs:
+- Recruiter Name: [Recruiter Name]
+
+Expected output:
+- List of candidates with missing feedback
+- Reminders sent to each interviewer
+- Summary count of reminders sent`,
+undefined, false, ['ai-automation']),
+
+  t('AI Automation — Schedule Fixed-Slot Phone Screen', 'Screening', 'prompt',
+`Go into TA Hub, under [Req ID], schedule a fixed-slot Phone Screen for [Candidate Name] using [Date + Time + Time Zone], and send the invite directly.
+
+Inputs:
+- Req ID: [Req ID]
+- Candidate Name: [Candidate Name]
+- Date: [Date]
+- Time: [Time]
+- Time Zone: [Time Zone]
+
+Expected output:
+- Phone Screen scheduled and invite sent to candidate`,
+undefined, false, ['ai-automation', 'interview-prep']),
+
+  t('AI Automation — Self-Scheduling Phone Screen Link', 'Screening', 'prompt',
+`Go into TA Hub, under [Req ID], use the Let candidate select flow to schedule a Phone Screen for [Candidate Name], add the time zone note and working-hours reminder, and send the self-scheduling link.
+
+Inputs:
+- Req ID: [Req ID]
+- Candidate Name: [Candidate Name]
+
+Expected output:
+- Self-scheduling link sent to candidate with time zone note and working-hours reminder`,
+undefined, false, ['ai-automation', 'interview-prep']),
+
+  t('AI Automation — Requisition Report Dashboard', 'Strategy', 'prompt',
+`Go into TA Hub, use recruiter view to generate a requisition report for [Recruiter Name]: show total requisition count, and for each req include Open status, posting type, posting status, Days Open, Open 30–60 / 60–90 / >90 days, New Applicant 7–14 / >14 days, Interview, Offer, and Pre-Hire, then present it in a dashboard with clickable Req IDs and a final suggestion column. If posting information is unclear in TA Hub, verify it in e-recruiting and use that value instead.
+
+Inputs:
+- Recruiter Name: [Recruiter Name]
+
+Expected output:
+- Dashboard table with columns: Req ID (clickable), Open Status, Posting Type, Posting Status, Days Open, Open 30–60d, Open 60–90d, Open >90d, New Applicant 7–14d, New Applicant >14d, Interview, Offer, Pre-Hire, Suggestion
+- Total requisition count summary`,
+undefined, false, ['ai-automation', 'hm-communication']),
+
+  t('AI Automation — Confirm Calibration in Bulk', 'Interview', 'prompt',
+`Use recruiter view to automatically click Confirm Calibration for [Recruiter Name], includes archived requisitions, exclude req in Pre-Approved status.
+
+Inputs:
+- Recruiter Name: [Recruiter Name]
+
+Expected output:
+- List of requisitions where Confirm Calibration was clicked
+- Count of calibrations confirmed
+- Any reqs skipped (Pre-Approved status)`,
+undefined, false, ['ai-automation']),
 ];
